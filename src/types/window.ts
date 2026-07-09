@@ -19,12 +19,13 @@ export interface WindowState {
   isMinimized: boolean;
   isMaximized: boolean;
   isClosing: boolean;
+  preMaximizeRect: { x: number; y: number; width: number; height: number } | null;
   content: WindowContent;
 }
 
 export type OpenWindowConfig = Omit<
   WindowState,
-  'id' | 'zIndex' | 'isMinimized' | 'isMaximized' | 'isClosing'
+  'id' | 'zIndex' | 'isMinimized' | 'isMaximized' | 'isClosing' | 'preMaximizeRect'
 >;
 
 export type ResizeDirection = 'n' | 's' | 'e' | 'w' | 'ne' | 'nw' | 'se' | 'sw';

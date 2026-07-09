@@ -59,6 +59,7 @@ export const useWindowsStore = create<WindowsState>()(
           isMinimized: false,
           isMaximized: false,
           isClosing: false,
+          preMaximizeRect: null,
           content: config.content,
         };
 
@@ -114,8 +115,29 @@ export const useWindowsStore = create<WindowsState>()(
         set((s) => {
           const win = s.windows[id];
           if (!win) return s;
+          if (win.isMaximized) {
+            const prev = win.preMaximizeRect;
+            if (!prev) return { windows: { ...s.windows, [id]: { ...win, isMaximized: false } } };
+            return {
+              windows: {
+                ...s.windows,
+                [id]: { ...win, x: prev.x, y: prev.y, width: prev.width, height: prev.height, isMaximized: false, preMaximizeRect: null },
+              },
+            };
+          }
           return {
-            windows: { ...s.windows, [id]: { ...win, isMaximized: !win.isMaximized } },
+            windows: {
+              ...s.windows,
+              [id]: {
+                ...win,
+                preMaximizeRect: { x: win.x, y: win.y, width: win.width, height: win.height },
+                x: 0,
+                y: 28,
+                width: window.innerWidth,
+                height: window.innerHeight - 28,
+                isMaximized: true,
+              },
+            },
           };
         });
       },

@@ -63,6 +63,7 @@ export function findNonOverlappingPosition(
       isMinimized: false,
       isMaximized: false,
       isClosing: false,
+      preMaximizeRect: null,
       content: { type: 'terminal' },
     };
     if (!hasOverlap(candidate, existingWindows)) {
