@@ -66,7 +66,7 @@ function handleEasterEggs(input: string): CommandResult | null {
   if (lower === 'uname -a') {
     return {
       type: 'output',
-      content: 'NABIL SYSTEMS v2.4.7 Generic 1987-2026 i686 GNU/Unix',
+      content: 'Ann Naser Nabil v2.4.7 Generic 1987-2026 i686 GNU/Unix',
     };
   }
 

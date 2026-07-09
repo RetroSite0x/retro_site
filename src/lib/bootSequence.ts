@@ -7,7 +7,7 @@ export interface BootStep {
 export const BIOS_STEPS: BootStep[] = [
   { message: '+====================================================+', delay: 300, type: 'info' },
   { message: '|                                                    |', delay: 200, type: 'info' },
-  { message: '|                  NABIL SYSTEMS                      |', delay: 400, type: 'info' },
+  { message: '|                  Ann Naser Nabil                     |', delay: 400, type: 'info' },
   { message: '|               CRAY X-MP/48 -- CLASS VI             |', delay: 400, type: 'info' },
   { message: '|           4 CPUs · 128 MW · NOS 2.0 rev 732        |', delay: 400, type: 'info' },
   { message: '|                                                    |', delay: 200, type: 'info' },

@@ -32,7 +32,7 @@ export function LoginPrompt() {
     <div className={styles.container} onClick={() => formRef.current?.requestSubmit()}>
       <form ref={formRef} onSubmit={handleSubmit} className={styles.content}>
         <div>+============================================+</div>
-        <div>|            NABIL SYSTEMS                  |</div>
+        <div>|              Ann Naser Nabil              |</div>
         <div>|          CRAY X-MP/48 -- NOS 2.0          |</div>
         <div>+============================================+</div>
         <div>&nbsp;</div>

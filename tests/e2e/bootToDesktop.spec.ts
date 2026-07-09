@@ -10,7 +10,7 @@ test.describe('Retro UNIX Workstation', () => {
     // ------------------------------------------------------------------
     // Phase 1: BIOS screen — shows system name and hardware info
     // ------------------------------------------------------------------
-    await expect(page.locator('text=NABIL SYSTEMS')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('text=Ann Naser Nabil')).toBeVisible({ timeout: 5000 });
     await expect(page.locator('text=CPU: MOS 6502')).toBeVisible({ timeout: 5000 });
 
     // ------------------------------------------------------------------
