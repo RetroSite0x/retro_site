@@ -19,7 +19,15 @@ export function Window({ win }: WindowProps) {
   const focusWindow = useWindowsStore((s) => s.focusWindow);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  if (win.isMinimized) return null;
+  if (win.isMinimized) {
+    return (
+      <div
+        style={{ display: 'none' }}
+        onPointerDown={() => focusWindow(win.id)}
+        aria-hidden="true"
+      />
+    );
+  }
 
   const handlePointerDown = useCallback(() => {
     focusWindow(win.id);

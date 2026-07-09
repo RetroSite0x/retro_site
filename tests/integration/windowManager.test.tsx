@@ -240,7 +240,8 @@ describe('Window component', () => {
     useWindowsStore.getState().minimizeWindow(id);
 
     const { container } = render(<Window win={useWindowsStore.getState().windows[id]} />);
-    expect(container.firstChild).toBeNull();
+    // Keep window in DOM via display:none to avoid React unmount issues
+    expect((container.firstChild as HTMLElement).style.display).toBe('none');
   });
 
   it('renders title bar with window title', () => {
