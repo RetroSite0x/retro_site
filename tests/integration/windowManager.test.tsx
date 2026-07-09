@@ -232,7 +232,7 @@ describe('Window component', () => {
     useWindowsStore.setState({ windows: {}, nextZIndex: 10, focusedId: null });
   });
 
-  it('renders nothing when minimized', () => {
+  it('hides minimized window via display:none (keeps component mounted)', () => {
     const id = useWindowsStore.getState().openWindow({
       title: 'test',
       content: { type: 'terminal' },
@@ -240,8 +240,10 @@ describe('Window component', () => {
     useWindowsStore.getState().minimizeWindow(id);
 
     const { container } = render(<Window win={useWindowsStore.getState().windows[id]} />);
-    // Keep window in DOM via display:none to avoid React unmount issues
-    expect((container.firstChild as HTMLElement).style.display).toBe('none');
+    // Same window div rendered; just hidden via display:none so Terminal/Browser stay mounted
+    const el = container.firstChild as HTMLElement;
+    expect(el.style.display).toBe('none');
+    expect(el.classList.contains('window')).toBe(true);
   });
 
   it('renders title bar with window title', () => {

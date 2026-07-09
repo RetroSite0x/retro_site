@@ -19,22 +19,13 @@ export function Window({ win }: WindowProps) {
   const focusWindow = useWindowsStore((s) => s.focusWindow);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  if (win.isMinimized) {
-    return (
-      <div
-        style={{ display: 'none' }}
-        onPointerDown={() => focusWindow(win.id)}
-        aria-hidden="true"
-      />
-    );
-  }
-
   const handlePointerDown = useCallback(() => {
+    if (win.isMinimized) return;
     focusWindow(win.id);
     // Restore focus to the first focusable element inside the window
     // (terminal hidden input, file viewer, etc.) so keystrokes land
     contentRef.current?.querySelector<HTMLElement>('input, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
-  }, [focusWindow, win.id]);
+  }, [focusWindow, win.id, win.isMinimized]);
 
   const renderContent = () => {
     switch (win.content.type) {
@@ -68,6 +59,7 @@ export function Window({ win }: WindowProps) {
         width: win.width,
         height: win.height,
         zIndex: win.zIndex,
+        display: win.isMinimized ? 'none' : undefined,
       }}
       onPointerDown={handlePointerDown}
     >
