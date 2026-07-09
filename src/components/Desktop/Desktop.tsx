@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useWindowsStore } from '../../store/useWindows';
 import { MenuBar } from './MenuBar';
 import { IconGrid } from './IconGrid';
@@ -62,6 +62,18 @@ export function Desktop() {
     }
   }, [openWindow]);
 
+  const windows = useWindowsStore((s) => s.windows);
+  const focusWindow = useWindowsStore((s) => s.focusWindow);
+  const restoreWindow = useWindowsStore((s) => s.restoreWindow);
+
+  const handleTaskbarClick = useCallback((id: string, isMinimized: boolean) => {
+    if (isMinimized) {
+      restoreWindow(id);
+    } else {
+      focusWindow(id);
+    }
+  }, [restoreWindow, focusWindow]);
+
   return (
     <div className={styles.desktop}>
       <Wallpaper />
@@ -69,6 +81,17 @@ export function Desktop() {
       <IconGrid />
       <div className={styles.windowLayer}>
         <WindowManager />
+      </div>
+      <div className={styles.taskbar}>
+        {Object.values(windows).map((w) => (
+          <button
+            key={w.id}
+            className={`${styles.taskbarItem} ${w.isMinimized ? styles.taskbarItemMinimized : ''}`}
+            onClick={() => handleTaskbarClick(w.id, w.isMinimized)}
+          >
+            {w.title}
+          </button>
+        ))}
       </div>
     </div>
   );

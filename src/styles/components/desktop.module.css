@@ -37,10 +37,53 @@
   white-space: pre;
 }
 
-/* Window layer — covers entire desktop below menu bar */
+/* Window layer — covers desktop below menu bar, above taskbar */
 .windowLayer {
   position: absolute;
   inset: 0;
   top: var(--menu-bar-height);
+  bottom: var(--taskbar-height);
   pointer-events: none;
+}
+
+/* Taskbar at the bottom — shows open windows for restore */
+.taskbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--taskbar-height);
+  background: var(--window-title-bg);
+  border-top: 1px solid var(--phosphor-dim);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+.taskbarItem {
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  padding: 2px 8px;
+  cursor: pointer;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.taskbarItem:hover {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+.taskbarItemMinimized {
+  opacity: 0.5;
+  border-style: dashed;
 }
