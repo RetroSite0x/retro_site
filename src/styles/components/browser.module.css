@@ -1,0 +1,108 @@
+.browser {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--phosphor-bg);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 13px;
+}
+
+/* Toolbar with URL bar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--phosphor-dim);
+  flex-shrink: 0;
+  min-height: 32px;
+}
+
+.navDeco {
+  color: var(--phosphor-dim);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.urlForm {
+  display: flex;
+  flex: 1;
+  gap: 4px;
+}
+
+.urlInput {
+  flex: 1;
+  background: var(--phosphor-bg);
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  padding: 2px 6px;
+  outline: none;
+  min-width: 0;
+}
+
+.urlInput:focus {
+  border-color: var(--phosphor);
+}
+
+.goBtn {
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.goBtn:hover {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.prompt {
+  text-align: center;
+  color: var(--phosphor-dim);
+}
+
+.hint {
+  font-size: 11px;
+  margin-top: 8px;
+  opacity: 0.6;
+}
+
+.launched {
+  text-align: center;
+  color: var(--phosphor);
+}
+
+.launchedUrl {
+  margin-top: 8px;
+  word-break: break-all;
+  color: var(--phosphor-dim);
+}
+
+/* Status bar */
+.statusBar {
+  border-top: 1px solid var(--phosphor-dim);
+  padding: 2px 8px;
+  flex-shrink: 0;
+  min-height: 20px;
+}
+
+.statusText {
+  color: var(--phosphor-dim);
+  font-size: 11px;
+}

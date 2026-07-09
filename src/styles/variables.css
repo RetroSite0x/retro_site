@@ -1,0 +1,25 @@
+:root {
+  /* Fonts */
+  --font-terminal: 'VT323', 'Courier New', monospace;
+  --font-ui: 'IBM Plex Mono', 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Default theme (green) — overridden by [data-theme] */
+  --phosphor: #33ff33;
+  --phosphor-dim: #1a7f1a;
+  --phosphor-bg: #0a0a0a;
+  --phosphor-glow: 0 0 4px rgba(51, 255, 51, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.12);
+  --window-title-bg: #1a1a1a;
+  --window-border: var(--phosphor);
+  --menu-bar-bg: #0d0d0d;
+  --text-cursor: var(--phosphor);
+
+  /* Sizing */
+  --menu-bar-height: 28px;
+  --window-title-height: 24px;
+  --desktop-icon-size: 72px;
+  --border-width: 1px;
+
+  /* Timing */
+  --crt-flicker-speed: 0.15s;
+}

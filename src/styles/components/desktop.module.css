@@ -1,0 +1,46 @@
+.desktop {
+  width: 100%;
+  height: 100%;
+  background: var(--phosphor-bg);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Full-bleed container behind icons and windows */
+.wallpaper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.wallpaperInner {
+  text-align: center;
+}
+
+/* Each ASCII art line — individual div guarantees correct line breaks */
+.wallpaperLine {
+  font-family: var(--font-terminal);
+  font-size: 48px;
+  line-height: 1.1;
+  color: var(--phosphor);
+  opacity: 0.15;
+  letter-spacing: 4px;
+  user-select: none;
+  white-space: pre;
+}
+
+/* Window layer — covers entire desktop below menu bar */
+.windowLayer {
+  position: absolute;
+  inset: 0;
+  top: var(--menu-bar-height);
+  pointer-events: none;
+}

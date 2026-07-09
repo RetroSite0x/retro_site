@@ -1,0 +1,60 @@
+@import './variables.css';
+@import './themes/green.css';
+@import './themes/amber.css';
+@import './themes/white.css';
+@import './themes/blue.css';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--phosphor-bg);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 16px;
+  line-height: 1.2;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+}
+
+/* No rounded corners — hard constraint */
+*, *::before, *::after {
+  border-radius: 0 !important;
+}
+
+/* No gradients — hard constraint */
+.no-gradients {
+  background-image: none !important;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--phosphor-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--phosphor-dim);
+}
+
+/* Selection */
+::selection {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+/* Focus outline */
+:focus-visible {
+  outline: 1px solid var(--phosphor);
+  outline-offset: 1px;
+}

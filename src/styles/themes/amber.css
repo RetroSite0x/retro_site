@@ -1,0 +1,11 @@
+[data-theme="amber"] {
+  --phosphor: #ffb000;
+  --phosphor-dim: #8a5e00;
+  --phosphor-bg: #0a0a0a;
+  --phosphor-glow: 0 0 4px rgba(255, 176, 0, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.14);
+  --window-title-bg: #1a1a1a;
+  --window-border: #ffb000;
+  --menu-bar-bg: #0d0d0d;
+  --text-cursor: #ffb000;
+}

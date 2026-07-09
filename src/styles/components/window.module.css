@@ -1,0 +1,137 @@
+/* Window Shell */
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--phosphor-bg);
+  border: var(--border-width) solid var(--window-border);
+  pointer-events: auto;
+  min-width: 300px;
+  min-height: 150px;
+}
+
+/* Title Bar */
+.titleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--window-title-height);
+  background: var(--window-title-bg);
+  border-bottom: var(--border-width) solid var(--phosphor-dim);
+  padding: 0 4px;
+  cursor: default;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.titleText {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--phosphor);
+  padding-left: 4px;
+}
+
+.controls {
+  display: flex;
+  gap: 2px;
+}
+
+.controlBtn {
+  background: none;
+  border: var(--border-width) solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-size: 10px;
+  width: 18px;
+  height: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  padding: 0;
+  line-height: 1;
+}
+
+.controlBtn:hover {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+/* Window Content */
+.content {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+
+/* Resize Handles */
+.handle {
+  position: absolute;
+  z-index: 10;
+}
+
+/* Edge handles (thin strips) */
+.handleN {
+  top: -2px;
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  cursor: n-resize;
+}
+
+.handleS {
+  bottom: -2px;
+  left: 4px;
+  right: 4px;
+  height: 4px;
+  cursor: s-resize;
+}
+
+.handleE {
+  right: -2px;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  cursor: e-resize;
+}
+
+.handleW {
+  left: -2px;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  cursor: w-resize;
+}
+
+/* Corner handles (larger squares) */
+.handleNE {
+  top: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  cursor: ne-resize;
+}
+
+.handleNW {
+  top: -4px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  cursor: nw-resize;
+}
+
+.handleSE {
+  bottom: -4px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  cursor: se-resize;
+}
+
+.handleSW {
+  bottom: -4px;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  cursor: sw-resize;
+}
