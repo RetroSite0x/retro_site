@@ -13,6 +13,8 @@ interface WindowsState {
     content: WindowContent;
     width?: number;
     height?: number;
+    x?: number;
+    y?: number;
   }) => string;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
@@ -42,7 +44,7 @@ export const useWindowsStore = create<WindowsState>()(
 
       openWindow: (config) => {
         const id = `win-${Date.now()}-${windowCounter++}`;
-        const { x, y } = cascadePosition();
+        const { x, y } = config.x !== undefined ? { x: config.x, y: config.y ?? 60 } : cascadePosition();
 
         const win: WindowState = {
           id,

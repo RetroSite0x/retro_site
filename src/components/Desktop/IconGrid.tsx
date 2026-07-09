@@ -100,7 +100,7 @@ export function IconGrid() {
       />
       <DesktopIcon
         label="web"
-        icon="[://]"
+        icon="[🌐]"
         x={getPos('web', DESKTOP_ENTRIES.length + 1).x}
         y={getPos('web', DESKTOP_ENTRIES.length + 1).y}
         isDragged={draggedLabel === 'web'}

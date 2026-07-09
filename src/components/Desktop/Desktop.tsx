@@ -29,12 +29,26 @@ function Wallpaper() {
 export function Desktop() {
   const openWindow = useWindowsStore((s) => s.openWindow);
 
-  // Open a terminal window on first desktop render
+  // Open terminal + browser windows on first desktop render
   useEffect(() => {
     const existingWindows = useWindowsStore.getState().windows;
     const hasTerminal = Object.values(existingWindows).some(
       (w) => w.content.type === 'terminal'
     );
+    const hasBrowser = Object.values(existingWindows).some(
+      (w) => w.content.type === 'browser'
+    );
+
+    if (!hasBrowser) {
+      openWindow({
+        title: 'web',
+        content: { type: 'browser' },
+        width: 800,
+        height: 500,
+        x: Math.max(0, window.innerWidth - 840),
+        y: 60,
+      });
+    }
 
     if (!hasTerminal) {
       openWindow({
@@ -42,6 +56,8 @@ export function Desktop() {
         content: { type: 'terminal' },
         width: 640,
         height: 360,
+        x: Math.max(0, window.innerWidth - 680),
+        y: 140,
       });
     }
   }, [openWindow]);

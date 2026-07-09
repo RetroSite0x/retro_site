@@ -31,8 +31,10 @@ export function LoginPrompt() {
   return (
     <div className={styles.container} onClick={() => formRef.current?.requestSubmit()}>
       <form ref={formRef} onSubmit={handleSubmit} className={styles.content}>
-        <div>NABIL SYSTEMS v2.4.7</div>
-        <div>Copyright 1987-2026</div>
+        <div>+============================================+</div>
+        <div>|            NABIL SYSTEMS                  |</div>
+        <div>|          CRAY X-MP/48 -- NOS 2.0          |</div>
+        <div>+============================================+</div>
         <div>&nbsp;</div>
         {error && <div style={{ color: '#ff4444' }}>{error}</div>}
         <div>&nbsp;</div>

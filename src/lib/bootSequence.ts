@@ -5,8 +5,15 @@ export interface BootStep {
 }
 
 export const BIOS_STEPS: BootStep[] = [
-  { message: 'NABIL SYSTEMS ROM BIOS v2.4.7', delay: 500, type: 'info' },
-  { message: 'Copyright 1987-2026 Nabil Microsystems Inc.', delay: 400, type: 'info' },
+  { message: '+====================================================+', delay: 300, type: 'info' },
+  { message: '|                                                    |', delay: 200, type: 'info' },
+  { message: '|                  NABIL SYSTEMS                      |', delay: 400, type: 'info' },
+  { message: '|               CRAY X-MP/48 -- CLASS VI             |', delay: 400, type: 'info' },
+  { message: '|           4 CPUs · 128 MW · NOS 2.0 rev 732        |', delay: 400, type: 'info' },
+  { message: '|                                                    |', delay: 200, type: 'info' },
+  { message: '+====================================================+', delay: 400, type: 'info' },
+  { message: '', delay: 400, type: 'info' },
+  { message: 'ROM BIOS v2.4.7 — Copyright 1987-2026 Nabil Microsystems Inc.', delay: 500, type: 'info' },
   { message: 'All rights reserved. Unauthorized duplication is a violation of applicable laws.', delay: 600, type: 'info' },
   { message: '', delay: 300, type: 'info' },
   { message: 'CPU: MOS 6502 @ 8MHz — coprocessor: Ann-9000 neural slice', delay: 700, type: 'success' },

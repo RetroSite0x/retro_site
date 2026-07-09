@@ -12,9 +12,12 @@
 }
 
 .content {
-  max-width: 640px;
+  max-width: 800px;
   width: 100%;
-  padding: 32px;
+  padding: 40px;
+  border: 2px solid var(--phosphor-dim);
+  font-size: 20px;
+  line-height: 1.35;
 }
 
 .line {
@@ -44,10 +47,10 @@
   border-bottom: 1px solid var(--phosphor);
   color: var(--phosphor);
   font-family: var(--font-terminal);
-  font-size: 16px;
+  font-size: 20px;
   padding: 2px 4px;
   outline: none;
-  width: 200px;
+  width: 220px;
 }
 
 @keyframes blink {
