@@ -8,4 +8,6 @@
   --window-border: #c0c0c0;
   --menu-bar-bg: #0d0d0d;
   --text-cursor: #c0c0c0;
+  --text-cursor-glow: 0 0 4px #c0c0c0;
+  --phosphor-glow-strong: none;
 }

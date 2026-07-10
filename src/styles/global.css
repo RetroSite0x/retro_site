@@ -58,3 +58,59 @@ html, body, #root {
   outline: 1px solid var(--phosphor);
   outline-offset: 1px;
 }
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .cursor {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Improved scrollbar for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--phosphor-dim) var(--phosphor-bg);
+}
+
+/* Smooth scroll for terminal */
+.terminal-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive base */
+@media (max-width: 768px) {
+  html { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+  html { font-size: 12px; }
+}
+
+/* Prevent text selection on UI chrome */
+.no-select {
+  user-select: none;
+}
+
+/* Improve image rendering for ASCII/retro art */
+img {
+  image-rendering: pixelated;
+}

@@ -8,11 +8,13 @@
   --phosphor-dim: #1a7f1a;
   --phosphor-bg: #0a0a0a;
   --phosphor-glow: 0 0 4px rgba(51, 255, 51, 0.3);
+  --phosphor-glow-strong: 0 0 8px rgba(51, 255, 51, 0.4), 0 0 16px rgba(51, 255, 51, 0.1);
   --phosphor-scanline: rgba(0, 0, 0, 0.12);
   --window-title-bg: #1a1a1a;
   --window-border: var(--phosphor);
   --menu-bar-bg: #0d0d0d;
   --text-cursor: var(--phosphor);
+  --text-cursor-glow: 0 0 4px var(--phosphor);
 
   /* Sizing */
   --menu-bar-height: 28px;
@@ -23,4 +25,20 @@
 
   /* Timing */
   --crt-flicker-speed: 0.15s;
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Terminal specific */
+  --terminal-padding: 12px;
+  --terminal-line-height: 1.5;
+  --terminal-font-size: 18px;
+
+  /* Focus */
+  --focus-outline: 1px solid var(--phosphor);
+  --focus-offset: 1px;
 }

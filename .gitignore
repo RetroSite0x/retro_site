@@ -19,3 +19,5 @@ agent.md
 development.md
 initial_setup.md
 main_idea.txt
+.directory
+tsconfig.tsbuildinfo

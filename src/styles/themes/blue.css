@@ -8,4 +8,6 @@
   --window-border: #44ccff;
   --menu-bar-bg: #001833;
   --text-cursor: #44ccff;
+  --text-cursor-glow: 0 0 4px #44ccff;
+  --phosphor-glow-strong: 0 0 8px rgba(68, 204, 255, 0.4), 0 0 16px rgba(68, 204, 255, 0.1);
 }
