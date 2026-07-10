@@ -75,19 +75,20 @@ export function Desktop() {
   }, [restoreWindow, focusWindow]);
 
   return (
-    <div className={styles.desktop}>
+    <div className={styles.desktop} role="application" aria-label="Desktop">
       <Wallpaper />
       <MenuBar />
       <IconGrid />
-      <div className={styles.windowLayer}>
+      <div className={styles.windowLayer} role="region" aria-label="Windows">
         <WindowManager />
       </div>
-      <div className={styles.taskbar}>
+      <div className={styles.taskbar} role="toolbar" aria-label="Window taskbar">
         {Object.values(windows).map((w) => (
           <button
             key={w.id}
             className={`${styles.taskbarItem} ${w.isMinimized ? styles.taskbarItemMinimized : ''}`}
             onClick={() => handleTaskbarClick(w.id, w.isMinimized)}
+            aria-label={`${w.title}${w.isMinimized ? ' (minimized)' : ''}`}
           >
             {w.title}
           </button>

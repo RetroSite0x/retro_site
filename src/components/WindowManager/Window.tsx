@@ -16,6 +16,7 @@ interface WindowProps {
 }
 
 export function Window({ win }: WindowProps) {
+  const focusedId = useWindowsStore((s) => s.focusedId);
   const focusWindow = useWindowsStore((s) => s.focusWindow);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -26,6 +27,8 @@ export function Window({ win }: WindowProps) {
     // (terminal hidden input, file viewer, etc.) so keystrokes land
     contentRef.current?.querySelector<HTMLElement>('input, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
   }, [focusWindow, win.id, win.isMinimized]);
+
+  const isFocused = focusedId === win.id;
 
   const renderContent = () => {
     switch (win.content.type) {
@@ -52,7 +55,7 @@ export function Window({ win }: WindowProps) {
 
   return (
     <div
-      className={styles.window}
+      className={`${styles.window}${isFocused ? ` ${styles.windowFocused}` : ''}`}
       style={{
         left: win.x,
         top: win.y,
@@ -62,6 +65,9 @@ export function Window({ win }: WindowProps) {
         display: win.isMinimized ? 'none' : undefined,
       }}
       onPointerDown={handlePointerDown}
+      role="dialog"
+      aria-label={win.title}
+      aria-modal="false"
     >
       <TitleBar windowId={win.id} title={win.title} />
       <div ref={contentRef} className={styles.content}>

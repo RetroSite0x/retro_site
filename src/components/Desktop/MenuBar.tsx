@@ -69,6 +69,15 @@ export function MenuBar() {
     }
   }, []);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setOpenMenu(null);
+      // Return focus to the menu bar trigger
+      const active = menuBarRef.current?.querySelector<HTMLElement>(`.${styles.menuItemActive}, .${styles.menuItem}`);
+      active?.focus();
+    }
+  }, []);
+
   useEffect(() => {
     if (openMenu) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -171,33 +180,39 @@ export function MenuBar() {
   };
 
   return (
-    <div className={styles.menuBar} ref={menuBarRef}>
+    <div className={styles.menuBar} ref={menuBarRef} role="menubar" aria-label="Application menu" onKeyDown={handleKeyDown}>
       <div className={styles.menuLeft}>
         {Object.entries(menus).map(([key, menu]) => (
-          <div key={key} className={styles.menuItemWrapper}>
+          <div key={key} className={styles.menuItemWrapper} role="none">
             <span
               className={`${styles.menuItem} ${openMenu === key ? styles.menuItemActive : ''}`}
               onClick={() => setOpenMenu(openMenu === key ? null : key)}
+              role="menuitem"
+              tabIndex={0}
+              aria-haspopup="true"
+              aria-expanded={openMenu === key}
             >
               {menu.label}
             </span>
             {openMenu === key && (
-              <div className={styles.settingsDropdown}>
+              <div className={styles.settingsDropdown} role="menu" aria-label={menu.label}>
                 {menu.items.map((item, i) => {
                   if (item.separator) {
-                    return <div key={i} className={styles.dropdownSeparator} />;
+                    return <div key={i} className={styles.dropdownSeparator} role="separator" />;
                   }
                   if (item.sub) {
                     return (
-                      <div key={i} className={styles.settingsItemWithSub}>
-                        <span className={styles.settingsLabel}>{item.label}</span>
-                        <span className={styles.settingsArrow}>&#9654;</span>
-                        <div className={styles.dropdownSub}>
+                      <div key={i} className={styles.settingsItemWithSub} role="none">
+                        <span className={styles.settingsLabel} role="menuitem" aria-haspopup="true">{item.label}</span>
+                        <span className={styles.settingsArrow} aria-hidden="true">&#9654;</span>
+                        <div className={styles.dropdownSub} role="menu" aria-label={item.label}>
                           {item.sub.map((s, j) => (
                             <div
                               key={j}
                               className={styles.dropdownItem}
                               onClick={() => handleAction(s.action)}
+                              role="menuitem"
+                              tabIndex={-1}
                             >
                               <span style={{ color: s.active ? 'var(--phosphor)' : 'var(--phosphor-dim)', fontFamily: 'var(--font-ui)', fontSize: 12 }}>
                                 {s.active ? '> ' : '  '}{s.label}
@@ -214,6 +229,8 @@ export function MenuBar() {
                         key={i}
                         className={styles.settingsItem}
                         onClick={() => handleAction(item.action)}
+                        role="menuitem"
+                        tabIndex={-1}
                       >
                         <span className={styles.settingsLabel}>{item.label}</span>
                         <span className={styles.settingsActive}>{item.toggle}</span>
@@ -225,6 +242,8 @@ export function MenuBar() {
                       key={i}
                       className={styles.settingsItem}
                       onClick={() => handleAction(item.action)}
+                      role="menuitem"
+                      tabIndex={-1}
                     >
                       <span className={styles.settingsLabel}>{item.label}</span>
                     </div>
@@ -236,7 +255,7 @@ export function MenuBar() {
         ))}
       </div>
       <div className={styles.menuRight}>
-        <span className={styles.clock}>{clock}</span>
+        <span className={styles.clock} aria-label="Current date">{clock}</span>
       </div>
     </div>
   );

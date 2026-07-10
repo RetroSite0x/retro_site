@@ -8,6 +8,13 @@
   pointer-events: auto;
   min-width: 300px;
   min-height: 150px;
+  box-shadow: var(--phosphor-glow);
+}
+
+/* Focused window gets stronger glow */
+.windowFocused {
+  box-shadow: var(--phosphor-glow-strong);
+  z-index: 100;
 }
 
 /* Title Bar */
@@ -29,6 +36,7 @@
   font-size: 12px;
   color: var(--phosphor);
   padding-left: 4px;
+  letter-spacing: 0.3px;
 }
 
 .controls {
@@ -50,11 +58,17 @@
   font-family: var(--font-ui);
   padding: 0;
   line-height: 1;
+  transition: background 0.15s, color 0.15s;
 }
 
 .controlBtn:hover {
   background: var(--phosphor);
   color: var(--phosphor-bg);
+}
+
+.controlBtn:focus-visible {
+  outline: 1px solid var(--phosphor);
+  outline-offset: -2px;
 }
 
 /* Window Content */
@@ -134,4 +148,30 @@
   width: 10px;
   height: 10px;
   cursor: sw-resize;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .window {
+    min-width: 240px;
+    min-height: 120px;
+  }
+  .titleText {
+    font-size: 11px;
+  }
+  .controlBtn {
+    width: 16px;
+    height: 14px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 480px) {
+  .window {
+    min-width: 180px;
+    min-height: 100px;
+  }
+  .titleText {
+    font-size: 10px;
+  }
 }
