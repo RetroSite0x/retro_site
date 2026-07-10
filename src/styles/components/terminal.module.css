@@ -4,21 +4,24 @@
   background: var(--phosphor-bg);
   color: var(--phosphor);
   font-family: var(--font-terminal);
-  font-size: 16px;
-  line-height: 1.4;
-  padding: 8px;
+  font-size: var(--terminal-font-size, 18px);
+  line-height: var(--terminal-line-height, 1.5);
+  padding: var(--terminal-padding, 12px);
   overflow-y: auto;
   overflow-x: hidden;
+  letter-spacing: 0.5px;
 }
 
 .output {
   min-height: 0;
+  padding-bottom: var(--space-xs, 4px);
 }
 
 .inputLine {
   display: flex;
   align-items: center;
   white-space: nowrap;
+  margin-bottom: 1px;
 }
 
 .prompt {
@@ -27,25 +30,48 @@
   user-select: none;
 }
 
+/* Hostname portion highlighted, user@host dimmer */
+.promptUser {
+  color: var(--phosphor);
+  font-weight: bold;
+}
+
+.promptHost {
+  color: var(--phosphor-dim);
+}
+
+.promptPath {
+  color: var(--phosphor);
+  font-weight: bold;
+}
+
+.promptSeparator {
+  color: var(--phosphor-dim);
+}
+
 .inputText {
   color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
 }
 
 .outputLine {
   white-space: pre-wrap;
   word-break: break-all;
+  margin-bottom: 1px;
 }
 
 .outputPre {
   font-family: var(--font-terminal);
-  font-size: 16px;
+  font-size: var(--terminal-font-size, 18px);
   margin: 0;
   white-space: pre-wrap;
+  line-height: var(--terminal-line-height, 1.5);
 }
 
 .errorLine {
   color: #ff4444;
   white-space: pre-wrap;
+  text-shadow: 0 0 4px rgba(255, 68, 68, 0.3);
 }
 
 .systemLine {
@@ -54,13 +80,71 @@
   white-space: pre-wrap;
 }
 
+/* Improved cursor — smoother blink with glow */
 .cursor {
   display: inline-block;
-  width: 8px;
-  height: 1.2em;
+  width: 10px;
+  height: 1.15em;
   background: var(--text-cursor);
-  animation: blink 1s step-end infinite;
+  animation: blink 1.1s step-end infinite;
   vertical-align: text-bottom;
+  box-shadow: var(--text-cursor-glow, 0 0 4px var(--text-cursor));
+}
+
+/* Autocomplete suggestions */
+.suggestions {
+  color: var(--phosphor-dim);
+  margin-top: 2px;
+  font-size: 0.9em;
+  padding-left: var(--space-md, 16px);
+}
+
+/* URL links in output */
+.outputLink {
+  color: var(--phosphor);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  cursor: pointer;
+}
+.outputLink:hover {
+  text-shadow: var(--phosphor-glow);
+}
+
+/* Command separator */
+.separator {
+  border-top: 1px solid var(--phosphor-dim);
+  margin: 4px 0;
+  opacity: 0.3;
+}
+
+/* Directory listing colors — ls-style */
+.dirEntry {
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.dirDir {
+  color: var(--phosphor);
+  font-weight: bold;
+}
+
+.dirFile {
+  color: var(--phosphor-dim);
+}
+
+.dirExec {
+  color: var(--phosphor);
+}
+
+.dirLink {
+  color: var(--phosphor);
+  text-decoration: underline;
+  font-style: italic;
+}
+
+.dirHidden {
+  color: var(--phosphor-dim);
+  opacity: 0.7;
 }
 
 .hiddenInput {

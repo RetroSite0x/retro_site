@@ -18,7 +18,12 @@ export function BiosOutput({ steps, onSkip }: BiosOutputProps) {
         {!onSkip && <span className={styles.cursor}>_</span>}
       </div>
       {onSkip && (
-        <div className={styles.hint}>Click to skip...</div>
+        <>
+          <div className={styles.hint}>Press any key or click to skip...</div>
+          <button className={styles.skipButton} onClick={(e) => { e.stopPropagation(); onSkip(); }} autoFocus>
+            SKIP &gt;&gt;
+          </button>
+        </>
       )}
     </div>
   );

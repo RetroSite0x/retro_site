@@ -14,31 +14,57 @@
 .content {
   max-width: 800px;
   width: 100%;
-  padding: 40px;
+  padding: var(--space-xl, 40px);
   border: 2px solid var(--phosphor-dim);
   font-size: 20px;
-  line-height: 1.35;
+  line-height: 1.5;
+  text-shadow: var(--phosphor-glow);
 }
 
 .line {
   white-space: pre-wrap;
-  min-height: 1.2em;
+  min-height: 1.3em;
+  letter-spacing: 0.3px;
+}
+
+.line:last-child {
+  min-height: 0;
 }
 
 .info    { color: var(--phosphor); }
-.success { color: var(--phosphor); }
+.success { color: var(--phosphor); text-shadow: var(--phosphor-glow); }
 .warning { color: var(--phosphor-dim); }
-.error   { color: #ff4444; }
+.error   { color: #ff4444; text-shadow: 0 0 4px rgba(255, 68, 68, 0.3); }
 
 .cursor {
   animation: blink 1s step-end infinite;
+  text-shadow: var(--phosphor-glow);
 }
 
 .hint {
-  margin-top: 24px;
+  margin-top: var(--space-lg, 24px);
   color: var(--phosphor-dim);
   font-size: 16px;
   letter-spacing: 1px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.skipButton {
+  margin-top: var(--space-md, 16px);
+  background: transparent;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor-dim);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  padding: 6px 16px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.skipButton:hover {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+  border-color: var(--phosphor);
 }
 
 .loginInput {
@@ -51,9 +77,55 @@
   padding: 2px 4px;
   outline: none;
   width: 220px;
+  caret-color: var(--text-cursor);
+}
+
+.loginInput:focus {
+  border-bottom: 1px solid var(--phosphor);
+  box-shadow: 0 1px 4px var(--phosphor-glow);
+}
+
+.loginLabel {
+  color: var(--phosphor-dim);
+  user-select: none;
+}
+
+.loginError {
+  color: #ff4444;
+  text-shadow: 0 0 4px rgba(255, 68, 68, 0.3);
+  margin-bottom: var(--space-sm, 8px);
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .content {
+    padding: var(--space-lg, 24px);
+    font-size: 18px;
+  }
+  .loginInput {
+    width: 160px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: var(--space-md, 16px);
+    font-size: 15px;
+    border-width: 1px;
+  }
+  .loginInput {
+    width: 120px;
+    font-size: 15px;
+  }
 }
