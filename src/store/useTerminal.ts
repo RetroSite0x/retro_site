@@ -3,6 +3,24 @@ import type { HistoryEntry } from '../types/terminal';
 import { executeCommand } from '../components/Terminal/CommandRegistry';
 
 const MAX_HISTORY = 500;
+const HISTORY_KEY = 'nabilos-terminal-history';
+
+function loadHistory(): string[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(history: string[]) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-200)));
+  } catch {
+    // localStorage full or unavailable — silently ignore
+  }
+}
 
 interface TerminalState {
   history: HistoryEntry[];
@@ -14,8 +32,12 @@ interface TerminalState {
   appendHistory: (entry: HistoryEntry) => void;
   executeCommand: (input: string) => void;
   setInput: (input: string) => void;
+  setCursorPos: (pos: number) => void;
   insertAtCursor: (char: string) => void;
   deleteBeforeCursor: () => void;
+  deleteLineBeforeCursor: () => void;
+  deleteLineAfterCursor: () => void;
+  deleteWordBeforeCursor: () => void;
   moveCursorLeft: () => void;
   moveCursorRight: () => void;
   historyUp: () => void;
@@ -27,7 +49,7 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
   history: [],
   currentInput: '',
   cursorPos: 0,
-  commandHistory: [],
+  commandHistory: loadHistory(),
   historyIndex: -1,
 
   appendHistory: (entry) => {
@@ -44,12 +66,16 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
     store.appendHistory({ type: 'input', content: trimmed, timestamp: Date.now() });
 
     // Add to command history
-    set((s) => ({
-      commandHistory: [...s.commandHistory, trimmed].slice(-100),
-      historyIndex: -1,
-      currentInput: '',
-      cursorPos: 0,
-    }));
+    set((s) => {
+      const updated = [...s.commandHistory, trimmed].slice(-100);
+      saveHistory(updated);
+      return {
+        commandHistory: updated,
+        historyIndex: -1,
+        currentInput: '',
+        cursorPos: 0,
+      };
+    });
 
     // Execute via registry
     const result = executeCommand(trimmed);
@@ -59,6 +85,10 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
   },
 
   setInput: (input: string) => set({ currentInput: input, cursorPos: input.length }),
+
+  setCursorPos: (pos: number) => {
+    set((s) => ({ cursorPos: Math.max(0, Math.min(s.currentInput.length, pos)) }));
+  },
 
   insertAtCursor: (char: string) => {
     set((s) => {
@@ -77,6 +107,39 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
         s.currentInput.slice(0, s.cursorPos - 1) +
         s.currentInput.slice(s.cursorPos);
       return { currentInput: newInput, cursorPos: s.cursorPos - 1 };
+    });
+  },
+
+  deleteLineBeforeCursor: () => {
+    set((s) => {
+      const after = s.currentInput.slice(s.cursorPos);
+      return { currentInput: after, cursorPos: 0 };
+    });
+  },
+
+  deleteLineAfterCursor: () => {
+    set((s) => {
+      const before = s.currentInput.slice(0, s.cursorPos);
+      return { currentInput: before };
+    });
+  },
+
+  deleteWordBeforeCursor: () => {
+    set((s) => {
+      const before = s.currentInput.slice(0, s.cursorPos);
+      const after = s.currentInput.slice(s.cursorPos);
+
+      // Scan backwards to find word boundary
+      let end = before.length - 1;
+
+      // Skip trailing spaces
+      while (end >= 0 && before[end] === ' ') end--;
+
+      // Skip non-space chars (the word)
+      while (end >= 0 && before[end] !== ' ') end--;
+
+      const newBefore = before.slice(0, end + 1);
+      return { currentInput: newBefore + after, cursorPos: newBefore.length };
     });
   },
 
