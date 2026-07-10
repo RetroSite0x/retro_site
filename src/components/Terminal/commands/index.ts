@@ -12,6 +12,33 @@ import { cmd_theme } from './cmd_theme';
 import { cmd_mkdir } from './cmd_mkdir';
 import { cmd_touch } from './cmd_touch';
 
+import { cmd_about } from './cmd_about';
+import { cmd_projects } from './cmd_projects';
+import { cmd_research } from './cmd_research';
+import { cmd_papers } from './cmd_papers';
+import { cmd_datasets } from './cmd_datasets';
+import { cmd_experience } from './cmd_experience';
+import { cmd_skills } from './cmd_skills';
+import { cmd_timeline } from './cmd_timeline';
+import { cmd_resume } from './cmd_resume';
+import { cmd_github } from './cmd_github';
+import { cmd_linkedin } from './cmd_linkedin';
+import { cmd_contact } from './cmd_contact';
+import { cmd_blog } from './cmd_blog';
+import { cmd_tree } from './cmd_tree';
+import { cmd_man } from './cmd_man';
+import { cmd_uptime } from './cmd_uptime';
+import { cmd_hostname } from './cmd_hostname';
+import { cmd_neofetch } from './cmd_neofetch';
+import { cmd_fortune } from './cmd_fortune';
+import { cmd_cowsay } from './cmd_cowsay';
+import { cmd_matrix } from './cmd_matrix';
+import { cmd_htop } from './cmd_htop';
+import { cmd_top } from './cmd_top';
+import { cmd_ping } from './cmd_ping';
+import { cmd_curl } from './cmd_curl';
+import { cmd_weather } from './cmd_weather';
+
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
   registerCommand('ls', cmd_ls);
@@ -25,4 +52,31 @@ export function registerAllCommands() {
   registerCommand('theme', cmd_theme);
   registerCommand('mkdir', cmd_mkdir);
   registerCommand('touch', cmd_touch);
+
+  registerCommand('about', cmd_about);
+  registerCommand('projects', cmd_projects);
+  registerCommand('research', cmd_research);
+  registerCommand('papers', cmd_papers);
+  registerCommand('datasets', cmd_datasets);
+  registerCommand('experience', cmd_experience);
+  registerCommand('skills', cmd_skills);
+  registerCommand('timeline', cmd_timeline);
+  registerCommand('resume', cmd_resume);
+  registerCommand('github', cmd_github);
+  registerCommand('linkedin', cmd_linkedin);
+  registerCommand('contact', cmd_contact);
+  registerCommand('blog', cmd_blog);
+  registerCommand('tree', cmd_tree);
+  registerCommand('man', cmd_man);
+  registerCommand('uptime', cmd_uptime);
+  registerCommand('hostname', cmd_hostname);
+  registerCommand('neofetch', cmd_neofetch);
+  registerCommand('fortune', cmd_fortune);
+  registerCommand('cowsay', cmd_cowsay);
+  registerCommand('matrix', cmd_matrix);
+  registerCommand('htop', cmd_htop);
+  registerCommand('top', cmd_top);
+  registerCommand('ping', cmd_ping);
+  registerCommand('curl', cmd_curl);
+  registerCommand('weather', cmd_weather);
 }
