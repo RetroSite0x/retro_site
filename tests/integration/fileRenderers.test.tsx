@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useWindowsStore } from '../../src/store/useWindows';
 import { useVFSStore } from '../../src/store/useVFS';
 import { INITIAL_TREE } from '../../src/store/vfs-tree';
@@ -9,6 +10,7 @@ import { MarkdownViewer } from '../../src/components/FileRenderers/MarkdownViewe
 import { ConfigViewer } from '../../src/components/FileRenderers/ConfigViewer';
 import { TextViewer } from '../../src/components/FileRenderers/TextViewer';
 import { ImageViewer } from '../../src/components/FileRenderers/ImageViewer';
+import { BrowserViewer } from '../../src/components/WebBrowser/BrowserViewer';
 
 // ---------------------------------------------------------------------------
 // FileViewer dispatcher integration tests
@@ -210,6 +212,20 @@ describe('ImageViewer', () => {
 
     expect(screen.getByText(/File not found/)).toBeDefined();
     expect(screen.getByText(/overview\.jpg/)).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// BrowserViewer direct component tests
+// ---------------------------------------------------------------------------
+describe('BrowserViewer', () => {
+  it('includes the resume bookmark and opens the local pdf path', async () => {
+    render(<BrowserViewer />);
+
+    await userEvent.click(screen.getByText('Resume'));
+
+    expect(screen.getByText(/Opened in new tab:/)).toBeDefined();
+    expect(screen.getByText(/resume-nlp-ml-engineer\.pdf/, { selector: '.launchedUrl' })).toBeDefined();
   });
 });
 

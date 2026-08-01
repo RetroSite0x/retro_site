@@ -311,11 +311,18 @@
   padding: 8px;
 }
 
-.pdfFrame {
+.pdfFrameViewport {
   width: 100%;
   height: 100%;
+  overflow: auto;
+}
+
+.pdfFrame {
+  width: 80%;
+  height: 80%;
   border: 0;
   background: #fff;
+  transform-origin: top left;
 }
 
 .filePre {

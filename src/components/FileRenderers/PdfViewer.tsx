@@ -4,6 +4,8 @@ interface PdfViewerProps {
   filePath: string;
 }
 
+const DEFAULT_ZOOM = 1.25;
+
 export function PdfViewer({ filePath }: PdfViewerProps) {
   return (
     <div className={styles.fileViewer}>
@@ -11,11 +13,14 @@ export function PdfViewer({ filePath }: PdfViewerProps) {
         <span className={styles.filePath}>{filePath}</span>
       </div>
       <div className={styles.fileContent}>
-        <iframe
-          className={styles.pdfFrame}
-          src={filePath}
-          title={filePath}
-        />
+        <div className={styles.pdfFrameViewport}>
+          <iframe
+            className={styles.pdfFrame}
+            style={{ transform: `scale(${DEFAULT_ZOOM})` }}
+            src={filePath}
+            title={filePath}
+          />
+        </div>
       </div>
     </div>
   );

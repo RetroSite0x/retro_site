@@ -15,6 +15,7 @@ const BOOKMARKS: Bookmark[] = [
   { label: 'LinkedIn', url: 'https://linkedin.com/in/ann-naser-nabil', desc: 'professional profile' },
   { label: 'Bitly', url: 'https://bit.ly/m/Ubermensch', desc: 'links & pages' },
   { label: 'arXiv', url: 'https://arxiv.org/search/?query=Ann+Naser+Nabil', desc: 'papers' },
+  { label: 'Resume', url: '/resume-nlp-ml-engineer.pdf', desc: 'open resume in browser' },
 ];
 
 interface BrowserViewerProps {
@@ -30,7 +31,9 @@ export function BrowserViewer({ initialUrl }: BrowserViewerProps) {
     if (!trimmed) return;
 
     let resolved = trimmed;
-    if (!/^https?:\/\//i.test(resolved)) {
+    if (resolved.startsWith('/') || resolved.startsWith('.')) {
+      resolved = new URL(resolved, window.location.origin).href;
+    } else if (!/^https?:\/\//i.test(resolved)) {
       resolved = 'https://' + resolved;
     }
 
