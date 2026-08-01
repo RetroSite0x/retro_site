@@ -75,32 +75,6 @@ SYNOPSIS
 DESCRIPTION
     Clear the terminal screen by removing all previous output.`,
 
-  echo: `ECHO(1)                    User Commands                    ECHO(1)
-
-NAME
-    echo - display a line of text
-
-SYNOPSIS
-    echo [STRING]...
-
-DESCRIPTION
-    Display the given strings on the terminal followed by a newline.
-
-EXAMPLES
-    echo Hello World    Prints "Hello World"
-    echo $PATH          Prints the PATH variable`,
-
-  help: `HELP(1)                    User Commands                    HELP(1)
-
-NAME
-    help - display help information
-
-SYNOPSIS
-    help
-
-DESCRIPTION
-    Display a list of all available commands with brief descriptions.`,
-
   sysinfo: `SYSINFO(1)                    User Commands                    SYSINFO(1)
 
 NAME
@@ -112,21 +86,6 @@ SYNOPSIS
 DESCRIPTION
     Display system and user profile information including
     name, occupation, skills, and status.`,
-
-  grep: `GREP(1)                    User Commands                    GREP(1)
-
-NAME
-    grep - search file contents for patterns
-
-SYNOPSIS
-    grep [PATTERN] [FILE]...
-
-DESCRIPTION
-    Search for PATTERN in each FILE. PATTERN is a regular expression.
-
-EXAMPLES
-    grep "NLP" /home/guest/resume.txt    Find lines containing NLP
-    grep -i "error" /logs/2024.log       Case-insensitive search`,
 
   theme: `THEME(1)                    User Commands                    THEME(1)
 
@@ -322,134 +281,6 @@ DESCRIPTION
     Display the manual page for the specified command.
     If no command is given, show this help message.`,
 
-  uptime: `UPTIME(1)                    User Commands                    UPTIME(1)
-
-NAME
-    uptime - show how long the system has been running
-
-SYNOPSIS
-    uptime
-
-DESCRIPTION
-    Display the current time, system uptime, number of users,
-    and load averages.`,
-
-  hostname: `HOSTNAME(1)                    User Commands                    HOSTNAME(1)
-
-NAME
-    hostname - show or set the system hostname
-
-SYNOPSIS
-    hostname [--ip]
-
-DESCRIPTION
-    Display the system hostname.
-    Use --ip to show the network IP address.`,
-
-  neofetch: `NEOFETCH(1)                    User Commands                    NEOFETCH(1)
-
-NAME
-    neofetch - display system information with ASCII art
-
-SYNOPSIS
-    neofetch
-
-DESCRIPTION
-    Display system information in a neofetch-style format
-    with ASCII art and system details.`,
-
-  fortune: `FORTUNE(1)                    User Commands                    FORTUNE(1)
-
-NAME
-    fortune - display a random fortune
-
-SYNOPSIS
-    fortune
-
-DESCRIPTION
-    Display a random inspirational or humorous quote.`,
-
-  cowsay: `COWSAY(1)                    User Commands                    COWSAY(1)
-
-NAME
-    cowsay - display a cow saying something
-
-SYNOPSIS
-    cowsay [MESSAGE]
-
-DESCRIPTION
-    Display an ASCII art cow saying the given message.
-    If no message is given, the cow says "moo".`,
-
-  matrix: `MATRIX(1)                    User Commands                    MATRIX(1)
-
-NAME
-    matrix - display the Matrix rain effect
-
-SYNOPSIS
-    matrix
-
-DESCRIPTION
-    Display a Matrix-style digital rain animation effect.
-    Runs for approximately 3 seconds.`,
-
-  htop: `HTOP(1)                    User Commands                    HTOP(1)
-
-NAME
-    htop - interactive process viewer
-
-SYNOPSIS
-    htop
-
-DESCRIPTION
-    Display a simulated process viewer similar to htop.`,
-
-  top: `TOP(1)                    User Commands                    TOP(1)
-
-NAME
-    top - display running processes
-
-SYNOPSIS
-    top
-
-DESCRIPTION
-    Display a simulated list of running processes.`,
-
-  ping: `PING(1)                    User Commands                    PING(1)
-
-NAME
-    ping - send ICMP echo requests
-
-SYNOPSIS
-    ping [HOST]
-
-DESCRIPTION
-    Send simulated ICMP echo requests to a host.
-    No actual network activity occurs.`,
-
-  curl: `CURL(1)                    User Commands                    CURL(1)
-
-NAME
-    curl - transfer data from URLs
-
-SYNOPSIS
-    curl [URL]
-
-DESCRIPTION
-    Simulate fetching data from URLs.
-    No actual network activity occurs.`,
-
-  weather: `WEATHER(1)                    User Commands                    WEATHER(1)
-
-NAME
-    weather - display weather information
-
-SYNOPSIS
-    weather
-
-DESCRIPTION
-    Display current weather for Dhaka, Bangladesh.
-    Uses simulated data.`,
 };
 
 export const cmd_man: CommandHandler = (args) => {

@@ -6,11 +6,7 @@ import { cmd_cat } from './cmd_cat';
 import { cmd_clear } from './cmd_clear';
 import { cmd_sysinfo } from './cmd_sysinfo';
 import { cmd_pwd } from './cmd_pwd';
-import { cmd_echo } from './cmd_echo';
-import { cmd_grep } from './cmd_grep';
 import { cmd_theme } from './cmd_theme';
-import { cmd_mkdir } from './cmd_mkdir';
-import { cmd_touch } from './cmd_touch';
 
 import { cmd_about } from './cmd_about';
 import { cmd_projects } from './cmd_projects';
@@ -27,17 +23,6 @@ import { cmd_contact } from './cmd_contact';
 import { cmd_blog } from './cmd_blog';
 import { cmd_tree } from './cmd_tree';
 import { cmd_man } from './cmd_man';
-import { cmd_uptime } from './cmd_uptime';
-import { cmd_hostname } from './cmd_hostname';
-import { cmd_neofetch } from './cmd_neofetch';
-import { cmd_fortune } from './cmd_fortune';
-import { cmd_cowsay } from './cmd_cowsay';
-import { cmd_matrix } from './cmd_matrix';
-import { cmd_htop } from './cmd_htop';
-import { cmd_top } from './cmd_top';
-import { cmd_ping } from './cmd_ping';
-import { cmd_curl } from './cmd_curl';
-import { cmd_weather } from './cmd_weather';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -47,11 +32,7 @@ export function registerAllCommands() {
   registerCommand('clear', cmd_clear);
   registerCommand('sysinfo', cmd_sysinfo);
   registerCommand('pwd', cmd_pwd);
-  registerCommand('echo', cmd_echo);
-  registerCommand('grep', cmd_grep);
   registerCommand('theme', cmd_theme);
-  registerCommand('mkdir', cmd_mkdir);
-  registerCommand('touch', cmd_touch);
 
   registerCommand('about', cmd_about);
   registerCommand('projects', cmd_projects);
@@ -68,15 +49,4 @@ export function registerAllCommands() {
   registerCommand('blog', cmd_blog);
   registerCommand('tree', cmd_tree);
   registerCommand('man', cmd_man);
-  registerCommand('uptime', cmd_uptime);
-  registerCommand('hostname', cmd_hostname);
-  registerCommand('neofetch', cmd_neofetch);
-  registerCommand('fortune', cmd_fortune);
-  registerCommand('cowsay', cmd_cowsay);
-  registerCommand('matrix', cmd_matrix);
-  registerCommand('htop', cmd_htop);
-  registerCommand('top', cmd_top);
-  registerCommand('ping', cmd_ping);
-  registerCommand('curl', cmd_curl);
-  registerCommand('weather', cmd_weather);
 }
