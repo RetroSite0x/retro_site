@@ -6,7 +6,7 @@ const FORTUNES = [
   'Any sufficiently advanced technology is indistinguishable from magic. \u2014 Arthur C. Clarke',
   'The best error message is the one that never shows up. \u2014 Thomas Fuchs',
   'Code is like humor. When you have to explain it, it\'s bad. \u2014 Cory House',
-  'Programming is not about typing, it\'s about thinking. \u2014 Rich Hickey',
+  'You have power over your mind, not outside events. \u2014 Marcus Aurelius',
   'Simplicity is the soul of efficiency. \u2014 Austin Freeman',
   'Make it work, make it right, make it fast. \u2014 Kent Beck',
   'The most dangerous phrase is: We\'ve always done it this way. \u2014 Grace Hopper',

@@ -5,11 +5,12 @@ import { TerminalInput } from './TerminalInput';
 import styles from '../../styles/components/terminal.module.css';
 
 const MOTD = `
-NABIL/86 v2.4 — Bangla NLP Edition
-====================================
+AI ENGINEER WORKSTATION v2.4
+============================
 Last login: ${new Date().toLocaleString()} from 192.168.1.42
 
 Type 'help' for available commands.
+Type 'projects' to view AI, ML, and systems work.
 Type 'about' to learn about Ann Naser Nabil.
 `;
 
