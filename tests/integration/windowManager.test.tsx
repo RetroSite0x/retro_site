@@ -303,6 +303,33 @@ describe('Window component', () => {
 
     expect(useWindowsStore.getState().windows[id].isMinimized).toBe(true);
   });
+
+  it('maximize button toggles window size and restore state', async () => {
+    const id = useWindowsStore.getState().openWindow({
+      title: 'test',
+      content: { type: 'terminal' },
+      width: 420,
+      height: 260,
+    });
+
+    render(<Window win={useWindowsStore.getState().windows[id]} />);
+
+    await userEvent.click(screen.getByLabelText('Maximize'));
+
+    const maximized = useWindowsStore.getState().windows[id];
+    expect(maximized.isMaximized).toBe(true);
+    expect(maximized.x).toBe(0);
+    expect(maximized.y).toBe(28);
+    expect(maximized.width).toBe(window.innerWidth);
+    expect(maximized.height).toBe(window.innerHeight - 28);
+
+    await userEvent.click(screen.getByLabelText('Maximize'));
+
+    const restored = useWindowsStore.getState().windows[id];
+    expect(restored.isMaximized).toBe(false);
+    expect(restored.width).toBe(420);
+    expect(restored.height).toBe(260);
+  });
 });
 
 describe('DesktopIcon', () => {

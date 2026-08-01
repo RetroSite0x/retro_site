@@ -15,6 +15,7 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
   const closeWindow = useWindowsStore((s) => s.closeWindow);
 
   const handlePointerDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest(`.${styles.controls}`)) return;
     focusWindow(windowId);
     onPointerDown(e);
   };
@@ -25,6 +26,8 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
       <div className={styles.controls}>
         <button
           className={styles.controlBtn}
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); minimizeWindow(windowId); }}
           aria-label="Minimize"
         >
@@ -32,6 +35,8 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
         </button>
         <button
           className={styles.controlBtn}
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); maximizeWindow(windowId); }}
           aria-label="Maximize"
         >
@@ -39,6 +44,8 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
         </button>
         <button
           className={styles.controlBtn}
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => { e.stopPropagation(); closeWindow(windowId); }}
           aria-label="Close"
         >
