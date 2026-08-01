@@ -24,7 +24,7 @@ export function Window({ win }: WindowProps) {
     if (win.isMinimized) return;
     focusWindow(win.id);
     // Restore focus to the first focusable element inside the window
-    // (terminal hidden input, file viewer, etc.) so keystrokes land
+    // (terminal input, file viewer, etc.) so keystrokes land
     contentRef.current?.querySelector<HTMLElement>('input, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
   }, [focusWindow, win.id, win.isMinimized]);
 

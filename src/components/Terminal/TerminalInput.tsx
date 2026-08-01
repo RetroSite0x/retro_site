@@ -228,13 +228,17 @@ export function TerminalInput() {
         <span className={styles.cursor}>&nbsp;</span>
         {currentInput.slice(cursorPos)}
       </span>
-      {/* Hidden input for focus management */}
       <input
         ref={inputRef}
         type="text"
-        className={styles.hiddenInput}
+        className={styles.terminalInput}
+        value={currentInput}
+        onChange={() => {}}
         onKeyDown={handleKeyDown}
-        autoFocus
+        autoComplete="off"
+        autoCapitalize="off"
+        autoCorrect="off"
+        spellCheck={false}
         aria-label="Terminal input"
       />
     </div>
