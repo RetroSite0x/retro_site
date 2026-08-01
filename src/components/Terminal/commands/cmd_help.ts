@@ -17,8 +17,8 @@ export const cmd_help: CommandHandler = () => {
     '',
     '  whoami     Display current user',
     '  uname      Print system info',
-    '  exit       Logout',
-    '  reboot     Reboot system',
+    '  exit       End terminal session',
+    '  reboot     Refresh desktop session',
   ];
 
   return {

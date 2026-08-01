@@ -12,8 +12,9 @@ export function useDrag({ windowId }: UseDragOptions) {
     const win = useWindowsStore.getState().windows[windowId];
     if (!win) return;
 
+    const captureTarget = e.currentTarget as HTMLElement;
     offsetRef.current = { x: e.clientX - win.x, y: e.clientY - win.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    captureTarget.setPointerCapture?.(e.pointerId);
 
     const handleMove = (e: PointerEvent) => {
       const store = useWindowsStore.getState();
@@ -34,7 +35,7 @@ export function useDrag({ windowId }: UseDragOptions) {
     };
 
     const handleUp = (e: PointerEvent) => {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      captureTarget.releasePointerCapture?.(e.pointerId);
       document.removeEventListener('pointermove', handleMove);
       document.removeEventListener('pointerup', handleUp);
     };

@@ -10,28 +10,28 @@ import { soundEngine } from '../../lib/sound';
  */
 export function SoundEngine() {
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
-  const bootPhase = useSystemStore((s) => s.bootPhase);
-  const hasPlayed = useRef(false);
+  const hasUserGesture = useRef(false);
   const windowCount = useRef(Object.keys(useWindowsStore.getState().windows).length);
 
-  // Play boot sequence when entering boot phase
   useEffect(() => {
-    if (bootPhase === 'boot' && soundEnabled && !hasPlayed.current) {
-      hasPlayed.current = true;
-      soundEngine.bootSequence();
-    }
+    const markUserGesture = () => {
+      hasUserGesture.current = true;
+    };
 
-    // Reset flag when returning to bios (reboot)
-    if (bootPhase === 'bios') {
-      hasPlayed.current = false;
-    }
-  }, [bootPhase, soundEnabled]);
+    window.addEventListener('pointerdown', markUserGesture, { once: true });
+    window.addEventListener('keydown', markUserGesture, { once: true });
+
+    return () => {
+      window.removeEventListener('pointerdown', markUserGesture);
+      window.removeEventListener('keydown', markUserGesture);
+    };
+  }, []);
 
   // Play sounds when windows open/close
   useEffect(() => {
     const unsub = useWindowsStore.subscribe((state) => {
       const currentCount = Object.keys(state.windows).length;
-      if (soundEnabled) {
+      if (soundEnabled && hasUserGesture.current) {
         if (currentCount > windowCount.current) {
           soundEngine.windowOpen();
         } else if (currentCount < windowCount.current) {

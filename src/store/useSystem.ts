@@ -26,8 +26,8 @@ const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'desktop'];
 export const useSystemStore = create<SystemState>()(
   persist(
     (set, get) => ({
-      bootPhase: 'bios',
-      isLoggedIn: false,
+      bootPhase: 'desktop',
+      isLoggedIn: true,
       theme: 'green',
       soundEnabled: true,
       crtFlicker: true,
@@ -52,7 +52,7 @@ export const useSystemStore = create<SystemState>()(
       setVolume: (v: number) => set({ volume: Math.max(0, Math.min(1, v)) }),
 
       logout: () => {
-        set({ isLoggedIn: false, bootPhase: 'login' });
+        set({ isLoggedIn: true, bootPhase: 'desktop', username: 'guest' });
       },
     }),
     {

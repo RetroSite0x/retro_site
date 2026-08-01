@@ -125,8 +125,8 @@ function handleEasterEggs(input: string): CommandResult | null {
   }
 
   if (lower === 'reboot') {
-    useSystemStore.setState({ bootPhase: 'bios', isLoggedIn: false });
-    return { type: 'system', content: 'Rebooting...' };
+    useSystemStore.setState({ bootPhase: 'desktop', isLoggedIn: true });
+    return { type: 'system', content: 'Desktop session refreshed.' };
   }
 
   return null;

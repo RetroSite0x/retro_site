@@ -30,7 +30,8 @@ export function useResize({ windowId, direction }: UseResizeOptions) {
       mouseY: e.clientY,
     };
 
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    const captureTarget = e.currentTarget as HTMLElement;
+    captureTarget.setPointerCapture?.(e.pointerId);
 
     const handleMove = (e: PointerEvent) => {
       const store = useWindowsStore.getState();
@@ -60,7 +61,7 @@ export function useResize({ windowId, direction }: UseResizeOptions) {
     };
 
     const handleUp = (e: PointerEvent) => {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      captureTarget.releasePointerCapture?.(e.pointerId);
       document.removeEventListener('pointermove', handleMove);
       document.removeEventListener('pointerup', handleUp);
     };

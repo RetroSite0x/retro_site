@@ -42,7 +42,6 @@ export function MenuBar() {
   const setTheme = useSystemStore((s) => s.setTheme);
   const toggleSound = useSystemStore((s) => s.toggleSound);
   const toggleFlicker = useSystemStore((s) => s.toggleFlicker);
-  const logout = useSystemStore((s) => s.logout);
 
   const tree = useVFSStore((s) => s.tree);
   const openWindow = useWindowsStore((s) => s.openWindow);
@@ -126,8 +125,6 @@ export function MenuBar() {
       label: 'FILE',
       items: [
         { label: 'New Terminal', action: openTerminal },
-        { label: '', separator: true },
-        { label: 'Logout', action: logout },
       ],
     },
     EDIT: {
