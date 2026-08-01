@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TerminalInput } from '../../src/components/Terminal/TerminalInput';
 import { registerAllCommands } from '../../src/components/Terminal/commands';
@@ -37,5 +37,14 @@ describe('TerminalInput', () => {
     await user.keyboard('{Enter}');
     expect(useTerminalStore.getState().currentInput).toBe('');
     expect(useTerminalStore.getState().history.some((entry) => entry.content.includes('Available commands:'))).toBe(true);
+  });
+
+  it('accepts keyboard input even when the input is not focused', () => {
+    render(<TerminalInput />);
+
+    fireEvent.keyDown(window, { key: 'l' });
+    fireEvent.keyDown(window, { key: 's' });
+
+    expect(useTerminalStore.getState().currentInput).toBe('ls');
   });
 });

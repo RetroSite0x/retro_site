@@ -113,8 +113,14 @@ export function TerminalInput() {
     }
   }, []);
 
+  const isEditableElement = (el: Element | null) => {
+    if (!el) return false;
+    const tag = el.tagName;
+    return tag === 'INPUT' || tag === 'TEXTAREA' || (el as HTMLElement).isContentEditable;
+  };
+
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' | 'altKey' | 'preventDefault'>) => {
       // ── Ctrl+ shortcuts ──
       if (e.ctrlKey && !e.metaKey && !e.altKey) {
         switch (e.key) {
@@ -220,6 +226,18 @@ export function TerminalInput() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const handleWindowKeyDown = (e: KeyboardEvent) => {
+      if (isEditableElement(document.activeElement)) {
+        return;
+      }
+      handleKeyDown(e);
+    };
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+    return () => window.removeEventListener('keydown', handleWindowKeyDown);
+  }, [handleKeyDown]);
+
   return (
     <div className={styles.inputLine} onClick={() => inputRef.current?.focus()}>
       <span className={styles.prompt}>{prompt}</span>
@@ -233,7 +251,12 @@ export function TerminalInput() {
         type="text"
         className={styles.terminalInput}
         value={currentInput}
-        onChange={() => {}}
+        onChange={(e) => {
+          const nextValue = e.currentTarget.value;
+          if (nextValue !== currentInput) {
+            useTerminalStore.getState().setInput(nextValue);
+          }
+        }}
         onKeyDown={handleKeyDown}
         autoComplete="off"
         autoCapitalize="off"
