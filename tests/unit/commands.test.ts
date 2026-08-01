@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { registerCommand, executeCommand } from '../../src/components/Terminal/CommandRegistry';
+import { cmd_help } from '../../src/components/Terminal/commands/cmd_help';
 import { cmd_ls } from '../../src/components/Terminal/commands/cmd_ls';
 import { cmd_cd } from '../../src/components/Terminal/commands/cmd_cd';
 import { cmd_cat } from '../../src/components/Terminal/commands/cmd_cat';
@@ -11,6 +12,7 @@ import { INITIAL_TREE } from '../../src/store/vfs-tree';
 describe('Commands', () => {
   beforeEach(() => {
     // Register commands
+    registerCommand('help', cmd_help);
     registerCommand('ls', cmd_ls);
     registerCommand('cd', cmd_cd);
     registerCommand('cat', cmd_cat);
@@ -51,6 +53,15 @@ describe('Commands', () => {
   });
 
   describe('ls', () => {
+    it('lists available commands when run without arguments', () => {
+      const result = executeCommand('ls');
+      expect(result).not.toBeNull();
+      expect(result!.type).toBe('output');
+      expect(result!.content).toContain('Available commands:');
+      expect(result!.content).toContain('help');
+      expect(result!.content).toContain('ls');
+    });
+
     it('lists directory contents', () => {
       const result = executeCommand('ls /tmp');
       expect(result).not.toBeNull();
