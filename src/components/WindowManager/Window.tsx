@@ -6,6 +6,7 @@ import { Terminal } from '../Terminal/Terminal';
 import { DirectoryViewer } from '../Desktop/DirectoryViewer';
 import { FileViewer } from '../FileRenderers/FileViewer';
 import { ImageViewer } from '../FileRenderers/ImageViewer';
+import { PdfViewer } from '../FileRenderers/PdfViewer';
 import { BrowserViewer } from '../WebBrowser/BrowserViewer';
 import { FileManager } from '../FileManager/FileManager';
 import type { WindowState } from '../../types/window';
@@ -40,6 +41,8 @@ export function Window({ win }: WindowProps) {
         return <FileViewer filePath={win.content.filePath} />;
       case 'imageViewer':
         return <ImageViewer filePath={win.content.filePath} />;
+      case 'pdfViewer':
+        return <PdfViewer filePath={win.content.filePath} />;
       case 'browser':
         return <BrowserViewer initialUrl={win.content.url} />;
       case 'fileManager':

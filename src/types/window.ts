@@ -3,6 +3,7 @@ export type WindowContent =
   | { type: 'terminal' }
   | { type: 'directoryViewer'; path: string }
   | { type: 'imageViewer'; filePath: string }
+  | { type: 'pdfViewer'; filePath: string }
   | { type: 'browser'; url?: string }
   | { type: 'fileManager' };
 

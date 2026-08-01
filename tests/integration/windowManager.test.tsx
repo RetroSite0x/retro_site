@@ -7,6 +7,7 @@ import { Window } from '../../src/components/WindowManager/Window';
 import { DesktopIcon } from '../../src/components/Desktop/DesktopIcon';
 import { IconGrid } from '../../src/components/Desktop/IconGrid';
 import { DirectoryViewer } from '../../src/components/Desktop/DirectoryViewer';
+import { PdfViewer } from '../../src/components/FileRenderers/PdfViewer';
 
 
 // ---------------------------------------------------------------------------
@@ -366,6 +367,20 @@ describe('IconGrid → Window open integration', () => {
     expect(termWindow).toBeDefined();
     expect(termWindow!.content).toEqual({ type: 'terminal' });
   });
+
+  it('opens the resume PDF on double-clicking the resume icon', async () => {
+    render(<IconGrid />);
+
+    await userEvent.dblClick(screen.getByText('resume'));
+
+    const windows = useWindowsStore.getState().windows;
+    const resumeWindow = Object.values(windows).find((w) => w.title === 'resume');
+    expect(resumeWindow).toBeDefined();
+    expect(resumeWindow!.content).toEqual({
+      type: 'pdfViewer',
+      filePath: '/resume-nlp-ml-engineer.pdf',
+    });
+  });
 });
 
 describe('DirectoryViewer', () => {
@@ -419,6 +434,18 @@ describe('Window content type rendering', () => {
     render(<Window win={useWindowsStore.getState().windows[id]} />);
     // The file content should be rendered
     expect(screen.getByText('/home/guest/about.txt')).toBeDefined();
+  });
+
+  it('renders pdf viewer for pdfViewer windows', () => {
+    render(<PdfViewer filePath="/resume-nlp-ml-engineer.pdf" />);
+    expect(screen.getByTitle('/resume-nlp-ml-engineer.pdf')).toBeDefined();
+
+    const id = useWindowsStore.getState().openWindow({
+      title: 'resume',
+      content: { type: 'pdfViewer', filePath: '/resume-nlp-ml-engineer.pdf' },
+    });
+
+    render(<Window win={useWindowsStore.getState().windows[id]} />);
   });
 
   it('renders error for unknown content type', () => {

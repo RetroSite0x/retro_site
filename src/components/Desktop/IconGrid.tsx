@@ -7,6 +7,7 @@ interface DesktopEntry {
   label: string;
   icon: string;
   path: string;
+  kind?: 'directory' | 'pdf';
 }
 
 const GRID_COLS = 2;
@@ -23,6 +24,7 @@ const DESKTOP_ENTRIES: DesktopEntry[] = [
   { label: 'music', icon: '[📁]', path: '/music' },
   { label: 'art', icon: '[📁]', path: '/art' },
   { label: 'blog', icon: '[📝]', path: '/blog' },
+  { label: 'resume', icon: '[📄]', path: '/resume-nlp-ml-engineer.pdf', kind: 'pdf' },
   { label: 'secret', icon: '[📁]', path: '/secret' },
   { label: 'trash', icon: '[🗑]', path: '/trash' },
 ];
@@ -39,6 +41,16 @@ export function IconGrid() {
   const [draggedLabel, setDraggedLabel] = useState<string | null>(null);
 
   const handleOpen = useCallback((entry: DesktopEntry) => {
+    if (entry.kind === 'pdf') {
+      openWindow({
+        title: entry.label,
+        content: { type: 'pdfViewer', filePath: entry.path },
+        width: 760,
+        height: 560,
+      });
+      return;
+    }
+
     openWindow({
       title: entry.label,
       content: { type: 'directoryViewer', path: entry.path },
