@@ -4,6 +4,7 @@ import { useSystemStore } from '../../store/useSystem';
 import { useVFSStore } from '../../store/useVFS';
 import { useWindowsStore } from '../../store/useWindows';
 import type { PhosphorTheme } from '../../types/system';
+import type { MotionMode } from '../../store/useSystem';
 
 const THEMES: { value: PhosphorTheme; label: string }[] = [
   { value: 'green', label: 'Green' },
@@ -48,9 +49,11 @@ export function MenuBar() {
   const theme = useSystemStore((s) => s.theme);
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
   const crtFlicker = useSystemStore((s) => s.crtFlicker);
+  const motion = useSystemStore((s) => s.motion);
   const setTheme = useSystemStore((s) => s.setTheme);
   const toggleSound = useSystemStore((s) => s.toggleSound);
   const toggleFlicker = useSystemStore((s) => s.toggleFlicker);
+  const setMotion = useSystemStore((s) => s.setMotion);
   const logout = useSystemStore((s) => s.logout);
 
   const tree = useVFSStore((s) => s.tree);
@@ -139,6 +142,12 @@ export function MenuBar() {
     [closeAll]
   );
 
+  const cycleMotion = useCallback(() => {
+    const order: MotionMode[] = ['auto', 'on', 'off'];
+    const idx = order.indexOf(motion);
+    setMotion(order[(idx + 1) % order.length]);
+  }, [motion, setMotion]);
+
   const openDirWindow = useCallback(
     (path: string, title: string) => {
       openWindow({ title, content: { type: 'directoryViewer', path } });
@@ -214,6 +223,11 @@ export function MenuBar() {
             toggle: crtFlicker ? 'ON' : 'OFF',
             action: toggleFlicker,
           },
+          {
+            label: 'Motion',
+            toggle: motion.toUpperCase(),
+            action: cycleMotion,
+          },
         ],
       },
     }),
@@ -225,9 +239,11 @@ export function MenuBar() {
       theme,
       soundEnabled,
       crtFlicker,
+      motion,
       setTheme,
       toggleSound,
       toggleFlicker,
+      cycleMotion,
     ]
   );
 

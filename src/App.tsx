@@ -8,6 +8,7 @@ import { CRTOverlay } from './components/Effects/CRTOverlay';
 import { SoundEngine } from './components/Effects/SoundEngine';
 import { Onboarding, hasSeenOnboarding } from './components/Onboarding/Onboarding';
 import { useTheme } from './hooks/useTheme';
+import { useMotion } from './hooks/useMotion';
 import { useKeyboard } from './hooks/useKeyboard';
 import { useTypeToTerminal } from './hooks/useTypeToTerminal';
 import { useIsMobile } from './hooks/useIsMobile';
@@ -57,6 +58,7 @@ export default function App() {
   const isLoggedIn = useSystemStore((s) => s.isLoggedIn);
   const isMobile = useIsMobile();
   useTheme();
+  useMotion();
   useKeyboard();
   useTypeToTerminal();
 
@@ -144,6 +146,11 @@ System halted.
       <CRTOverlay />
       <SoundEngine />
       {isBoot && <BootScreen />}
+      {isDesktop && (
+        <a href="#main" className="skip-to-content">
+          Skip to content
+        </a>
+      )}
       {isDesktop && isMobile && <MobileDesktop />}
       {isDesktop && !isMobile && <Desktop />}
       {isDesktop && !isMobile && showOnboarding && (

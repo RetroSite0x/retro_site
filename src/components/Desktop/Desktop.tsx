@@ -75,7 +75,7 @@ export function Desktop() {
   }, [restoreWindow, focusWindow]);
 
   return (
-    <div className={styles.desktop} role="application" aria-label="Desktop">
+    <div className={styles.desktop} id="main" tabIndex={-1} role="application" aria-label="Desktop">
       <Wallpaper />
       <MenuBar />
       <IconGrid />

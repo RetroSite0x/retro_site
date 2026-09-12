@@ -96,7 +96,7 @@ export function MobileDesktop() {
       )}
 
       {/* Main content area */}
-      <div className={styles.main}>
+      <div className={styles.main} id="main" tabIndex={-1}>
         <div className={styles.appContent}>
           {isHome && <MobileHome onOpenApp={openApp} />}
           {activeApp === 'terminal' && (

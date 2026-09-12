@@ -3,6 +3,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { BootPhase, PhosphorTheme } from '../types/system';
 import { safeStorage } from '../lib/storage';
 
+export type MotionMode = 'auto' | 'on' | 'off';
+
 interface SystemState {
   bootPhase: BootPhase;
   isLoggedIn: boolean;
@@ -11,6 +13,7 @@ interface SystemState {
   crtFlicker: boolean;
   volume: number;
   username: string;
+  motion: MotionMode;
 
   advanceBoot: () => void;
   login: (username: string) => void;
@@ -18,6 +21,7 @@ interface SystemState {
   toggleSound: () => void;
   toggleFlicker: () => void;
   setVolume: (v: number) => void;
+  setMotion: (motion: MotionMode) => void;
   logout: () => void;
 }
 
@@ -33,6 +37,7 @@ export const useSystemStore = create<SystemState>()(
       crtFlicker: true,
       volume: 0.5,
       username: 'guest',
+      motion: 'auto',
 
       advanceBoot: () => {
         const current = get().bootPhase;
@@ -50,6 +55,7 @@ export const useSystemStore = create<SystemState>()(
       toggleSound: () => set((s) => ({ soundEnabled: !s.soundEnabled })),
       toggleFlicker: () => set((s) => ({ crtFlicker: !s.crtFlicker })),
       setVolume: (v: number) => set({ volume: Math.max(0, Math.min(1, v)) }),
+      setMotion: (motion: MotionMode) => set({ motion }),
 
       logout: () => {
         set({ isLoggedIn: false, bootPhase: 'login' });
@@ -63,6 +69,7 @@ export const useSystemStore = create<SystemState>()(
         soundEnabled: state.soundEnabled,
         crtFlicker: state.crtFlicker,
         volume: state.volume,
+        motion: state.motion,
       }),
     }
   )

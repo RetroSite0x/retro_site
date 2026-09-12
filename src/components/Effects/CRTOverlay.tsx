@@ -1,17 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useSystemStore } from '../../store/useSystem';
 
 export function CRTOverlay() {
   const crtFlicker = useSystemStore((s) => s.crtFlicker);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const motion = useSystemStore((s) => s.motion);
 
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReducedMotion(mq.matches);
-    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mq.addEventListener('change', handler);
-    return () => mq.removeEventListener('change', handler);
-  }, []);
+  const isMotionOff =
+    motion === 'off' ||
+    (motion === 'auto' &&
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   return (
     <div
@@ -51,7 +48,7 @@ export function CRTOverlay() {
             rgba(255,255,255,0.015) 540px,
             rgba(255,255,255,0.015) 542px
           )`,
-          animation: reducedMotion || !crtFlicker ? 'none' : 'refresh 8s linear infinite',
+          animation: isMotionOff || !crtFlicker ? 'none' : 'refresh 8s linear infinite',
         }}
       />
       {/* Vignette — radial gradient darkening edges like a real CRT */}
@@ -94,7 +91,7 @@ export function CRTOverlay() {
         }}
       />
       {/* Phosphor flicker (optional) — more subtle range */}
-      {crtFlicker && !reducedMotion && (
+      {crtFlicker && !isMotionOff && (
         <div
           style={{
             position: 'absolute',
