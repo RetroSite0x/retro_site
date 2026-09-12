@@ -38,6 +38,7 @@ import { cmd_top } from './cmd_top';
 import { cmd_ping } from './cmd_ping';
 import { cmd_curl } from './cmd_curl';
 import { cmd_weather } from './cmd_weather';
+import { cmd_gui } from './cmd_gui';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -79,4 +80,5 @@ export function registerAllCommands() {
   registerCommand('ping', cmd_ping);
   registerCommand('curl', cmd_curl);
   registerCommand('weather', cmd_weather);
+  registerCommand('gui', cmd_gui);
 }

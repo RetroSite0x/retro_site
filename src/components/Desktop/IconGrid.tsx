@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { DesktopIcon } from './DesktopIcon';
 import { useWindowsStore } from '../../store/useWindows';
+import { useIconPositionsStore } from '../../store/useIconPositions';
 import styles from '../../styles/components/menu-bar.module.css';
 
 interface DesktopEntry {
@@ -35,115 +36,127 @@ function defaultPosition(index: number): { x: number; y: number } {
 
 export function IconGrid() {
   const openWindow = useWindowsStore((s) => s.openWindow);
-  const [positions, setPositions] = useState<Record<string, { x: number; y: number }>>({});
+  const setPosition = useIconPositionsStore((s) => s.setPosition);
+  const getPosition = useIconPositionsStore((s) => s.getPosition);
   const [draggedLabel, setDraggedLabel] = useState<string | null>(null);
+  const focusedIdxRef = useRef(0);
+  const [, forceRender] = useState(0);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  const handleOpen = useCallback((entry: DesktopEntry) => {
-    openWindow({
-      title: entry.label,
-      content: { type: 'directoryViewer', path: entry.path },
-      width: 560,
-      height: 380,
-    });
-  }, [openWindow]);
+  const getPos = useCallback(
+    (label: string, index: number) => getPosition(label, defaultPosition(index)),
+    [getPosition]
+  );
 
-  const getPos = (label: string, index: number) => {
-    return positions[label] ?? defaultPosition(index);
-  };
+  const handleOpen = useCallback(
+    (entry: DesktopEntry) => {
+      if (entry.path === '/terminal') {
+        openWindow({ title: 'terminal', content: { type: 'terminal' }, width: 640, height: 360 });
+      } else if (entry.path === '/web') {
+        openWindow({ title: 'web', content: { type: 'browser' }, width: 800, height: 500 });
+      } else if (entry.path === '/files') {
+        openWindow({ title: 'File Manager', content: { type: 'fileManager' }, width: 720, height: 480 });
+      } else {
+        openWindow({ title: entry.label, content: { type: 'directoryViewer', path: entry.path }, width: 560, height: 380 });
+      }
+    },
+    [openWindow]
+  );
+
+
+
+  const allEntries = DESKTOP_ENTRIES.map((e, i) => ({
+    ...e,
+    ...getPos(e.label, i),
+  }));
+  const extras: (DesktopEntry & { x: number; y: number })[] = [
+    { label: 'terminal', icon: '[>_]', path: '/terminal', ...getPos('terminal', DESKTOP_ENTRIES.length) },
+    { label: 'web', icon: '[🌐]', path: '/web', ...getPos('web', DESKTOP_ENTRIES.length + 1) },
+    { label: 'files', icon: '[🗂]', path: '/files', ...getPos('files', DESKTOP_ENTRIES.length + 2) },
+  ];
+  const allEntriesFull = allEntries.concat(extras);
+  const total = allEntriesFull.length;
+
+  /** Focus the icon at `idx` by updating ref + triggering render + programmatic focus */
+  const focusIcon = useCallback(
+    (idx: number) => {
+      const clamped = Math.max(0, Math.min(total - 1, idx));
+      focusedIdxRef.current = clamped;
+      forceRender((n) => n + 1); // trigger re-render so tabIndex updates
+      requestAnimationFrame(() => {
+        const children = gridRef.current?.children;
+        if (children && children[clamped]) {
+          (children[clamped] as HTMLElement).focus();
+        }
+      });
+    },
+    [total]
+  );
+
+  const handleGridKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      const idx = focusedIdxRef.current;
+      const col = idx % GRID_COLS;
+      let next = idx;
+
+      switch (e.key) {
+        case 'ArrowRight':
+          if (col < GRID_COLS - 1 && idx + 1 < total) next = idx + 1;
+          break;
+        case 'ArrowLeft':
+          if (col > 0) next = idx - 1;
+          break;
+        case 'ArrowDown':
+          if (idx + GRID_COLS < total) next = idx + GRID_COLS;
+          break;
+        case 'ArrowUp':
+          if (idx - GRID_COLS >= 0) next = idx - GRID_COLS;
+          break;
+        case 'Home':
+          next = 0;
+          break;
+        case 'End':
+          next = total - 1;
+          break;
+        default:
+          return; // don't prevent default for unhandled keys
+      }
+
+      if (next !== idx) {
+        e.preventDefault();
+        focusIcon(next);
+      }
+    },
+    [total, focusIcon]
+  );
 
   return (
-    <div className={styles.iconGrid}>
-      {DESKTOP_ENTRIES.map((entry, i) => {
-        const pos = getPos(entry.label, i);
-        return (
-          <DesktopIcon
-            key={entry.label}
-            label={entry.label}
-            icon={entry.icon}
-            x={pos.x}
-            y={pos.y}
-            isDragged={draggedLabel === entry.label}
-            onOpen={() => handleOpen(entry)}
-            onDragStart={() => setDraggedLabel(entry.label)}
-            onDrag={(x, y) => {
-              setPositions((prev) => ({
-                ...prev,
-                [entry.label]: { x, y },
-              }));
-            }}
-            onDragEnd={() => setDraggedLabel(null)}
-          />
-        );
-      })}
-      <DesktopIcon
-        label="terminal"
-        icon="[>_]"
-        x={getPos('terminal', DESKTOP_ENTRIES.length).x}
-        y={getPos('terminal', DESKTOP_ENTRIES.length).y}
-        isDragged={draggedLabel === 'terminal'}
-        onOpen={() => {
-          openWindow({
-            title: 'terminal',
-            content: { type: 'terminal' },
-            width: 640,
-            height: 360,
-          });
-        }}
-        onDragStart={() => setDraggedLabel('terminal')}
-        onDrag={(x, y) => {
-          setPositions((prev) => ({
-            ...prev,
-            terminal: { x, y },
-          }));
-        }}
-        onDragEnd={() => setDraggedLabel(null)}
-      />
-      <DesktopIcon
-        label="web"
-        icon="[🌐]"
-        x={getPos('web', DESKTOP_ENTRIES.length + 1).x}
-        y={getPos('web', DESKTOP_ENTRIES.length + 1).y}
-        isDragged={draggedLabel === 'web'}
-        onOpen={() => {
-          openWindow({
-            title: 'web',
-            content: { type: 'browser' },
-            width: 800,
-            height: 500,
-          });
-        }}
-        onDragStart={() => setDraggedLabel('web')}
-        onDrag={(x, y) => {
-          setPositions((prev) => ({
-            ...prev,
-            web: { x, y },
-          }));
-        }}
-        onDragEnd={() => setDraggedLabel(null)}
-      />
-      <DesktopIcon
-        label="files"
-        icon="[🗂]"
-        x={getPos('files', DESKTOP_ENTRIES.length + 2).x}
-        y={getPos('files', DESKTOP_ENTRIES.length + 2).y}
-        isDragged={draggedLabel === 'files'}
-        onOpen={() => {
-          openWindow({
-            title: 'File Manager',
-            content: { type: 'fileManager' },
-            width: 720,
-            height: 480,
-          });
-        }}
-        onDragStart={() => setDraggedLabel('files')}
-        onDrag={(x, y) => {
-          setPositions((prev) => ({
-            ...prev,
-            files: { x, y },
-          }));
-        }}
-        onDragEnd={() => setDraggedLabel(null)}
-      />
+    <div
+      className={styles.iconGrid}
+      ref={gridRef}
+      role="grid"
+      aria-label="Desktop icons"
+      onKeyDown={handleGridKeyDown}
+    >
+      {allEntriesFull.map((entry, i) => (
+        <DesktopIcon
+          key={entry.label}
+          label={entry.label}
+          icon={entry.icon}
+          x={entry.x}
+          y={entry.y}
+          isDragged={draggedLabel === entry.label}
+          tabIndex={focusedIdxRef.current === i ? 0 : -1}
+          role="gridcell"
+          ariaLabel={entry.label}
+          onOpen={() => handleOpen(entry)}
+          onDragStart={() => setDraggedLabel(entry.label)}
+          onDrag={(x, y) => {
+            setPosition(entry.label, x, y);
+          }}
+          onDragEnd={() => setDraggedLabel(null)}
+        />
+      ))}
     </div>
   );
 }

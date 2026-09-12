@@ -84,6 +84,17 @@
   color: var(--phosphor-bg);
 }
 
+.settingsItem:focus-visible {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+  outline: none;
+}
+
+.settingsItem:focus-visible .settingsLabel,
+.settingsItem:focus-visible .settingsActive {
+  color: var(--phosphor-bg);
+}
+
 .settingsLabel {
   color: var(--phosphor);
   font-family: var(--font-ui);
@@ -126,6 +137,22 @@
   color: var(--phosphor-bg);
 }
 
+.settingsLabel:focus-visible {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+  outline: none;
+}
+
+.settingsLabel:focus-visible + .settingsArrow,
+.settingsItemWithSub:has(.settingsLabel:focus-visible) .settingsArrow {
+  color: var(--phosphor-bg);
+}
+
+.settingsItemWithSub:has(.settingsLabel:focus-visible) {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
 .settingsArrow {
   font-size: 8px;
   color: var(--phosphor-dim);
@@ -144,7 +171,8 @@
   box-shadow: var(--phosphor-glow);
 }
 
-.settingsItemWithSub:hover .dropdownSub {
+.settingsItemWithSub:hover .dropdownSub,
+.dropdownSubOpen {
   display: block;
 }
 
@@ -165,6 +193,8 @@
 .dropdownItem:focus-visible {
   outline: 1px solid var(--phosphor);
   outline-offset: -1px;
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
 }
 
 /* Icon Grid */
@@ -187,6 +217,12 @@
 }
 
 .desktopIcon:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.desktopIcon:focus-visible {
+  outline: 1px solid var(--phosphor);
+  outline-offset: -1px;
   background: rgba(255, 255, 255, 0.05);
 }
 
