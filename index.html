@@ -10,12 +10,20 @@
     <meta property="og:url" content="https://nabil0x.github.io/retro_site/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/retro_site/fonts/VT323-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/retro_site/fonts/IBMPlexMono-latin-400.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/retro_site/fonts/IBMPlexMono-latin-700.woff2" />
+    <script>
+      try {
+        var raw = localStorage.getItem('nabilos-system');
+        if (raw) {
+          var t = JSON.parse(raw);
+          if (t && t.state && t.state.theme) {
+            document.documentElement.dataset.theme = t.state.theme;
+          }
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

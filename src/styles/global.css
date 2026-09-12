@@ -21,6 +21,7 @@ html, body, #root {
   line-height: 1.2;
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
+  text-shadow: var(--chromatic-aberration);
 }
 
 /* No rounded corners — hard constraint */
