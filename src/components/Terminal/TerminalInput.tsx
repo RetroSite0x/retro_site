@@ -591,6 +591,9 @@ export function TerminalInput() {
           className={styles.hiddenInput}
           onKeyDown={handleKeyDown}
           onInput={handleInput}
+          onFocus={(e) => {
+            if (isMobile) e.currentTarget.scrollIntoView({ block: 'nearest' });
+          }}
           autoFocus
           aria-label="Terminal input"
           autoCapitalize="off"
