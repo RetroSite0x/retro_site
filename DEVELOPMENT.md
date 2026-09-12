@@ -407,7 +407,7 @@ Verified: `tsc -b` clean · 109/109 Vitest · `vite build` exit 0 · E2E `bootTo
 
 ### Phase 2 — UX depth — ◐ PARTIAL (Sep 2026)
 Shipped: DIS-01 (`?skip-boot`/`?guest`/`?open` deep links), DIS-02 (first-run onboarding), DIS-03 (`gui` dashboard command + window), TERM-01/02/03 (ghost-text + Tab cycling, Ctrl+R reverse search, output highlighting), A11Y-01/02/03 (menu-bar, submenu, and icon-grid keyboard navigation). Also added `useTypeToTerminal` — a focus fallback that routes stray keystrokes to the terminal when nothing is focused.
-Remaining: CON-02 (VFS-backed commands), MOB-01 (mobile app-stack paradigm).
+Also shipped: MOB-01 (separate mobile app-stack + dock) and TERM-07 (mobile key bar). Remaining: CON-02 (VFS-backed commands).
 Verified: `tsc -b` clean · 109/109 Vitest · `vite build` exit 0 · E2E `bootToDesktop` + `desktopIcons` pass · keyboard nav verified live (Tab → menu arrows → SETTINGS submenu; icon-grid arrows + Enter).
 Note: A11Y-01/02/03 were built by a subagent that was cancelled mid-edit; re-verified functional afterward.
 
@@ -519,7 +519,7 @@ SEO-01 (prerender), SEO-02 (meta/JSON-LD/noscript/sitemap), A11Y-04/05/06 (contr
 **TERM-04 · Wire `keyClick` to keystrokes · P1 · S · 🟢** (depends FX-01)
 **TERM-05 · Command aliases (`alias`) · P3 · M · 🟢**
 **TERM-06 · Pipe support · P3 · L · 🟢**
-**TERM-07 · Mobile modifier toolbar (Tab/Esc/Ctrl) · P2 · M · 🟡** (part of MOB-01)
+**TERM-07 · Mobile modifier toolbar (Tab/Esc/Ctrl) · ✅ SHIPPED** (part of MOB-01)
 
 ### Window manager / desktop
 
@@ -564,7 +564,7 @@ SEO-01 (prerender), SEO-02 (meta/JSON-LD/noscript/sitemap), A11Y-04/05/06 (contr
 
 ### Mobile
 
-**MOB-01 · Separate mobile paradigm · P2 · L · 🟠**
+**MOB-01 · Separate mobile paradigm · ✅ SHIPPED**
 - Problem: MenuBar clips, icon grid overflows, resize handles untappable.
 - Fix: platform detection → mobile app stack (fullscreen apps, back nav, bottom dock, skippable boot, terminal modifier toolbar); no draggable windows.
 - Acceptance: usable at 320–480px; all portfolio content reachable; boot skippable; Lighthouse mobile pass.
@@ -614,7 +614,7 @@ Run before marking any non-trivial item DONE:
 
 ## 12. Open Questions / Decisions Needed
 
-1. **Mobile**: commit to paradigm A (separate app-stack) or C (terminal-only)? MOB-01 is L-effort and blocks mobile polish.
+1. ~~**Mobile**: commit to paradigm A (separate app-stack) or C (terminal-only)?~~ **Decided:** app-stack + dock (MOB-01 shipped).
 2. **Content source direction**: `portfolio.ts` → generate VFS, or VFS → generate commands? (Recommend: typed TS module is canonical; VFS built from it.)
 3. **`RESEARCH-UX-SEO-A11Y-FINDINGS.md`**: keep as linked appendix, or fold into this doc and delete? (Prevents drift.)
 4. **WebGL CRT**: worth the budget/fidelity vs. CSS-only? Decide before FX-05.
