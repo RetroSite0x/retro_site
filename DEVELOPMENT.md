@@ -411,8 +411,10 @@ Also shipped: MOB-01 (separate mobile app-stack + dock) and TERM-07 (mobile key 
 Verified: `tsc -b` clean · 109/109 Vitest · `vite build` exit 0 · E2E `bootToDesktop` + `desktopIcons` pass · keyboard nav verified live (Tab → menu arrows → SETTINGS submenu; icon-grid arrows + Enter).
 Note: A11Y-01/02/03 were built by a subagent that was cancelled mid-edit; re-verified functional afterward.
 
-### Phase 3 — Reach & polish (1–2 weeks)
-SEO-01 (prerender), SEO-02 (meta/JSON-LD/noscript/sitemap), A11Y-04/05/06 (contrast, motion toggle, skip link), FX-04 (WebGL CRT), DEL-01 (easter eggs), DEL-02 (guestbook/now page), PERF-02 (CI budget).
+### Phase 3 — Reach & polish — ◐ PARTIAL (Sep 2026)
+Shipped: SEO-02 (descriptive meta + Open Graph/Twitter + JSON-LD `Person`/`WebSite` + `<noscript>` fallback + `robots.txt` + `sitemap.xml`), A11Y-04 (skip-to-content + `#main` targets), A11Y-05 (all 4 theme `--phosphor-dim` raised to WCAG AA + `prefers-contrast: more`), A11Y-06 (motion toggle auto/on/off), PERF-02 (`npm run size` bundle budget + warn-only CI step). Hygiene: favicon, Vitest now exits 0 (pointer-capture polyfill), Discord domain verification file (`.well-known/discord`).
+Not applicable: SEO-01 (a JS prerender would capture the typing intro, not portfolio content — replaced by the JSON-LD + `<noscript>` + sitemap approach).
+Remaining: FX-04 (WebGL CRT), DEL-01 (easter eggs), DEL-02 (guestbook/Now page).
 
 ---
 
@@ -548,18 +550,18 @@ SEO-01 (prerender), SEO-02 (meta/JSON-LD/noscript/sitemap), A11Y-04/05/06 (contr
 **A11Y-01 · Keyboard nav for MenuBar (arrows/Enter/Home/End/accelerators) · ✅ SHIPPED**
 **A11Y-02 · Keyboard-accessible submenus · ✅ SHIPPED** (replace hover-only with JS state)
 **A11Y-03 · Keyboard + ARIA for desktop icons (roving tabindex) · ✅ SHIPPED**
-**A11Y-04 · Focus management (window open/close, cycling) + skip link · P2 · M · 🟡**
-**A11Y-05 · Verify/fix contrast incl. white theme focus indication · P2 · S · 🟡**
-**A11Y-06 · In-app motion toggle (auto/on/off) + `prefers-contrast` · P3 · M · 🟢**
+**A11Y-04 · Focus management (window open/close, cycling) + skip link · ✅ SHIPPED**
+**A11Y-05 · Verify/fix contrast incl. white theme focus indication · ✅ SHIPPED**
+**A11Y-06 · In-app motion toggle (auto/on/off) + `prefers-contrast` · ✅ SHIPPED**
 **A11Y-07 · Confirm terminal `role=log`/aria-live + window focus trap · P2 · S · 🟡**
 
 ### SEO
 
-**SEO-01 · Build-time prerendering for routes · P1 · M · 🔴**
+**SEO-01 · Build-time prerendering for routes · ⚠️ N/A** (a JS prerender captures the typing intro, not content — replaced by JSON-LD + `<noscript>` + sitemap)
 - Fix: Puppeteer/Playwright post-build script; wait on real signal; flat `.html` output.
 - Acceptance: crawlers receive rendered HTML; social previews resolve; CI step added.
 
-**SEO-02 · Per-route meta + JSON-LD `Person` + `sitemap.xml` + `<noscript>` fallback · P1 · M · 🟠**
+**SEO-02 · Per-route meta + JSON-LD `Person` + `sitemap.xml` + `<noscript>` fallback · ✅ SHIPPED**
 - Acceptance: each route has title/description/OG; sitemap matches prerender routes; noscript shows core links.
 
 ### Mobile
@@ -573,7 +575,7 @@ SEO-01 (prerender), SEO-02 (meta/JSON-LD/noscript/sitemap), A11Y-04/05/06 (contr
 
 **PERF-01 · Self-host variable WOFF2 (VT323 + IBM Plex Mono) · ✅ SHIPPED**
 - Acceptance: no Google Fonts runtime request; `font-display:swap`; preload critical; FCP improves on 4G.
-**PERF-02 · CI performance budget (250KB JS / 600KB total) · P2 · M · 🟡**
+**PERF-02 · CI performance budget (250KB JS / 600KB total) · ✅ SHIPPED**
 **PERF-03 · IntersectionObserver-gate heavy effects · P3 · M · 🟢**
 
 ### Delight / world-building
