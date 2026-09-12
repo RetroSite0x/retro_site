@@ -2,6 +2,7 @@ import { useRef, useEffect } from 'react';
 import { useTerminalStore } from '../../store/useTerminal';
 import { CommandOutput } from './CommandOutput';
 import { TerminalInput } from './TerminalInput';
+import { TerminalCRT } from '../Effects/TerminalCRT';
 import styles from '../../styles/components/terminal.module.css';
 
 const MOTD = `
@@ -59,6 +60,7 @@ export function Terminal() {
     >
       <CommandOutput history={history} />
       <TerminalInput />
+      <TerminalCRT />
     </div>
   );
 }
