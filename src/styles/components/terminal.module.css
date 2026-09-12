@@ -163,3 +163,58 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+
+/* ── Ghost text for inline autocomplete ── */
+.ghostText {
+  opacity: 0.3;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: none;
+}
+
+/* ── Reverse-i-search prompt ── */
+.reverseSearchPrefix {
+  color: var(--phosphor-dim);
+  white-space: pre;
+  user-select: none;
+}
+
+/* ── Output syntax highlighting ── */
+.highlightHeading {
+  color: var(--phosphor);
+  font-weight: bold;
+}
+
+.highlightPath {
+  color: var(--phosphor);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+.highlightUrl {
+  color: var(--phosphor);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  cursor: pointer;
+}
+.highlightUrl:hover {
+  text-shadow: var(--phosphor-glow);
+}
+
+.highlightError {
+  color: #ff6666;
+  text-shadow: 0 0 4px rgba(255, 102, 102, 0.3);
+}
+
+.highlightBullet {
+  color: var(--phosphor);
+}
+
+/* Cycle indicator for Tab cycling */
+.cycleIndicator {
+  opacity: 0.25;
+  font-size: 0.8em;
+  margin-left: 4px;
+  pointer-events: none;
+  user-select: none;
+}

@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import type { HistoryEntry } from '../types/terminal';
 import { executeCommand } from '../components/Terminal/CommandRegistry';
+import { soundEngine } from '../lib/sound';
+import { useSystemStore } from './useSystem';
 
 const MAX_HISTORY = 500;
 const HISTORY_KEY = 'nabilos-terminal-history';
@@ -81,6 +83,9 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
     const result = executeCommand(trimmed);
     if (result) {
       store.appendHistory({ ...result, timestamp: Date.now() });
+      if (result.type === 'error' && useSystemStore.getState().soundEnabled) {
+        soundEngine.errorBuzz();
+      }
     }
   },
 
