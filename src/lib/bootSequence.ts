@@ -17,6 +17,7 @@ export type BootBeatKind =
   | 'impact'
   | 'humanity'
   | 'glitch'
+  | 'technoGlitch'
   | 'signOff';
 
 export interface BootBeat {
@@ -68,6 +69,14 @@ export const GLITCH_LINES: readonly string[] = [
   '### RECONNECTING... ###',
 ];
 
+
+
+export const TECHNO_GLITCH_LINES: readonly string[] = [
+  '▓▒░ SIGNAL INTERFERENCE DETECTED ░▒▓',
+  '▓▒░ RECALIBRATING PHOSPHOR ARRAY ░▒▓',
+  '▓▒░ NEURAL LINK REESTABLISHING    ░▒▓',
+];
+
 export const LINKS_LINE =
   'github.com/nabil0x \u00b7 nabil.iam.bd \u00b7 ORCID 0009-0006-3561-045X';
 
@@ -84,14 +93,23 @@ export const WELCOME_MSG = 'System ready. Welcome, Ann.';
 
 // ── Ordered beat sequence ───────────────────────────────────────────────────
 
-export const BOOT_BEATS: readonly BootBeat[] = [
-  { kind: 'powerOn' },
-  { kind: 'whoami' },
-  { kind: 'identityCard' },
-  { kind: 'work' },
-  { kind: 'research' },
-  { kind: 'impact' },
-  { kind: 'humanity' },
-  { kind: 'glitch' },
-  { kind: 'signOff' },
-];
+function maybeInsertGlitch(): readonly BootBeat[] {
+  const beats: BootBeat[] = [{ kind: 'powerOn' }, { kind: 'whoami' }];
+  beats.push(
+    { kind: 'identityCard' },
+    { kind: 'work' },
+    { kind: 'research' },
+    { kind: 'impact' },
+    { kind: 'humanity' },
+  );
+  if (Math.random() < 1.0) {
+    beats.push({ kind: 'technoGlitch' });
+  }
+  beats.push(
+    { kind: 'glitch' },
+    { kind: 'signOff' },
+  );
+  return beats;
+}
+
+export const BOOT_BEATS: readonly BootBeat[] = maybeInsertGlitch();

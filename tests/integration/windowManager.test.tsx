@@ -27,8 +27,8 @@ describe('useWindowsStore', () => {
       const win = useWindowsStore.getState().windows[id];
       expect(win).toBeDefined();
       expect(win.title).toBe('test');
-      expect(win.width).toBe(600);
-      expect(win.height).toBe(400);
+      expect(win.width).toBe(640);
+      expect(win.height).toBe(360);
       expect(win.content).toEqual({ type: 'terminal' });
     });
 
@@ -43,8 +43,8 @@ describe('useWindowsStore', () => {
       const win = useWindowsStore.getState().windows[id];
       expect(win.width).toBe(500);
       expect(win.height).toBe(300);
-      expect(win.minWidth).toBe(300);
-      expect(win.minHeight).toBe(150);
+      expect(win.minWidth).toBe(400);
+      expect(win.minHeight).toBe(250);
     });
 
     it('starts with isMinimized=false, isMaximized=false', () => {
@@ -194,8 +194,8 @@ describe('useWindowsStore', () => {
       useWindowsStore.getState().resizeWindow(id, 10, 10);
 
       const win = useWindowsStore.getState().windows[id];
-      expect(win.width).toBe(300);  // minWidth
-      expect(win.height).toBe(150); // minHeight
+      expect(win.width).toBe(400);  // terminal minWidth
+      expect(win.height).toBe(200); // terminal minHeight
     });
   });
 });
@@ -320,15 +320,15 @@ describe('DesktopIcon', () => {
   };
 
   it('renders label and icon', () => {
-    render(<DesktopIcon label="projects" icon="[📁]" onOpen={() => {}} {...baseProps} />);
+    const { container } = render(<DesktopIcon label="projects" icon="projects" onOpen={() => {}} {...baseProps} />);
     expect(screen.getByText('projects')).toBeDefined();
-    expect(screen.getByText('[📁]')).toBeDefined();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('calls onOpen on click (pointer down + up without move)', () => {
     let opened = false;
     const { container } = render(
-      <DesktopIcon label="projects" icon="[📁]" onOpen={() => { opened = true; }} {...baseProps} />
+      <DesktopIcon label="projects" icon="projects" onOpen={() => { opened = true; }} {...baseProps} />
     );
 
     const el = container.firstChild!;
@@ -502,8 +502,8 @@ describe('Window move + resize', () => {
     useWindowsStore.getState().resizeWindow(id, 10, 10);
 
     const win = useWindowsStore.getState().windows[id];
-    expect(win.width).toBe(300);
-    expect(win.height).toBe(150);
+    expect(win.width).toBe(400);
+    expect(win.height).toBe(200);
   });
 
   it('ResizeHandle elements render correctly', () => {

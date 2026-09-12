@@ -9,6 +9,7 @@
   min-width: 300px;
   min-height: 150px;
   box-shadow: var(--phosphor-glow);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 150ms ease-out, transform 150ms ease-out;
 }
 
 /* Focused window gets stronger glow */
@@ -18,8 +19,17 @@
 
 .windowClosing {
   opacity: 0;
-  transform: scale(0.95) translateY(-8px);
-  transition: opacity 180ms ease-out, transform 180ms ease-out;
+  transform: scale(0.95) translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .windowClosing {
+    opacity: 0;
+    transform: none;
+  }
 }
 
 /* Title Bar */
@@ -34,6 +44,7 @@
   cursor: default;
   user-select: none;
   flex-shrink: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .titleText {
@@ -63,7 +74,7 @@
   font-family: var(--font-ui);
   padding: 0;
   line-height: 1;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.15s, color 0.15s, border-color 0.3s ease;
 }
 
 .controlBtn:hover {

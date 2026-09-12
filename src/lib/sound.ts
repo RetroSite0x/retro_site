@@ -1,3 +1,25 @@
+import { useSystemStore } from '../store/useSystem';
+
+type WaveformType = OscillatorType;
+
+interface ThemeSoundProfile {
+  waveform: WaveformType;
+  freqMul: number;
+}
+
+const THEME_PROFILES: Record<string, ThemeSoundProfile> = {
+  green:    { waveform: 'sine',     freqMul: 1.0 },
+  white:    { waveform: 'sine',     freqMul: 1.0 },
+  blue:     { waveform: 'sine',     freqMul: 1.0 },
+  dracula:  { waveform: 'sawtooth', freqMul: 1.15 },
+  nord:     { waveform: 'sawtooth', freqMul: 1.15 },
+  amber:    { waveform: 'triangle', freqMul: 0.95 },
+  solarized:{ waveform: 'triangle', freqMul: 0.95 },
+  ubuntu:   { waveform: 'sine',     freqMul: 1.0 },
+};
+
+const DEFAULT_PROFILE: ThemeSoundProfile = { waveform: 'sine', freqMul: 1.0 };
+
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private volume = 0.5;
@@ -24,16 +46,36 @@ class SoundEngine {
     return this.ctx;
   }
 
-  /** Short square wave frequency sweep (800→1200Hz, 150ms) */
+  private getThemeSoundProfile(): ThemeSoundProfile {
+    const theme = useSystemStore.getState().theme;
+    return THEME_PROFILES[theme] ?? DEFAULT_PROFILE;
+  }
+
+  private getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
+    const hour = new Date().getHours();
+    if (hour >= 6 && hour < 12) return 'morning';
+    if (hour >= 12 && hour < 17) return 'afternoon';
+    if (hour >= 17 && hour < 21) return 'evening';
+    return 'night';
+  }
+
   bootChirp(): void {
     const ctx = this.ensureContext();
     if (!ctx) return;
+    const timeOfDay = this.getTimeOfDay();
+    const multipliers: Record<string, { freq: number; vol: number }> = {
+      morning: { freq: 1.2, vol: 1.0 },
+      afternoon: { freq: 1.0, vol: 1.0 },
+      evening: { freq: 0.9, vol: 0.9 },
+      night: { freq: 0.8, vol: 0.7 },
+    };
+    const m = multipliers[timeOfDay];
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'square';
-    osc.frequency.setValueAtTime(800, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(this.gain(0.1), ctx.currentTime);
+    osc.frequency.setValueAtTime(800 * m.freq, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200 * m.freq, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(this.gain(0.1 * m.vol), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -41,10 +83,10 @@ class SoundEngine {
     osc.stop(ctx.currentTime + 0.15);
   }
 
-  /** 1ms white noise burst at low volume */
   keyClick(): void {
     const ctx = this.ensureContext();
     if (!ctx) return;
+    const profile = this.getThemeSoundProfile();
     const bufferSize = ctx.sampleRate * 0.01;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -59,6 +101,16 @@ class SoundEngine {
     source.connect(gain);
     gain.connect(ctx.destination);
     source.start(ctx.currentTime);
+    const osc = ctx.createOscillator();
+    osc.type = profile.waveform;
+    osc.frequency.setValueAtTime(1200 * profile.freqMul, ctx.currentTime);
+    const oscGain = ctx.createGain();
+    oscGain.gain.setValueAtTime(this.gain(0.015), ctx.currentTime);
+    oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.008);
+    osc.connect(oscGain);
+    oscGain.connect(ctx.destination);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.008);
   }
 
   /** Random low-passed noise, 80ms — sounds like HDD seeking */
@@ -135,6 +187,47 @@ class SoundEngine {
     osc.stop(ctx.currentTime + 0.1);
   }
 
+  technoGlitchSound(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+
+    const bufferSize = ctx.sampleRate * 0.3;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.15;
+    }
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1000, t);
+    filter.frequency.linearRampToValueAtTime(8000, t + 0.15);
+    filter.frequency.linearRampToValueAtTime(500, t + 0.3);
+    filter.Q.setValueAtTime(5, t);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.gain(0.1), t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    source.connect(filter);
+    filter.connect(g);
+    g.connect(ctx.destination);
+    source.start(t);
+
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(2000, t);
+    osc.frequency.exponentialRampToValueAtTime(4000, t + 0.1);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.25);
+    const og = ctx.createGain();
+    og.gain.setValueAtTime(this.gain(0.06), t);
+    og.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(og);
+    og.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.25);
+  }
+
   /** CRT degauss/power-on hum: 60 Hz sine fading in then out (~0.8s) with a faint 15.7 kHz whine */
   crtPowerOn(): void {
     const ctx = this.ensureContext();
@@ -194,14 +287,14 @@ class SoundEngine {
     }
   }
 
-  /** Very short soft "accepted" blip (~40ms) */
   commandOk(): void {
     const ctx = this.ensureContext();
     if (!ctx) return;
+    const profile = this.getThemeSoundProfile();
     const t = ctx.currentTime;
     const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, t);
+    osc.type = profile.waveform;
+    osc.frequency.setValueAtTime(880 * profile.freqMul, t);
     const g = ctx.createGain();
     g.gain.setValueAtTime(this.gain(0.06), t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);

@@ -39,6 +39,7 @@ import { cmd_ping } from './cmd_ping';
 import { cmd_curl } from './cmd_curl';
 import { cmd_weather } from './cmd_weather';
 import { cmd_gui } from './cmd_gui';
+import { cmd_memoire } from './cmd_memoire';
 import { cmd_sl } from './cmd_sl';
 import { cmd_fire } from './cmd_fire';
 import { cmd_hack } from './cmd_hack';
@@ -47,6 +48,18 @@ import { cmd_coffee } from './cmd_coffee';
 import { cmd_now } from './cmd_now';
 import { cmd_wallpaper } from './cmd_wallpaper';
 import { cmd_vibe } from './cmd_vibe';
+import { cmd_education } from './cmd_education';
+import { cmd_languages } from './cmd_languages';
+import { cmd_website } from './cmd_website';
+import { cmd_alias, cmd_unalias } from './cmd_alias';
+import { cmd_snake } from './cmd_snake';
+import { cmd_chart } from './cmd_chart';
+import { cmd_clock } from './cmd_clock';
+import { cmd_history } from './cmd_history';
+import { cmd_art } from './cmd_art';
+import { cmd_ask } from './cmd_ask';
+import { cmd_chat } from './cmd_chat';
+import { cmd_guestbook } from './cmd_guestbook';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -89,6 +102,7 @@ export function registerAllCommands() {
   registerCommand('curl', cmd_curl);
   registerCommand('weather', cmd_weather);
   registerCommand('gui', cmd_gui);
+  registerCommand('memoire', cmd_memoire);
   registerCommand('sl', cmd_sl);
   registerCommand('fire', cmd_fire);
   registerCommand('hack', cmd_hack);
@@ -97,4 +111,17 @@ export function registerAllCommands() {
   registerCommand('now', cmd_now);
   registerCommand('wallpaper', cmd_wallpaper);
   registerCommand('vibe', cmd_vibe);
+  registerCommand('education', cmd_education);
+  registerCommand('languages', cmd_languages);
+  registerCommand('website', cmd_website);
+  registerCommand('alias', cmd_alias);
+  registerCommand('unalias', cmd_unalias);
+  registerCommand('chart', cmd_chart);
+  registerCommand('clock', cmd_clock);
+  registerCommand('snake', cmd_snake);
+  registerCommand('history', cmd_history);
+  registerCommand('art', cmd_art);
+  registerCommand('ask', cmd_ask);
+  registerCommand('guestbook', cmd_guestbook);
+  registerCommand('chat', cmd_chat);
 }

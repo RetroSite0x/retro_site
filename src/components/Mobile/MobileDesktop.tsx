@@ -7,23 +7,24 @@ import { BrowserViewer } from '../WebBrowser/BrowserViewer';
 import { MobileHome } from './MobileHome';
 import { MobileFiles } from './MobileFiles';
 import { MobileContact } from './MobileContact';
+import { RetroIcon, type RetroIconName } from '../icons/RetroIcon';
 import styles from '../../styles/components/mobile.module.css';
 
 type AppId = 'home' | 'terminal' | 'files' | 'dashboard' | 'browser' | 'contact';
 
 interface DockItem {
   id: AppId;
-  icon: string;
+  icon: RetroIconName;
   label: string;
 }
 
 const DOCK_ITEMS: readonly DockItem[] = [
-  { id: 'home',      icon: '■', label: 'Home' },
-  { id: 'terminal',  icon: '>', label: 'Terminal' },
-  { id: 'files',     icon: '□', label: 'Files' },
-  { id: 'dashboard', icon: '◎', label: 'Dash' },
-  { id: 'browser',   icon: '◇', label: 'Web' },
-  { id: 'contact',   icon: '@', label: 'Contact' },
+  { id: 'home',      icon: 'home',      label: 'Home' },
+  { id: 'terminal',  icon: 'terminal',  label: 'Terminal' },
+  { id: 'files',     icon: 'files',     label: 'Files' },
+  { id: 'dashboard', icon: 'dashboard', label: 'Dash' },
+  { id: 'browser',   icon: 'browser',   label: 'Web' },
+  { id: 'contact',   icon: 'contact',   label: 'Contact' },
 ] as const;
 
 const THEME_CYCLE: readonly PhosphorTheme[] = ['green', 'amber', 'white', 'blue'] as const;
@@ -129,7 +130,7 @@ export function MobileDesktop() {
             aria-label={item.label}
             aria-current={activeApp === item.id ? 'true' : undefined}
           >
-            <span className={styles.dockIcon}>{item.icon}</span>
+            <span className={styles.dockIcon}><RetroIcon name={item.icon} size={24} /></span>
             <span className={styles.dockLabel}>{item.label}</span>
           </button>
         ))}

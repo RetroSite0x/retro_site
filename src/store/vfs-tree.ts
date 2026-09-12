@@ -11,7 +11,20 @@ export const INITIAL_TREE: FSNode = {
       name: 'bin',
       type: 'directory',
       metadata: { size: 512, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rwxr-xr-x', mimeType: 'inode/directory' },
-      children: [],
+      children: [
+        {
+          name: 'n8n',
+          type: 'file',
+          content: 'n8n automation wrapper — see workflows at khub.soja',
+          metadata: { size: 48, createdAt: NOW, updatedAt: NOW, executable: true, permissions: 'rwxr-xr-x', mimeType: 'application/octet-stream' },
+        },
+        {
+          name: 'beni',
+          type: 'file',
+          content: 'BENI CLI — corpus query tool\nUsage: beni [query] [--lang bn] [--format json]',
+          metadata: { size: 80, createdAt: NOW, updatedAt: NOW, executable: true, permissions: 'rwxr-xr-x', mimeType: 'application/octet-stream' },
+        },
+      ],
     },
     {
       name: 'home',
@@ -754,13 +767,27 @@ float scanlines(vec2 uv, float freq) {
       name: 'tmp',
       type: 'directory',
       metadata: { size: 128, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rwxrwxrwx', mimeType: 'inode/directory' },
-      children: [],
+      children: [
+        {
+          name: '.session_lock',
+          type: 'file',
+          content: 'pid=4242',
+          metadata: { size: 10, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-rw-rw-', mimeType: 'application/octet-stream' },
+        },
+      ],
     },
     {
       name: 'archive',
       type: 'directory',
       metadata: { size: 128, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rwxr-xr-x', mimeType: 'inode/directory' },
-      children: [],
+      children: [
+        {
+          name: 'old_projects.tar.gz',
+          type: 'file',
+          content: 'archived: project_alpha, project_beta, prototype_v1',
+          metadata: { size: 2048, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-r--r--', mimeType: 'application/gzip' },
+        },
+      ],
     },
     {
       name: 'blog',
@@ -818,7 +845,14 @@ Read the paper: arXiv:2606.10225`,
       name: 'trash',
       type: 'directory',
       metadata: { size: 128, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rwxr-xr-x', mimeType: 'inode/directory' },
-      children: [],
+      children: [
+        {
+          name: 'todo_old.txt',
+          type: 'file',
+          content: 'learn rust — never happened',
+          metadata: { size: 28, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-r--r--', mimeType: 'text/plain' },
+        },
+      ],
     },
   ],
 };

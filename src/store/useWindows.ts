@@ -3,6 +3,17 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { WindowState, WindowContent } from '../types/window';
 import { safeStorage } from '../lib/storage';
 
+const WINDOW_SIZE_CONSTRAINTS: Record<WindowContent['type'], { defaultWidth: number; defaultHeight: number; minWidth: number; minHeight: number; maxWidth: number; maxHeight: number }> = {
+  terminal: { defaultWidth: 640, defaultHeight: 360, minWidth: 400, minHeight: 200, maxWidth: 1200, maxHeight: 800 },
+  browser: { defaultWidth: 800, defaultHeight: 500, minWidth: 500, minHeight: 300, maxWidth: 1400, maxHeight: 900 },
+  fileManager: { defaultWidth: 720, defaultHeight: 480, minWidth: 500, minHeight: 350, maxWidth: 1200, maxHeight: 800 },
+  directoryViewer: { defaultWidth: 560, defaultHeight: 380, minWidth: 400, minHeight: 250, maxWidth: 1000, maxHeight: 700 },
+  fileViewer: { defaultWidth: 600, defaultHeight: 400, minWidth: 400, minHeight: 250, maxWidth: 1000, maxHeight: 700 },
+  imageViewer: { defaultWidth: 640, defaultHeight: 480, minWidth: 300, minHeight: 250, maxWidth: 1200, maxHeight: 900 },
+  dashboard: { defaultWidth: 700, defaultHeight: 450, minWidth: 500, minHeight: 350, maxWidth: 1200, maxHeight: 800 },
+  memoire: { defaultWidth: 720, defaultHeight: 520, minWidth: 380, minHeight: 300, maxWidth: 1400, maxHeight: 1000 },
+};
+
 interface WindowsState {
   windows: Record<string, WindowState>;
   nextZIndex: number;
@@ -49,15 +60,23 @@ export const useWindowsStore = create<WindowsState>()(
         const id = `win-${Date.now()}-${windowCounter++}`;
         const { x, y } = config.x !== undefined ? { x: config.x, y: config.y ?? 60 } : cascadePosition();
 
+        const constraints = WINDOW_SIZE_CONSTRAINTS[config.content.type];
+        const width = config.width
+          ? Math.min(constraints.maxWidth, Math.max(constraints.minWidth, config.width))
+          : constraints.defaultWidth;
+        const height = config.height
+          ? Math.min(constraints.maxHeight, Math.max(constraints.minHeight, config.height))
+          : constraints.defaultHeight;
+
         const win: WindowState = {
           id,
           title: config.title,
           x,
           y,
-          width: config.width ?? 600,
-          height: config.height ?? 400,
-          minWidth: 300,
-          minHeight: 150,
+          width,
+          height,
+          minWidth: constraints.minWidth,
+          minHeight: constraints.minHeight,
           zIndex: get().nextZIndex,
           isMinimized: false,
           isMaximized: false,
@@ -195,13 +214,14 @@ export const useWindowsStore = create<WindowsState>()(
         set((s) => {
           const win = s.windows[id];
           if (!win) return s;
+          const constraints = WINDOW_SIZE_CONSTRAINTS[win.content.type];
           return {
             windows: {
               ...s.windows,
               [id]: {
                 ...win,
-                width: Math.max(win.minWidth, width),
-                height: Math.max(win.minHeight, height),
+                width: Math.min(constraints.maxWidth, Math.max(constraints.minWidth, width)),
+                height: Math.min(constraints.maxHeight, Math.max(constraints.minHeight, height)),
               },
             },
           };

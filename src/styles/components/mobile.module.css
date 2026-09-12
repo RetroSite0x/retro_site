@@ -198,8 +198,16 @@
 }
 
 .dockIcon {
-  font-size: 22px;
-  line-height: 1;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dockIcon svg {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 0 2px currentColor);
 }
 
 .dockLabel {
@@ -271,8 +279,16 @@
 }
 
 .appTileIcon {
-  font-size: 28px;
-  line-height: 1;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appTileIcon svg {
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 2px currentColor);
 }
 
 .appTileName {
@@ -312,7 +328,15 @@
 }
 
 .folderIcon {
-  font-size: 18px;
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folderIcon svg {
+  width: 20px;
+  height: 20px;
 }
 
 /* ── Files App ──────────────────────────────────────────────────────── */

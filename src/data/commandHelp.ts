@@ -33,6 +33,7 @@ export const commandDescriptions: Record<string, CommandHelpEntry> = {
   blog:       { description: 'List blog posts',                category: 'portfolio' },
   timeline:   { description: 'Show career timeline',           category: 'portfolio' },
   gui:        { description: 'Open portfolio dashboard window', category: 'portfolio' },
+  memoire:    { description: 'Open the public bulletin board',   category: 'portfolio' },
   now:        { description: 'Show what I\'m working on now',   category: 'portfolio' },
   // ── System ─────────────────────────────────────────────────────
   sysinfo:    { description: 'Print system information',       category: 'system' },

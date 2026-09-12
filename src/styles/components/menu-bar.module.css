@@ -43,6 +43,19 @@
 .menuRight {
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.taskbarLink {
+  color: var(--phosphor-dim);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+
+.taskbarLink:hover {
+  color: var(--phosphor);
 }
 
 .clock {
@@ -233,9 +246,18 @@
 }
 
 .iconSymbol {
-  font-size: 29px;
-  line-height: 1;
+  line-height: 0;
   margin-bottom: 4px;
+}
+
+.iconSymbol svg {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+.desktopIcon:hover .iconSymbol svg {
+  filter: drop-shadow(0 0 6px currentColor);
 }
 
 .iconLabel {
@@ -277,37 +299,84 @@
   font-size: 14px;
 }
 
+.dirTableHeader {
+  display: grid;
+  grid-template-columns: 100px 60px 100px 1fr;
+  gap: 8px;
+  padding: 4px 10px;
+  border-bottom: var(--border-width) solid var(--phosphor-dim);
+  color: var(--phosphor-dim);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
 .dirList {
   flex: 1;
   overflow-y: auto;
-  padding: 5px 0;
+  padding: 2px 0;
 }
 
 .dirEntry {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 10px;
+  display: grid;
+  grid-template-columns: 100px 60px 100px 1fr;
+  gap: 8px;
+  padding: 3px 10px;
   cursor: pointer;
+  align-items: center;
 }
 
 .dirEntry:hover {
   background: rgba(255, 255, 255, 0.05);
 }
 
-.dirEntryIcon {
-  flex-shrink: 0;
-  font-size: 19px;
+.dirEntryDir:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.dirEntryName {
-  flex: 1;
-  color: var(--phosphor);
-}
-
-.dirEntryMeta {
+.dirColPerms {
   color: var(--phosphor-dim);
-  font-size: 14px;
+  font-size: 13px;
+  font-family: var(--font-terminal);
+}
+
+.dirColSize {
+  color: var(--phosphor-dim);
+  font-size: 13px;
+  text-align: right;
+  font-family: var(--font-terminal);
+}
+
+.dirColDate {
+  color: var(--phosphor-dim);
+  font-size: 13px;
+  font-family: var(--font-terminal);
+}
+
+.dirColName {
+  color: var(--phosphor);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.dirFileName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dirTypeIndicator {
+  color: var(--phosphor-dim);
+  flex-shrink: 0;
+}
+
+.dirFooter {
+  padding: 4px 10px;
+  border-top: var(--border-width) solid var(--phosphor-dim);
+  color: var(--phosphor-dim);
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .dirError {

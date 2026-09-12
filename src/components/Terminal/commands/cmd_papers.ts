@@ -1,7 +1,18 @@
 import type { CommandHandler } from '../../../types/terminal';
-import { papers } from '../../../data/portfolio';
+import { papers, links } from '../../../data/portfolio';
 
-export const cmd_papers: CommandHandler = () => {
+const openLink = (url: string, label: string) => {
+  if (typeof window !== 'undefined') {
+    window.open(url, '_blank');
+  }
+  return { type: 'output' as const, content: `Opening ${label}...` };
+};
+
+export const cmd_papers: CommandHandler = (args) => {
+  if (args[0] === '--open' || args[0] === '-o') {
+    return openLink(links.arxivSearch, 'arXiv');
+  }
+
   const lines: string[] = [
     'PUBLICATIONS',
     '='.repeat(40),
@@ -17,6 +28,7 @@ export const cmd_papers: CommandHandler = () => {
   }
 
   lines.push("Use 'cat /papers/<filename>.md' for details.");
+  lines.push('Use --open to search arXiv.');
 
   return { type: 'output', content: lines.join('\n') };
 };

@@ -53,7 +53,18 @@ function getSuggestions(input: string): string[] {
 }
 
 export function executeCommand(input: string): CommandResult | null {
-  const parsed = parse(input);
+  const aliases = useTerminalStore.getState().aliases;
+  const firstSpace = input.indexOf(' ');
+  let resolved = input;
+  if (firstSpace === -1) {
+    resolved = aliases[input] ?? input;
+  } else {
+    const cmd = input.slice(0, firstSpace);
+    const rest = input.slice(firstSpace);
+    resolved = (aliases[cmd] ?? cmd) + rest;
+  }
+
+  const parsed = parse(resolved);
 
   if (parsed instanceof ParseError) {
     return { type: 'error', content: parsed.message };

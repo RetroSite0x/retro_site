@@ -19,8 +19,12 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
     onPointerDown(e);
   };
 
+  const handleDoubleClick = () => {
+    maximizeWindow(windowId);
+  };
+
   return (
-    <div className={styles.titleBar} onPointerDown={handlePointerDown}>
+    <div className={styles.titleBar} onPointerDown={handlePointerDown} onDoubleClick={handleDoubleClick}>
       <span className={styles.titleText}>{title}</span>
       <div className={styles.controls}>
         <button

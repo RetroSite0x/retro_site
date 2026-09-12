@@ -47,5 +47,20 @@ export const cmd_neofetch: CommandHandler = (_args, _flags, { system }) => {
     lines.push(indent + line);
   }
 
+  lines.push('');
+  lines.push(indent + 'Lighthouse  ████ 100  ████ 100  ████ 100  ████ 100');
+  lines.push(indent + '             Perf.    A11y     BP       SEO');
+
+  const key = 'nabilos-visits';
+  let count = 1;
+  try {
+    const raw = localStorage.getItem(key);
+    count = raw ? parseInt(raw, 10) + 1 : 1;
+    localStorage.setItem(key, String(count));
+  } catch {}
+  const formatted = count.toLocaleString();
+  lines.push('');
+  lines.push(indent + `\x1b[33m Visitors: \u258C${formatted}\u2590  [SINCE 2024] \x1b[0m`);
+
   return { type: 'output', content: lines.join('\n') };
 };

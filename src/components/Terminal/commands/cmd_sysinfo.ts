@@ -1,14 +1,16 @@
 import type { CommandHandler } from '../../../types/terminal';
-import { identity } from '../../../data/portfolio';
+import { identity, skills } from '../../../data/portfolio';
 
 export const cmd_sysinfo: CommandHandler = () => {
+  const languages = skills.find(s => s.category === 'Languages')?.items.join(', ') ?? 'Python, SQL, Bash, JavaScript, TypeScript';
+
   return {
     type: 'output',
     content: `SYSTEM INFORMATION
 ====================
 Name: ${identity.name}
 Occupation: ${identity.role}
-Languages: Python, SQL, Bash, JavaScript, TypeScript
+Languages: ${languages}
 Current Mission: Build useful things.
 Status: ${identity.status}
 

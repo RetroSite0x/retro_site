@@ -9,6 +9,7 @@ import { ImageViewer } from '../FileRenderers/ImageViewer';
 import { BrowserViewer } from '../WebBrowser/BrowserViewer';
 import { FileManager } from '../FileManager/FileManager';
 import { Dashboard } from '../Dashboard/Dashboard';
+import { MemoireBoard } from '../Memoire/MemoireBoard';
 import type { WindowState } from '../../types/window';
 import styles from '../../styles/components/window.module.css';
 
@@ -47,6 +48,8 @@ export function Window({ win }: WindowProps) {
         return <FileManager />;
       case 'dashboard':
         return <Dashboard />;
+      case 'memoire':
+        return <MemoireBoard />;
       default:
         return (
           <div style={{ padding: 16, color: 'var(--phosphor)' }}>

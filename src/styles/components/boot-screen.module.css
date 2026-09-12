@@ -107,11 +107,91 @@
   margin-bottom: var(--space-sm, 8px);
 }
 
+.loginLog {
+  color: var(--phosphor-dim);
+  text-shadow: 0 0 2px var(--phosphor-dim);
+  animation: lineFadeUp 0.2s ease-out forwards;
+}
+
+.loginBanner {
+  white-space: pre;
+  color: var(--phosphor-dim);
+}
+
+.loginGranted {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow-strong);
+  letter-spacing: 1px;
+  animation: lineScanIn 0.35s ease-out forwards;
+}
+
 /* ── Boot intro: ASCII card ─────────────────────────────────────────── */
 
 .ascii {
   white-space: pre;
   letter-spacing: 0;
+}
+
+/* ── Boot intro: per-line entrance animations ──────────────────────── */
+
+.lineScanIn {
+  animation: lineScanIn 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.lineTypewriterIn {
+  animation: lineTypewriterIn 0.2s ease-out forwards;
+  opacity: 0;
+}
+
+.lineFadeUp {
+  animation: lineFadeUp 0.25s ease-out forwards;
+  opacity: 0;
+}
+
+.lineGlitchIn {
+  animation: lineGlitchIn 0.35s steps(4) forwards;
+  opacity: 0;
+}
+
+.lineDigitalCorrupt {
+  animation: lineDigitalCorrupt 0.4s steps(6) forwards;
+  opacity: 0;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+}
+
+@keyframes lineScanIn {
+  0%   { opacity: 0; clip-path: inset(0 100% 0 0); }
+  40%  { opacity: 1; clip-path: inset(0 60% 0 0); }
+  100% { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+
+@keyframes lineTypewriterIn {
+  0%   { opacity: 0; text-shadow: 0 0 12px var(--phosphor-glow-strong); filter: brightness(2); }
+  60%  { opacity: 1; text-shadow: 0 0 6px var(--phosphor-glow); filter: brightness(1.3); }
+  100% { opacity: 1; text-shadow: var(--phosphor-glow); filter: brightness(1); }
+}
+
+@keyframes lineFadeUp {
+  0%   { opacity: 0; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lineGlitchIn {
+  0%   { opacity: 0; transform: translateX(-3px); text-shadow: 3px 0 0 rgba(255, 0, 0, 0.5), -3px 0 0 rgba(0, 0, 255, 0.5); }
+  25%  { opacity: 0.7; transform: translateX(2px); text-shadow: -2px 0 0 rgba(255, 0, 0, 0.4), 2px 0 0 rgba(0, 255, 0, 0.4); }
+  50%  { opacity: 0.9; transform: translateX(-1px); text-shadow: 1px 0 0 rgba(0, 255, 255, 0.3), -1px 0 0 rgba(255, 0, 255, 0.3); }
+  100% { opacity: 1; transform: translateX(0); text-shadow: var(--phosphor-glow); }
+}
+
+@keyframes lineDigitalCorrupt {
+  0%   { opacity: 0; filter: blur(2px); transform: scaleY(1.02); }
+  16%  { opacity: 0.5; filter: blur(1px); content: '░▒▓█'; }
+  33%  { opacity: 0.7; filter: blur(0.5px); transform: scaleY(0.99); }
+  50%  { opacity: 0.9; filter: blur(0); transform: scaleY(1.01); }
+  66%  { opacity: 1; transform: scaleY(1); }
+  100% { opacity: 1; filter: blur(0); transform: scaleY(1); }
 }
 
 /* ── Boot intro: progress bar ──────────────────────────────────────── */
@@ -217,6 +297,191 @@
   100% { clip-path: inset(0 0 90% 0); transform: translateX(0); }
 }
 
+/* ── Techno glitch overlay ────────────────────────────────────────── */
+
+.technoGlitchContainer {
+  animation: technoGlitchFlash 0.08s steps(4) infinite;
+}
+
+.technoGlitchOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background: rgba(0, 255, 255, 0.04);
+}
+
+.technoGlitchJitter {
+  animation: technoGlitchJitter 0.03s steps(2) infinite;
+}
+
+.technoGlitchContent {
+  animation: technoGlitchContentShift 0.05s steps(3) infinite;
+}
+
+.technoGlitchLine {
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6), 2px 0 0 rgba(255, 0, 0, 0.3), -2px 0 0 rgba(0, 0, 255, 0.3);
+  letter-spacing: 3px;
+}
+
+/* ── Theme cycling overlay — rapid hue shifts during boot ─────────── */
+
+.themeCycleContainer {
+  animation: themeCycleBg 0.08s steps(3) infinite;
+}
+
+.themeCycleOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  animation: themeCycleHue 0.12s steps(4) infinite;
+}
+
+.themeCycleContent {
+  animation: themeCycleContent 0.15s steps(3) infinite;
+}
+
+/* ── Screen tear effect ───────────────────────────────────────────── */
+
+.screenTear {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
+  );
+  animation: screenTear 0.15s steps(3) infinite;
+}
+
+/* ── RGB split effect ─────────────────────────────────────────────── */
+
+.rgbSplit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  animation: rgbSplit 0.08s steps(2) infinite;
+  mix-blend-mode: screen;
+}
+
+.rgbSplit::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 0, 0, 0.08);
+  transform: translateX(-3px);
+}
+
+.rgbSplit::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 255, 0.08);
+  transform: translateX(3px);
+}
+
+/* ── Scanlines ────────────────────────────────────────────────────── */
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 1px,
+    rgba(0, 0, 0, 0.15) 1px,
+    rgba(0, 0, 0, 0.15) 2px
+  );
+  z-index: 5;
+}
+
+/* ── Digital noise ────────────────────────────────────────────────── */
+
+.digitalNoise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  animation: digitalNoise 0.1s steps(5) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ── Techno glitch keyframes ──────────────────────────────────────── */
+
+@keyframes themeCycleBg {
+  0%   { background: #001a00; }
+  25%  { background: #1a1a00; }
+  50%  { background: #001a1a; }
+  75%  { background: #1a001a; }
+  100% { background: #001a00; }
+}
+
+@keyframes themeCycleHue {
+  0%   { background: rgba(0, 255, 0, 0.06); filter: hue-rotate(0deg); }
+  25%  { background: rgba(255, 255, 0, 0.06); filter: hue-rotate(90deg); }
+  50%  { background: rgba(0, 255, 255, 0.06); filter: hue-rotate(180deg); }
+  75%  { background: rgba(255, 0, 255, 0.06); filter: hue-rotate(270deg); }
+  100% { background: rgba(0, 255, 0, 0.06); filter: hue-rotate(360deg); }
+}
+
+@keyframes themeCycleContent {
+  0%   { filter: hue-rotate(0deg) brightness(1.2); }
+  33%  { filter: hue-rotate(120deg) brightness(0.9); }
+  66%  { filter: hue-rotate(240deg) brightness(1.1); }
+  100% { filter: hue-rotate(360deg) brightness(1); }
+}
+
+@keyframes technoGlitchFlash {
+  0%   { background: var(--phosphor-bg); }
+  25%  { background: #000a0a; }
+  50%  { background: var(--phosphor-bg); }
+  75%  { background: #001a1a; }
+  100% { background: var(--phosphor-bg); }
+}
+
+@keyframes technoGlitchJitter {
+  0%   { transform: translate(0, 0) scaleY(1); }
+  50%  { transform: translate(2px, -1px) scaleY(1.003); }
+  100% { transform: translate(-1px, 1px) scaleY(0.997); }
+}
+
+@keyframes technoGlitchContentShift {
+  0%   { transform: translateX(0); text-shadow: var(--phosphor-glow); }
+  33%  { transform: translateX(3px); text-shadow: 2px 0 0 rgba(255, 0, 0, 0.4), -2px 0 0 rgba(0, 0, 255, 0.4); }
+  66%  { transform: translateX(-2px); text-shadow: -1px 0 0 rgba(0, 255, 0, 0.3), 1px 0 0 rgba(255, 0, 255, 0.3); }
+  100% { transform: translateX(0); text-shadow: var(--phosphor-glow); }
+}
+
+@keyframes screenTear {
+  0%   { clip-path: inset(0 0 85% 0); transform: translateX(0); }
+  25%  { clip-path: inset(20% 0 50% 0); transform: translateX(6px); }
+  50%  { clip-path: inset(45% 0 25% 0); transform: translateX(-4px); }
+  75%  { clip-path: inset(70% 0 5% 0); transform: translateX(3px); }
+  100% { clip-path: inset(0 0 85% 0); transform: translateX(0); }
+}
+
+@keyframes rgbSplit {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(4px); }
+  100% { transform: translateX(-3px); }
+}
+
+@keyframes digitalNoise {
+  0%   { background-position: 0 0; }
+  20%  { background-position: -50px 30px; }
+  40%  { background-position: 20px -40px; }
+  60%  { background-position: -30px 50px; }
+  80%  { background-position: 40px -20px; }
+  100% { background-position: 0 0; }
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -225,6 +490,104 @@
 @keyframes pulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
+}
+
+/* ── Snake game ────────────────────────────────────────────────────── */
+
+.snakeStatus {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
+  padding: 4px 0;
+  letter-spacing: 1px;
+}
+
+.snakeGrid {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--phosphor);
+  box-shadow: 0 0 10px var(--phosphor-glow), inset 0 0 6px rgba(0, 255, 0, 0.05);
+}
+
+.snakeRow {
+  display: flex;
+}
+
+.snakeCell {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-terminal);
+  font-size: 14px;
+  color: var(--phosphor-bg);
+  background: transparent;
+}
+
+.snakeBorder {
+  background: rgba(0, 255, 0, 0.08);
+}
+
+.snakeHead {
+  color: #000;
+  background: var(--phosphor);
+  text-shadow: none;
+  font-weight: bold;
+  animation: snakePulse 0.3s ease-in-out infinite;
+}
+
+.snakeBody {
+  background: var(--phosphor);
+  opacity: 0.6;
+  color: transparent;
+}
+
+.snakeFood {
+  color: var(--phosphor);
+  text-shadow: 0 0 8px var(--phosphor-glow-strong);
+  animation: snakeFoodPulse 0.5s ease-in-out infinite;
+}
+
+.snakeDead {
+  background: #ff4444;
+  animation: snakeDie 0.3s ease-out;
+}
+
+.snakeHint {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 0;
+  animation: blink 1.2s steps(1) infinite;
+}
+
+.snakeEndMsg {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow-strong);
+  font-size: 14px;
+  text-align: center;
+  padding: 8px 0;
+  letter-spacing: 1px;
+}
+
+@keyframes snakePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes snakeFoodPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+@keyframes snakeDie {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
 
 /* Responsive adjustments */

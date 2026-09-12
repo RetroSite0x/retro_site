@@ -24,12 +24,21 @@ function saveHistory(history: string[]) {
   }
 }
 
+const DEFAULT_ALIASES: Record<string, string> = {
+  ll: 'ls -la',
+  la: 'ls -a',
+  '..': 'cd ..',
+  '...': 'cd ../..',
+  cls: 'clear',
+};
+
 interface TerminalState {
   history: HistoryEntry[];
   currentInput: string;
   cursorPos: number;
   commandHistory: string[];
   historyIndex: number;
+  aliases: Record<string, string>;
 
   appendHistory: (entry: HistoryEntry) => void;
   executeCommand: (input: string) => void;
@@ -53,6 +62,7 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
   cursorPos: 0,
   commandHistory: loadHistory(),
   historyIndex: -1,
+  aliases: { ...DEFAULT_ALIASES },
 
   appendHistory: (entry) => {
     set((s) => ({

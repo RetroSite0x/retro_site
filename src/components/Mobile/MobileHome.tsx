@@ -1,34 +1,35 @@
 import { identity } from '../../data/portfolio';
+import { RetroIcon, type RetroIconName } from '../icons/RetroIcon';
 import styles from '../../styles/components/mobile.module.css';
 
 type AppId = 'terminal' | 'files' | 'dashboard' | 'browser' | 'contact';
 
 interface AppTile {
   id: AppId;
-  icon: string;
+  icon: RetroIconName;
   name: string;
 }
 
 const APP_TILES: readonly AppTile[] = [
-  { id: 'terminal',  icon: '>', name: 'Terminal' },
-  { id: 'files',     icon: '□', name: 'Files' },
-  { id: 'dashboard', icon: '◎', name: 'Dashboard' },
-  { id: 'browser',   icon: '◇', name: 'Browser' },
-  { id: 'contact',   icon: '@', name: 'Contact' },
+  { id: 'terminal',  icon: 'terminal',  name: 'Terminal' },
+  { id: 'files',     icon: 'files',     name: 'Files' },
+  { id: 'dashboard', icon: 'dashboard', name: 'Dashboard' },
+  { id: 'browser',   icon: 'browser',   name: 'Browser' },
+  { id: 'contact',   icon: 'contact',   name: 'Contact' },
 ] as const;
 
 interface FolderShortcut {
   label: string;
-  icon: string;
+  icon: RetroIconName;
   target: AppId;
   path?: string;
 }
 
 const FOLDER_SHORTCUTS: readonly FolderShortcut[] = [
-  { label: 'Projects', icon: '📁', target: 'files', path: '/projects' },
-  { label: 'Papers',   icon: '📄', target: 'files', path: '/papers' },
-  { label: 'Logs',     icon: '📋', target: 'files', path: '/logs' },
-  { label: 'About',    icon: 'ℹ',  target: 'contact' },
+  { label: 'Projects', icon: 'projects', target: 'files', path: '/projects' },
+  { label: 'Papers',   icon: 'papers',   target: 'files', path: '/papers' },
+  { label: 'Logs',     icon: 'logs',     target: 'files', path: '/logs' },
+  { label: 'About',    icon: 'contact',  target: 'contact' },
 ] as const;
 
 interface MobileHomeProps {
@@ -54,7 +55,7 @@ export function MobileHome({ onOpenApp }: MobileHomeProps) {
               className={styles.appTile}
               onClick={() => onOpenApp(tile.id)}
             >
-              <span className={styles.appTileIcon}>{tile.icon}</span>
+              <span className={styles.appTileIcon}><RetroIcon name={tile.icon} size={30} /></span>
               <span className={styles.appTileName}>{tile.name}</span>
             </button>
           ))}
@@ -71,7 +72,7 @@ export function MobileHome({ onOpenApp }: MobileHomeProps) {
               className={styles.folderBtn}
               onClick={() => onOpenApp(folder.target)}
             >
-              <span className={styles.folderIcon}>{folder.icon}</span>
+              <span className={styles.folderIcon}><RetroIcon name={folder.icon} size={20} /></span>
               {folder.label}
             </button>
           ))}

@@ -185,18 +185,61 @@ export function MenuBar() {
       EDIT: {
         label: 'EDIT',
         items: [
-          { label: 'Cut', action: () => {} },
-          { label: 'Copy', action: () => {} },
-          { label: 'Paste', action: () => {} },
+          { label: 'Cut', action: () => {
+            const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+              const start = el.selectionStart ?? 0;
+              const end = el.selectionEnd ?? 0;
+              if (start !== end) {
+                navigator.clipboard?.writeText(el.value.substring(start, end)).catch(() => {});
+                el.value = el.value.substring(0, start) + el.value.substring(end);
+                el.selectionStart = el.selectionEnd = start;
+              }
+            }
+          }},
+          { label: 'Copy', action: () => {
+            const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+              const start = el.selectionStart ?? 0;
+              const end = el.selectionEnd ?? 0;
+              if (start !== end) {
+                navigator.clipboard?.writeText(el.value.substring(start, end)).catch(() => {});
+              }
+            } else {
+              const selection = window.getSelection()?.toString();
+              if (selection) {
+                navigator.clipboard?.writeText(selection).catch(() => {});
+              }
+            }
+          }},
+          { label: 'Paste', action: () => {
+            const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+              navigator.clipboard?.readText().then(text => {
+                const start = el.selectionStart ?? 0;
+                const end = el.selectionEnd ?? 0;
+                el.value = el.value.substring(0, start) + text + el.value.substring(end);
+                el.selectionStart = el.selectionEnd = start + text.length;
+              }).catch(() => {});
+            }
+          }},
           { label: '', separator: true },
-          { label: 'Select All', action: () => {} },
+          { label: 'Select All', action: () => {
+            const el = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+            if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+              el.select();
+            } else {
+              window.getSelection()?.selectAllChildren(document.body);
+            }
+          }},
         ],
       },
       VIEW: {
         label: 'VIEW',
         items: [
-          { label: 'Sort by Name', action: () => {} },
-          { label: 'Sort by Date', action: () => {} },
+          { label: 'Refresh', action: () => {
+            window.location.reload();
+          }},
         ],
       },
       PROJECTS: {
@@ -734,6 +777,24 @@ export function MenuBar() {
         })}
       </div>
       <div className={styles.menuRight}>
+        <span
+          className={styles.taskbarLink}
+          role="button"
+          tabIndex={0}
+          onClick={() => useWindowsStore.getState().openWindow({ title: 'contact', content: { type: 'fileViewer', filePath: '/home/guest/contact.md' } })}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); useWindowsStore.getState().openWindow({ title: 'contact', content: { type: 'fileViewer', filePath: '/home/guest/contact.md' } }); } }}
+        >
+          📧 Contact
+        </span>
+        <span
+          className={styles.taskbarLink}
+          role="button"
+          tabIndex={0}
+          onClick={() => useWindowsStore.getState().openWindow({ title: 'resume', content: { type: 'fileViewer', filePath: '/home/guest/resume.txt' } })}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); useWindowsStore.getState().openWindow({ title: 'resume', content: { type: 'fileViewer', filePath: '/home/guest/resume.txt' } }); } }}
+        >
+          📄 Resume
+        </span>
         <span className={styles.clock} aria-label="Current date">
           {clock}
         </span>

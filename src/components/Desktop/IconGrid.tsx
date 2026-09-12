@@ -2,11 +2,13 @@ import { useState, useCallback, useRef } from 'react';
 import { DesktopIcon } from './DesktopIcon';
 import { useWindowsStore } from '../../store/useWindows';
 import { useIconPositionsStore } from '../../store/useIconPositions';
+import { openMemoire } from '../Terminal/commands/cmd_memoire';
+import type { RetroIconName } from '../icons/RetroIcon';
 import styles from '../../styles/components/menu-bar.module.css';
 
 interface DesktopEntry {
   label: string;
-  icon: string;
+  icon: RetroIconName;
   path: string;
 }
 
@@ -17,15 +19,15 @@ const PAD_X = 24;
 const PAD_Y = 20;
 
 const DESKTOP_ENTRIES: DesktopEntry[] = [
-  { label: 'projects', icon: '[📁]', path: '/projects' },
-  { label: 'logs', icon: '[📁]', path: '/logs' },
-  { label: 'lab', icon: '[📁]', path: '/lab' },
-  { label: 'papers', icon: '[📁]', path: '/papers' },
-  { label: 'music', icon: '[📁]', path: '/music' },
-  { label: 'art', icon: '[📁]', path: '/art' },
-  { label: 'blog', icon: '[📝]', path: '/blog' },
-  { label: 'secret', icon: '[📁]', path: '/secret' },
-  { label: 'trash', icon: '[🗑]', path: '/trash' },
+  { label: 'projects', icon: 'projects', path: '/projects' },
+  { label: 'logs', icon: 'logs', path: '/logs' },
+  { label: 'lab', icon: 'lab', path: '/lab' },
+  { label: 'papers', icon: 'papers', path: '/papers' },
+  { label: 'music', icon: 'music', path: '/music' },
+  { label: 'art', icon: 'art', path: '/art' },
+  { label: 'blog', icon: 'blog', path: '/blog' },
+  { label: 'secret', icon: 'secret', path: '/secret' },
+  { label: 'trash', icon: 'trash', path: '/trash' },
 ];
 
 function defaultPosition(index: number): { x: number; y: number } {
@@ -56,6 +58,8 @@ export function IconGrid() {
         openWindow({ title: 'web', content: { type: 'browser' }, width: 800, height: 500 });
       } else if (entry.path === '/files') {
         openWindow({ title: 'File Manager', content: { type: 'fileManager' }, width: 720, height: 480 });
+      } else if (entry.path === '/memoire') {
+        openMemoire();
       } else {
         openWindow({ title: entry.label, content: { type: 'directoryViewer', path: entry.path }, width: 560, height: 380 });
       }
@@ -70,9 +74,10 @@ export function IconGrid() {
     ...getPos(e.label, i),
   }));
   const extras: (DesktopEntry & { x: number; y: number })[] = [
-    { label: 'terminal', icon: '[>_]', path: '/terminal', ...getPos('terminal', DESKTOP_ENTRIES.length) },
-    { label: 'web', icon: '[🌐]', path: '/web', ...getPos('web', DESKTOP_ENTRIES.length + 1) },
-    { label: 'files', icon: '[🗂]', path: '/files', ...getPos('files', DESKTOP_ENTRIES.length + 2) },
+    { label: 'terminal', icon: 'terminal', path: '/terminal', ...getPos('terminal', DESKTOP_ENTRIES.length) },
+    { label: 'web', icon: 'web', path: '/web', ...getPos('web', DESKTOP_ENTRIES.length + 1) },
+    { label: 'files', icon: 'files', path: '/files', ...getPos('files', DESKTOP_ENTRIES.length + 2) },
+    { label: 'memoire', icon: 'memoire', path: '/memoire', ...getPos('memoire', DESKTOP_ENTRIES.length + 3) },
   ];
   const allEntriesFull = allEntries.concat(extras);
   const total = allEntriesFull.length;

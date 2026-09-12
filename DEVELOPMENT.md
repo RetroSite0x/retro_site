@@ -112,7 +112,7 @@ tests/{unit,integration,e2e}/
 
 ### 2.4 Window system
 
-- **Content types** (`types/window.ts`): `terminal`, `directoryViewer`, `fileViewer`, `imageViewer`, `browser`, `fileManager`.
+- **Content types** (`types/window.ts`): `terminal`, `directoryViewer`, `fileViewer`, `imageViewer`, `browser`, `fileManager`, `dashboard`, `memoire`.
 - `Window.tsx` routes content via a `switch`; sets inline `zIndex`.
 - Interactions wired: open/close/focus/minimize/maximize+restore/drag/8-way resize/cascade; maximized windows reflow on browser resize; taskbar restore.
 - Not wired: snapping/tiling, close animation.
@@ -144,6 +144,34 @@ tests/{unit,integration,e2e}/
 - `src/components/BootScreen/BootIntro.tsx` — renders committed lines, active typing, progress bar, spinner, count-up, glitch overlay, power-on flash. Decorative animations are suppressed under `prefers-reduced-motion: reduce`, but the sequence always progresses; `SKIP >>` is always available.
 - Pseudo-graphics use **ASCII-only glyphs** (`+ - | # -`) because VT323 lacks box-drawing/block glyphs and fallback fonts break alignment. The POST line uses the `post` line kind and renders without the shell prompt.
 - **Regression fixed (earlier version):** a reduced-motion branch called `setState` inside a state-keyed effect, causing an infinite render loop that trapped reduced-motion users on the intro with no SKIP.
+
+### 2.9 Memoire board (Supabase-backed bulletin board)
+
+A public bulletin board where visitors can pin messages. Runs in a draggable/resizable window, accessible from the terminal (`memoire` command) and a desktop icon.
+
+| File | Role |
+|---|---|
+| `src/types/memoire.ts` | `MemoirePost`, `MemoireMode`, constants (`MAX_HANDLE`, `MAX_MESSAGE`, `MIN_INTERVAL_MS`) |
+| `src/lib/memoire.ts` | `listPosts()`, `createPost()`, `getMemoireMode()`, `validateHandle`, `validateMessage`, `MemoireError` |
+| `src/components/Memoire/MemoireBoard.tsx` | React component (fetches & renders posts, handles create form) |
+| `src/styles/components/memoire.module.css` | Component styles |
+| `src/components/Terminal/commands/cmd_memoire.ts` | Terminal command + `openMemoire()` helper |
+
+**Supabase table:** `memoire` (columns: `id`, `handle`, `message`, `created_at`).
+**Migration:** `supabase/migrations/0001_memoire.sql` (create table + RLS insert-only for anon).
+
+**Env vars (required for remote mode):**
+
+| Variable | Purpose |
+|---|---|
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon/public key |
+
+**Local dev:** add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to `.env.local` (gitignored). Without these, the board falls back to localStorage with seed posts.
+
+**GitHub Pages deployment:** set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` as repository **variables** (Settings → Secrets and variables → Actions → Variables). The deploy workflow passes them to `npm run build` as env vars.
+
+**Security model:** Supabase anon key only + RLS policies (insert-only for anon role, no update/delete). Rate-limited client-side (`MEMOIRE_MIN_INTERVAL_MS = 20s`). The board degrades to localStorage when offline or env vars are missing.
 
 ---
 
@@ -302,7 +330,7 @@ Client-rendered SPA serves empty `<div id="root">`; social scrapers don't run JS
 
 Empty dirs create false expectations: `/bin`, `/tmp`, `/archive`, `/trash`, `projects/*/{source,tests,data,models}`.
 
-### 6.2 Command inventory (38)
+### 6.2 Command inventory (39)
 
 **Portfolio commands (15):**
 
@@ -323,6 +351,7 @@ Empty dirs create false expectations: `/bin`, `/tmp`, `/archive`, `/trash`, `pro
 | `timeline` | hardcoded (11 events) | synthesizes logs |
 | `neofetch` | hardcoded | ASCII logo + system info |
 | `sysinfo` | hardcoded | different role/languages than others |
+| `memoire` | Supabase / localStorage | bulletin board; opens window; sync handler with async fire-and-forget |
 
 **VFS-aware utilities:** `ls`, `cd`, `cat`, `pwd`, `grep`, `tree`, `mkdir` (tmp only), `touch` (tmp only).
 **Utilities:** `echo`, `clear`, `theme`.
@@ -414,8 +443,8 @@ Note: A11Y-01/02/03 were built by a subagent that was cancelled mid-edit; re-ver
 ### Phase 3 — Reach & polish — ◐ PARTIAL (Sep 2026)
 Shipped: SEO-02 (descriptive meta + Open Graph/Twitter + JSON-LD `Person`/`WebSite` + `<noscript>` fallback + `robots.txt` + `sitemap.xml`), A11Y-04 (skip-to-content + `#main` targets), A11Y-05 (all 4 theme `--phosphor-dim` raised to WCAG AA + `prefers-contrast: more`), A11Y-06 (motion toggle auto/on/off), PERF-02 (`npm run size` bundle budget + warn-only CI step). Hygiene: favicon, Vitest now exits 0 (pointer-capture polyfill), Discord domain verification file (`.well-known/discord`).
 Not applicable: SEO-01 (a JS prerender would capture the typing intro, not portfolio content — replaced by the JSON-LD + `<noscript>` + sitemap approach).
-Also shipped: FX-05 (WebGL CRT overlay on the terminal — gated off on mobile and when motion is off), DEL-01 (hidden Easter-egg commands), DEL-03 partial (Now page). Hygiene: CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-pages-artifact@v5` / `deploy-pages@v5` on Node 22; `test-setup.ts` now polyfills `matchMedia` + `ResizeObserver`.
-Remaining: DEL-03 guestbook (only).
+Also shipped: FX-05 (WebGL CRT overlay on the terminal — gated off on mobile and when motion is off), DEL-01 (hidden Easter-egg commands), DEL-03 (Now page + memoire board shipped).
+Hygiene: CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-pages-artifact@v5` / `deploy-pages@v5` on Node 22; `test-setup.ts` now polyfills `matchMedia` + `ResizeObserver`.
 
 ---
 
@@ -583,7 +612,7 @@ Remaining: DEL-03 guestbook (only).
 
 **DEL-01 · 5–10 hidden Easter-egg commands · ✅ SHIPPED**
 **DEL-02 · Theme-specific egg content · ✅ SHIPPED**
-**DEL-03 · Guestbook / Now page · ◐ PARTIAL** (Now page shipped; guestbook not built)
+**DEL-03 · Guestbook / Now page / Memoire board · ✅ SHIPPED**
 **DEL-04 · Selectable ASCII wallpapers (`ann`/`grid`/`circuit`/`none`) · ✅ SHIPPED**
 **DEL-04 · Occasional self-healing "kernel panic" boot variation · P3 · S · 🟢**
 

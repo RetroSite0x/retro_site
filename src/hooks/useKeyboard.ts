@@ -55,6 +55,46 @@ export function useKeyboard() {
           store.closeWindow(store.focusedId);
         }
       }
+
+      // Clipboard shortcuts (Ctrl+C/V/X/A)
+      if ((e.ctrlKey || e.metaKey) && !e.altKey) {
+        const target = e.target as HTMLElement | null;
+        const isInput = !!target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+
+        if (e.key === 'c' && !isInput) {
+          const selection = window.getSelection()?.toString();
+          if (selection) {
+            navigator.clipboard?.writeText(selection).catch(() => {});
+          }
+        }
+
+        if (e.key === 'x' && isInput) {
+          const input = target as HTMLInputElement | HTMLTextAreaElement;
+          const start = input.selectionStart ?? 0;
+          const end = input.selectionEnd ?? 0;
+          if (start !== end) {
+            const text = input.value.substring(start, end);
+            navigator.clipboard?.writeText(text).catch(() => {});
+            input.value = input.value.substring(0, start) + input.value.substring(end);
+            input.selectionStart = input.selectionEnd = start;
+          }
+        }
+
+        if (e.key === 'v' && isInput) {
+          navigator.clipboard?.readText().then(text => {
+            const input = target as HTMLInputElement | HTMLTextAreaElement;
+            const start = input.selectionStart ?? 0;
+            const end = input.selectionEnd ?? 0;
+            input.value = input.value.substring(0, start) + text + input.value.substring(end);
+            input.selectionStart = input.selectionEnd = start + text.length;
+          }).catch(() => {});
+        }
+
+        if (e.key === 'a' && isInput) {
+          const input = target as HTMLInputElement | HTMLTextAreaElement;
+          input.select();
+        }
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);

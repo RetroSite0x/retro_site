@@ -20,6 +20,30 @@ export function CRTOverlay() {
       }}
       aria-hidden="true"
     >
+      {/* SVG noise filter definition */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <filter id="noiseFilter">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.65"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+        </defs>
+      </svg>
+      {/* Film grain noise overlay */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          filter: 'url(#noiseFilter)',
+          opacity: 0.04,
+          mixBlendMode: 'overlay',
+        }}
+      />
       {/* Finer scanlines — 1px transparent, 1px overlay for subtlety */}
       <div
         style={{
@@ -102,20 +126,6 @@ export function CRTOverlay() {
           }}
         />
       )}
-      {/* Keyframe animations injected via style tag */}
-      <style>{`
-        @keyframes flicker {
-          0%, 100% { opacity: 0.02; }
-          50%      { opacity: 0.00; }
-        }
-        @keyframes refresh {
-          0%   { opacity: 0; }
-          10%  { opacity: 0; }
-          10.1% { opacity: 0.008; }
-          10.5% { opacity: 0; }
-          100% { opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 }

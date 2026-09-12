@@ -25,6 +25,7 @@ import {
   WORK_HEADING,
   WORK_ROLES,
   WELCOME_MSG,
+  TECHNO_GLITCH_LINES,
 } from '../lib/bootSequence';
 import { soundEngine } from '../lib/sound';
 import { useSystemStore } from '../store/useSystem';
@@ -33,7 +34,7 @@ import { useSystemStore } from '../store/useSystem';
 
 export interface CompletedLine {
   readonly text: string;
-  readonly kind: 'post' | 'command' | 'output' | 'blank' | 'ascii';
+  readonly kind: 'post' | 'command' | 'output' | 'blank' | 'ascii' | 'technoGlitch';
 }
 
 export interface BootRenderState {
@@ -48,6 +49,11 @@ export interface BootRenderState {
   glitchActive: boolean;
   powerOnFlash: boolean;
   isDone: boolean;
+  technoGlitchActive: boolean;
+  screenTearActive: boolean;
+  rgbSplitActive: boolean;
+  scanlineIntensity: number;
+  themeCycleActive: boolean;
 }
 
 const INITIAL_STATE: BootRenderState = {
@@ -62,11 +68,18 @@ const INITIAL_STATE: BootRenderState = {
   glitchActive: false,
   powerOnFlash: false,
   isDone: false,
+  technoGlitchActive: false,
+  screenTearActive: false,
+  rgbSplitActive: false,
+  scanlineIntensity: 0,
+  themeCycleActive: false,
 };
 
 // ── Constants ───────────────────────────────────────────────────────────────
 
-const MAX_DURATION_MS = 15_000;
+const UNSCALED_SEQUENCE_MS = 16_000;
+const BOOT_PACE_MULTIPLIER = 1.5;
+const MAX_DURATION_MS = Math.round(UNSCALED_SEQUENCE_MS * BOOT_PACE_MULTIPLIER) + 15_000;
 const PROMPT = 'nabil@retro:~$ ';
 
 // ── Timer tracking ──────────────────────────────────────────────────────────
@@ -75,13 +88,13 @@ function useTimerList() {
   const timers = useRef<number[]>([]);
 
   const schedule = useCallback((fn: () => void, delay: number): number => {
-    const id = window.setTimeout(fn, delay);
+    const id = window.setTimeout(fn, delay * BOOT_PACE_MULTIPLIER);
     timers.current.push(id);
     return id;
   }, []);
 
   const scheduleInterval = useCallback((fn: () => void, ms: number): number => {
-    const id = window.setInterval(fn, ms);
+    const id = window.setInterval(fn, ms * BOOT_PACE_MULTIPLIER);
     timers.current.push(id);
     return id;
   }, []);
@@ -153,6 +166,12 @@ function flattenBeats(beats: readonly BootBeat[]): CompletedLine[] {
       case 'glitch':
         lines.push({ text: '', kind: 'blank' });
         break;
+      case 'technoGlitch':
+        for (const l of TECHNO_GLITCH_LINES) {
+          lines.push({ text: l, kind: 'technoGlitch' });
+        }
+        lines.push({ text: '', kind: 'blank' });
+        break;
       case 'signOff':
         lines.push({ text: LINKS_LINE, kind: 'output' });
         lines.push({ text: '', kind: 'blank' });
@@ -208,6 +227,11 @@ export function useBootSequence(
       countupDisplay: null,
       glitchActive: false,
       powerOnFlash: false,
+      technoGlitchActive: false,
+      screenTearActive: false,
+      rgbSplitActive: false,
+      scanlineIntensity: 0,
+      themeCycleActive: false,
     }));
     setGeneration((g) => g + 1);
   }, []);
@@ -544,7 +568,54 @@ export function useBootSequence(
         break;
       }
 
-      // ─── BEAT 8: Sign-off ──────────────────────────────────────────
+      case 'technoGlitch': {
+        // Phase 1: Digital interference + theme cycling
+        setState((prev) => ({
+          ...prev,
+          technoGlitchActive: true,
+          rgbSplitActive: true,
+          screenTearActive: true,
+          scanlineIntensity: 0.8,
+          themeCycleActive: true,
+        }));
+        if (soundEnabled()) soundEngine.technoGlitchSound();
+
+        // Show glitch lines one by one with rapid theme cycling
+        let gi = 0;
+        const showGlitch = () => {
+          if (gi >= TECHNO_GLITCH_LINES.length) {
+            // Phase 2: Screen tear burst + theme settling
+            schedule(() => {
+              setState((prev) => ({
+                ...prev,
+                screenTearActive: true,
+              }));
+
+              // Phase 3: Recovery — stop theme cycling, settle
+              schedule(() => {
+                setState((prev) => ({
+                  ...prev,
+                  technoGlitchActive: false,
+                  rgbSplitActive: false,
+                  screenTearActive: false,
+                  scanlineIntensity: 0,
+                  themeCycleActive: false,
+                }));
+                if (soundEnabled()) soundEngine.bootChirp();
+                schedule(() => advanceBeat(), 200);
+              }, 400);
+            }, 300);
+            return;
+          }
+          addLine(TECHNO_GLITCH_LINES[gi], 'technoGlitch');
+          gi++;
+          schedule(showGlitch, 120);
+        };
+        showGlitch();
+
+        break;
+      }
+
       case 'signOff': {
         addLine(LINKS_LINE, 'output');
 

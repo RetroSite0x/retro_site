@@ -119,14 +119,20 @@ NAME
     grep - search file contents for patterns
 
 SYNOPSIS
-    grep [PATTERN] [FILE]...
+    grep [--fuzzy|-f] [PATTERN]
 
 DESCRIPTION
-    Search for PATTERN in each FILE. PATTERN is a regular expression.
+    Search for PATTERN in file contents. By default uses exact
+    substring matching.
+
+    --fuzzy, -f    Use approximate matching (Levenshtein distance
+                   ≤ 2). Matches lines where any word is close to
+                   the pattern. Fuzzy matches are prefixed with [~].
 
 EXAMPLES
-    grep "NLP" /home/guest/resume.txt    Find lines containing NLP
-    grep -i "error" /logs/2024.log       Case-insensitive search`,
+    grep "NLP"              Find files containing NLP
+    grep -f "NPLP"          Find files with words close to NPLP
+    grep --fuzzy "resum"    Find files with words close to resum`,
 
   theme: `THEME(1)                    User Commands                    THEME(1)
 

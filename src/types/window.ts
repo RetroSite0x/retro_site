@@ -5,7 +5,8 @@ export type WindowContent =
   | { type: 'imageViewer'; filePath: string }
   | { type: 'browser'; url?: string }
   | { type: 'fileManager' }
-  | { type: 'dashboard' };
+  | { type: 'dashboard' }
+  | { type: 'memoire' };
 
 export interface WindowState {
   id: string;

@@ -26,6 +26,7 @@ html, body, #root {
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
   text-shadow: var(--chromatic-aberration);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* No rounded corners — hard constraint */
@@ -129,6 +130,16 @@ img {
   image-rendering: pixelated;
 }
 
+.snapPreview {
+  position: fixed;
+  z-index: 99999;
+  pointer-events: none;
+  border: 2px solid var(--phosphor-dim);
+  background: var(--phosphor-dim);
+  opacity: 0.12;
+  transition: left 120ms ease-out, top 120ms ease-out, width 120ms ease-out, height 120ms ease-out;
+}
+
 .skip-to-content {
   position: absolute;
   top: -100%;
@@ -144,6 +155,20 @@ img {
 }
 .skip-to-content:focus-visible {
   top: 0;
+}
+
+/* CRT overlay keyframes — moved from CRTOverlay.tsx to avoid per-render injection */
+@keyframes flicker {
+  0%, 100% { opacity: 0.02; }
+  50%      { opacity: 0.00; }
+}
+
+@keyframes refresh {
+  0%   { opacity: 0; }
+  10%  { opacity: 0; }
+  10.1% { opacity: 0.008; }
+  10.5% { opacity: 0; }
+  100% { opacity: 0; }
 }
 
 @media (prefers-contrast: more) {

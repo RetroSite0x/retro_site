@@ -62,11 +62,18 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     glitchActive,
     powerOnFlash,
     isDone,
+    technoGlitchActive,
+    screenTearActive,
+    rgbSplitActive,
+    scanlineIntensity,
+    themeCycleActive,
   } = state;
 
   const containerClass = [
     styles.container,
     powerOnFlash && !reducedMotion ? styles.degauss : '',
+    technoGlitchActive ? styles.technoGlitchContainer : '',
+    themeCycleActive ? styles.themeCycleContainer : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -96,29 +103,58 @@ export function BootIntro({ onComplete }: BootIntroProps) {
         </div>
       )}
 
+      {/* Techno glitch overlay — with scanlines, RGB split, screen tear, digital noise */}
+      {technoGlitchActive && (
+        <div
+          className={`${styles.technoGlitchOverlay} ${!reducedMotion ? styles.technoGlitchJitter : ''}`}
+          aria-hidden="true"
+        >
+          <div className={styles.scanlines} style={{ opacity: scanlineIntensity }} />
+          {rgbSplitActive && <div className={styles.rgbSplit} />}
+          {screenTearActive && <div className={styles.screenTear} />}
+          <div className={styles.digitalNoise} />
+        </div>
+      )}
+
+      {/* Theme cycling overlay — rapid color shifts */}
+      {themeCycleActive && (
+        <div className={styles.themeCycleOverlay} aria-hidden="true" />
+      )}
+
       <div
-        className={`${styles.content} ${glitchActive && !reducedMotion ? styles.glitchContent : ''}`}
+        className={`${styles.content} ${glitchActive && !reducedMotion ? styles.glitchContent : ''} ${technoGlitchActive && !reducedMotion ? styles.technoGlitchContent : ''} ${themeCycleActive && !reducedMotion ? styles.themeCycleContent : ''}`}
         aria-label="Boot sequence typing intro"
       >
-        {/* Committed lines */}
-        {lines.map((line, i) => (
-          <div key={i} className={styles.line}>
-            {line.kind === 'post' ? (
-              <span className={styles.post}>{line.text}</span>
-            ) : line.kind === 'command' ? (
-              <span>
-                <span className={styles.prompt}>{prompt}</span>
-                {line.text}
-              </span>
-            ) : line.kind === 'ascii' ? (
-              <span className={styles.ascii}>{line.text}</span>
-            ) : line.kind === 'output' ? (
-              <span>{line.text}</span>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-          </div>
-        ))}
+        {lines.map((line, i) => {
+          const lineAnimClass = reducedMotion ? '' :
+            line.kind === 'post' ? styles.lineScanIn :
+            line.kind === 'command' ? styles.lineTypewriterIn :
+            line.kind === 'output' ? styles.lineFadeUp :
+            line.kind === 'ascii' ? styles.lineGlitchIn :
+            line.kind === 'technoGlitch' ? styles.lineDigitalCorrupt :
+            '';
+
+          return (
+            <div key={i} className={`${styles.line} ${lineAnimClass}`}>
+              {line.kind === 'post' ? (
+                <span className={styles.post}>{line.text}</span>
+              ) : line.kind === 'command' ? (
+                <span>
+                  <span className={styles.prompt}>{prompt}</span>
+                  {line.text}
+                </span>
+              ) : line.kind === 'ascii' ? (
+                <span className={styles.ascii}>{line.text}</span>
+              ) : line.kind === 'output' ? (
+                <span>{line.text}</span>
+              ) : line.kind === 'technoGlitch' ? (
+                <span className={styles.technoGlitchLine}>{line.text}</span>
+              ) : (
+                <span>&nbsp;</span>
+              )}
+            </div>
+          );
+        })}
 
         {/* Progress bar (powerOn beat) */}
         {progressPercent > 0 && progressPercent < 100 && (

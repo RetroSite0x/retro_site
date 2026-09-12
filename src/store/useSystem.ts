@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { BootPhase, PhosphorTheme } from '../types/system';
+import type { BootPhase, PhosphorTheme, CustomThemeColors } from '../types/system';
 import { safeStorage } from '../lib/storage';
 
 export type MotionMode = 'auto' | 'on' | 'off';
@@ -17,6 +17,7 @@ interface SystemState {
   volume: number;
   username: string;
   motion: MotionMode;
+  customThemes: Record<string, CustomThemeColors>;
 
   advanceBoot: () => void;
   login: (username: string) => void;
@@ -27,9 +28,29 @@ interface SystemState {
   setVolume: (v: number) => void;
   setMotion: (motion: MotionMode) => void;
   logout: () => void;
+  addCustomTheme: (name: string, colors: CustomThemeColors) => void;
+  getCustomThemes: () => Record<string, CustomThemeColors>;
 }
 
-const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'desktop'];
+const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'challenge', 'desktop'];
+
+const CUSTOM_THEMES_KEY = 'nabilos-custom-themes';
+
+function loadCustomThemes(): Record<string, CustomThemeColors> {
+  try {
+    const stored = safeStorage().getItem(CUSTOM_THEMES_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+}
+
+function saveCustomThemes(themes: Record<string, CustomThemeColors>): void {
+  try {
+    safeStorage().setItem(CUSTOM_THEMES_KEY, JSON.stringify(themes));
+  } catch {
+  }
+}
 
 export const useSystemStore = create<SystemState>()(
   persist(
@@ -43,6 +64,7 @@ export const useSystemStore = create<SystemState>()(
       volume: 0.5,
       username: 'guest',
       motion: 'auto',
+      customThemes: loadCustomThemes(),
 
       advanceBoot: () => {
         const current = get().bootPhase;
@@ -66,6 +88,15 @@ export const useSystemStore = create<SystemState>()(
       logout: () => {
         set({ isLoggedIn: false, bootPhase: 'login' });
       },
+
+      addCustomTheme: (name: string, colors: CustomThemeColors) => {
+        const themes = get().customThemes;
+        const updated = { ...themes, [name]: colors };
+        saveCustomThemes(updated);
+        set({ customThemes: updated });
+      },
+
+      getCustomThemes: () => get().customThemes,
     }),
     {
       name: 'nabilos-system',

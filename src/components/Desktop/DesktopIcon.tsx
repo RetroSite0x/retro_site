@@ -1,9 +1,10 @@
 import { useCallback, useRef } from 'react';
+import { RetroIcon, type RetroIconName } from '../icons/RetroIcon';
 import styles from '../../styles/components/menu-bar.module.css';
 
 interface DesktopIconProps {
   label: string;
-  icon: string;
+  icon: RetroIconName;
   x: number;
   y: number;
   isDragged: boolean;
@@ -94,7 +95,7 @@ export function DesktopIcon({
       role={role}
       aria-label={ariaLabel}
     >
-      <div className={styles.iconSymbol}>{icon}</div>
+      <div className={styles.iconSymbol}><RetroIcon name={icon} size={44} /></div>
       <div className={styles.iconLabel}>{label}</div>
     </div>
   );
