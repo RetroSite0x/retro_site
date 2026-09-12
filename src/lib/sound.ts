@@ -135,6 +135,82 @@ class SoundEngine {
     osc.stop(ctx.currentTime + 0.1);
   }
 
+  /** CRT degauss/power-on hum: 60 Hz sine fading in then out (~0.8s) with a faint 15.7 kHz whine */
+  crtPowerOn(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+
+    // 60 Hz hum
+    const hum = ctx.createOscillator();
+    hum.type = 'sine';
+    hum.frequency.setValueAtTime(60, t);
+    const humGain = ctx.createGain();
+    humGain.gain.setValueAtTime(0.001, t);
+    humGain.gain.linearRampToValueAtTime(this.gain(0.12), t + 0.15);
+    humGain.gain.linearRampToValueAtTime(this.gain(0.08), t + 0.5);
+    humGain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+    hum.connect(humGain);
+    humGain.connect(ctx.destination);
+    hum.start(t);
+    hum.stop(t + 0.8);
+
+    // Faint high-frequency whine (15.7 kHz — classic CRT line frequency)
+    const whine = ctx.createOscillator();
+    whine.type = 'sine';
+    whine.frequency.setValueAtTime(15700, t);
+    const whineGain = ctx.createGain();
+    whineGain.gain.setValueAtTime(0.001, t);
+    whineGain.gain.linearRampToValueAtTime(this.gain(0.02), t + 0.2);
+    whineGain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+    whine.connect(whineGain);
+    whineGain.connect(ctx.destination);
+    whine.start(t);
+    whine.stop(t + 0.7);
+  }
+
+  /** Tri-tone boot chime: C5 (523) → E5 (659) → G5 (784) as sine waves, ~0.4s */
+  bootChime(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const notes: [number, number][] = [
+      [523, 0],      // C5 at 0s
+      [659, 0.12],   // E5 at 120ms
+      [784, 0.24],   // G5 at 240ms
+    ];
+    for (const [freq, delay] of notes) {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t + delay);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.001, t + delay);
+      g.gain.linearRampToValueAtTime(this.gain(0.07), t + delay + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.16);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(t + delay);
+      osc.stop(t + delay + 0.16);
+    }
+  }
+
+  /** Very short soft "accepted" blip (~40ms) */
+  commandOk(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(880, t);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.gain(0.06), t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.04);
+  }
+
   /** Orchestrated boot sound: bootChirp → 200ms pause → diskSeek → 300ms pause → bootChirp */
   bootSequence(): void {
     this.bootChirp();

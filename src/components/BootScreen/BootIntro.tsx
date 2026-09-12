@@ -29,10 +29,12 @@ export function BootIntro({ onComplete }: BootIntroProps) {
 
   const { state, skip, prompt } = useBootSequence(BOOT_BEATS, onComplete);
 
-  // Play boot sound once on mount
+  // Play boot audio once on mount: CRT power-on hum, then chime after a beat
   useEffect(() => {
     if (soundEnabled) {
-      soundEngine.bootSequence();
+      soundEngine.crtPowerOn();
+      const timer = setTimeout(() => soundEngine.bootChime(), 600);
+      return () => clearTimeout(timer);
     }
   }, [soundEnabled]);
 

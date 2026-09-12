@@ -85,6 +85,8 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
       store.appendHistory({ ...result, timestamp: Date.now() });
       if (result.type === 'error' && useSystemStore.getState().soundEnabled) {
         soundEngine.errorBuzz();
+      } else if (result.type !== 'error' && useSystemStore.getState().soundEnabled) {
+        soundEngine.commandOk();
       }
     }
   },
