@@ -1,15 +1,19 @@
 import type { CommandHandler } from '../../../types/terminal';
+import { blogPosts } from '../../../data/portfolio';
 
 export const cmd_blog: CommandHandler = () => {
-  const content = [
+  const lines: string[] = [
     'BLOG',
-    '\u2550'.repeat(40),
+    '='.repeat(40),
     '',
-    '  hello-world.md    Welcome to my digital garden',
-    '  beni-story.md     The Story Behind BENI',
-    '',
-    "Use 'cat /blog/<filename>' to read.",
-  ].join('\n');
+  ];
 
-  return { type: 'output', content };
+  for (const post of blogPosts) {
+    lines.push(`  ${post.file.padEnd(20)}${post.title}`);
+  }
+
+  lines.push('');
+  lines.push("Use 'cat /blog/<filename>' to read.");
+
+  return { type: 'output', content: lines.join('\n') };
 };

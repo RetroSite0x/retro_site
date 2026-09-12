@@ -1,19 +1,27 @@
 import type { CommandHandler } from '../../../types/terminal';
+import { identity, education, focusSummary, motto } from '../../../data/portfolio';
+
+const BOX_WIDTH = 48;
+
+function pad(text: string, width: number): string {
+  return text + ' '.repeat(Math.max(0, width - text.length));
+}
 
 export const cmd_about: CommandHandler = () => {
+  const sep = '-'.repeat(BOX_WIDTH);
   const content = [
-    '\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557',
-    '\u2551  ANN NASER NABIL                                \u2551',
-    '\u2551  AI Engineer | Applied Data Scientist | Researcher\u2551',
-    '\u2560\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2563',
-    '\u2551  Location:  Dhaka, Bangladesh                   \u2551',
-    '\u2551  Education: MS Economics (Jahangirnagar Univ)   \u2551',
-    '\u2551             BS Economics (Jahangirnagar Univ)   \u2551',
-    '\u2551  Focus:     Bangla NLP, Computational Social Sci\u2551',
-    '\u2551  Status:    Online                              \u2551',
-    '\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d',
+    `+${sep}+`,
+    `|  ${pad(identity.displayName, BOX_WIDTH - 3)}|`,
+    `|  ${pad(identity.role, BOX_WIDTH - 3)}|`,
+    `+${sep}+`,
+    `|  ${pad(`Location:  ${identity.location}`, BOX_WIDTH - 3)}|`,
+    `|  ${pad(`Education: ${education[0].degree} (${education[0].institution})`, BOX_WIDTH - 3)}|`,
+    `|  ${pad(`             ${education[1].degree} (${education[1].institution})`, BOX_WIDTH - 3)}|`,
+    `|  ${pad(`Focus:     ${focusSummary}`, BOX_WIDTH - 3)}|`,
+    `|  ${pad(`Status:    ${identity.status}`, BOX_WIDTH - 3)}|`,
+    `+${sep}+`,
     '',
-    '\u201c\u099a\u09bf\u09a8\u09cd\u09a4\u09be \u0995\u09b0\u09cb, \u09a4\u09be\u09b0\u09aa\u09b0 \u0995\u09cb\u09a1 \u0995\u09b0\u09cb\u0964\u201d',
+    motto,
   ].join('\n');
 
   return { type: 'output', content };

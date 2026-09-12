@@ -1,19 +1,20 @@
 import type { CommandHandler } from '../../../types/terminal';
+import { identity, links } from '../../../data/portfolio';
 
 export const cmd_contact: CommandHandler = () => {
   const content = [
     'CONTACT',
-    '\u2550'.repeat(40),
+    '='.repeat(40),
     '',
-    '  Email:     ann.n.nabil@gmail.com',
-    '  GitHub:    github.com/AnnNaserNabil',
-    '  Website:   nabil.iam.bd',
-    '  Academic:  Ann-Naser-Nabil.github.io',
-    '  LinkedIn:  linkedin.com/in/ann-naser-nabil',
-    '  Twitter:   @ann_naser',
-    '  HuggingFace: huggingface.co/AnnNaserNabil',
-    '  arXiv:     arxiv.org/search/?query=Ann+Naser+Nabil',
-    '  Location:  Dhaka, Bangladesh',
+    `  Email:     ${identity.email}`,
+    `  GitHub:    github.com/${links.githubUsername}`,
+    `  Website:   ${links.website.replace('https://', '')}`,
+    `  Academic:  ${links.academic.replace('https://', '')}`,
+    `  LinkedIn:  ${links.linkedin.replace('https://', '')}`,
+    `  Twitter:   ${links.xHandle}`,
+    `  HuggingFace: ${links.huggingface.replace('https://', '')}`,
+    `  arXiv:     ${links.arxivSearch.replace('https://', '')}`,
+    `  Location:  ${identity.location}`,
   ].join('\n');
 
   return { type: 'output', content };
