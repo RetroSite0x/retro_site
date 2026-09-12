@@ -27,6 +27,17 @@
   letter-spacing: 0.3px;
 }
 
+.prompt {
+  color: var(--phosphor-dim);
+  user-select: none;
+}
+
+.post {
+  color: var(--phosphor-dim);
+  text-shadow: 0 0 2px var(--phosphor-dim);
+  letter-spacing: 0.3px;
+}
+
 .line:last-child {
   min-height: 0;
 }
@@ -94,6 +105,116 @@
   color: #ff4444;
   text-shadow: 0 0 4px rgba(255, 68, 68, 0.3);
   margin-bottom: var(--space-sm, 8px);
+}
+
+/* ── Boot intro: ASCII card ─────────────────────────────────────────── */
+
+.ascii {
+  white-space: pre;
+  letter-spacing: 0;
+}
+
+/* ── Boot intro: progress bar ──────────────────────────────────────── */
+
+.progressFill {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
+  letter-spacing: 1px;
+}
+
+.progressLabel {
+  color: var(--phosphor-dim);
+  letter-spacing: 0.5px;
+}
+
+/* ── Boot intro: spinner ───────────────────────────────────────────── */
+
+.spinner {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
+  font-weight: bold;
+}
+
+/* ── Boot intro: countup ───────────────────────────────────────────── */
+
+.countup {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow-strong);
+  letter-spacing: 0.5px;
+}
+
+/* ── Boot intro: phosphor flash + degauss ──────────────────────────── */
+
+.flashOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--phosphor);
+  pointer-events: none;
+  z-index: 100;
+  animation: phosphorFlash 0.15s ease-out forwards;
+}
+
+.degauss {
+  animation: degaussWobble 0.3s ease-out;
+}
+
+@keyframes phosphorFlash {
+  0%   { opacity: 0.35; }
+  100% { opacity: 0; }
+}
+
+@keyframes degaussWobble {
+  0%   { transform: scale(1) translateX(0); filter: brightness(2.5); }
+  20%  { transform: scale(1.008) translateX(-2px); filter: brightness(1.4); }
+  40%  { transform: scale(0.994) translateX(2px); filter: brightness(1.2); }
+  60%  { transform: scale(1.004) translateX(-1px); filter: brightness(1.1); }
+  80%  { transform: scale(0.998) translateX(0.5px); filter: brightness(1.05); }
+  100% { transform: scale(1) translateX(0); filter: brightness(1); }
+}
+
+/* ── Boot intro: glitch overlay ────────────────────────────────────── */
+
+.glitchOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  background: var(--phosphor-bg);
+  opacity: 0.92;
+}
+
+.glitchJitter {
+  animation: glitchJitter 0.05s steps(2) infinite;
+}
+
+.glitchLine {
+  color: var(--phosphor);
+  text-shadow: var(--phosphor-glow);
+  font-size: 20px;
+  line-height: 1.8;
+  letter-spacing: 2px;
+}
+
+.glitchContent {
+  animation: glitchContentShift 0.08s steps(3) infinite;
+}
+
+@keyframes glitchJitter {
+  0%   { transform: translateX(0) scaleY(1); }
+  25%  { transform: translateX(-3px) scaleY(1.005); }
+  50%  { transform: translateX(2px) scaleY(0.995); }
+  75%  { transform: translateX(-1px) scaleY(1.002); }
+  100% { transform: translateX(1px) scaleY(0.998); }
+}
+
+@keyframes glitchContentShift {
+  0%   { clip-path: inset(0 0 90% 0); transform: translateX(0); }
+  33%  { clip-path: inset(30% 0 40% 0); transform: translateX(-4px); }
+  66%  { clip-path: inset(60% 0 10% 0); transform: translateX(3px); }
+  100% { clip-path: inset(0 0 90% 0); transform: translateX(0); }
 }
 
 @keyframes blink {
