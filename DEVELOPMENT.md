@@ -414,7 +414,8 @@ Note: A11Y-01/02/03 were built by a subagent that was cancelled mid-edit; re-ver
 ### Phase 3 — Reach & polish — ◐ PARTIAL (Sep 2026)
 Shipped: SEO-02 (descriptive meta + Open Graph/Twitter + JSON-LD `Person`/`WebSite` + `<noscript>` fallback + `robots.txt` + `sitemap.xml`), A11Y-04 (skip-to-content + `#main` targets), A11Y-05 (all 4 theme `--phosphor-dim` raised to WCAG AA + `prefers-contrast: more`), A11Y-06 (motion toggle auto/on/off), PERF-02 (`npm run size` bundle budget + warn-only CI step). Hygiene: favicon, Vitest now exits 0 (pointer-capture polyfill), Discord domain verification file (`.well-known/discord`).
 Not applicable: SEO-01 (a JS prerender would capture the typing intro, not portfolio content — replaced by the JSON-LD + `<noscript>` + sitemap approach).
-Remaining: FX-04 (WebGL CRT), DEL-01 (easter eggs), DEL-02 (guestbook/Now page).
+Also shipped: FX-05 (WebGL CRT overlay on the terminal — gated off on mobile and when motion is off), DEL-01 (hidden Easter-egg commands), DEL-03 partial (Now page). Hygiene: CI actions bumped to `checkout@v7` / `setup-node@v7` / `upload-pages-artifact@v5` / `deploy-pages@v5` on Node 22; `test-setup.ts` now polyfills `matchMedia` + `ResizeObserver`.
+Remaining: FX-04 (CRT audio hum/chime), DEL-02 (theme-specific egg content), DEL-03 guestbook.
 
 ---
 
@@ -535,11 +536,11 @@ Remaining: FX-04 (WebGL CRT), DEL-01 (easter eggs), DEL-02 (guestbook/Now page).
 
 ### Effects (visual/audio)
 
-**FX-01 · Wire unused sounds · P1 · S · 🟢** (`keyClick`, `errorBuzz`) — depends FND-07
-**FX-02 · Respect `volume` in SoundEngine · P2 · S · 🟢**
+**FX-01 · Wire unused sounds · ✅ SHIPPED** (`keyClick`, `errorBuzz`) — done in Phase 0
+**FX-02 · Respect `volume` in SoundEngine · ✅ SHIPPED**
 **FX-03 · RGB phosphor stripe mask + chromatic aberration · ✅ SHIPPED**
 **FX-04 · 60 Hz CRT power-on hum + multi-tone boot chime · P2 · S · 🟢**
-**FX-05 · Optional WebGL CRT on terminal canvas · P3 · M · 🟡** (lazy, mobile-off, reduced-motion-safe)
+**FX-05 · Optional WebGL CRT on terminal canvas · ✅ SHIPPED** (lazy, mobile-off, reduced-motion-safe)
 **FX-06 · SVG noise film-grain · P3 · S · 🟢**
 **FX-07 · Theme switch transition · P3 · S · 🟢**
 **FX-08 · Per-theme sound packs · P3 · M · 🟢**
@@ -580,9 +581,9 @@ Remaining: FX-04 (WebGL CRT), DEL-01 (easter eggs), DEL-02 (guestbook/Now page).
 
 ### Delight / world-building
 
-**DEL-01 · 5–10 hidden Easter-egg commands · P3 · M · 🟢**
+**DEL-01 · 5–10 hidden Easter-egg commands · ✅ SHIPPED**
 **DEL-02 · Theme-specific egg content · P3 · M · 🟢**
-**DEL-03 · Guestbook / Now page · P3 · L · 🟢**
+**DEL-03 · Guestbook / Now page · ◐ PARTIAL** (Now page shipped; guestbook not built)
 **DEL-04 · Occasional self-healing "kernel panic" boot variation · P3 · S · 🟢**
 
 ---
