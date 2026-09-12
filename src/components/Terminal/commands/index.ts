@@ -39,6 +39,12 @@ import { cmd_ping } from './cmd_ping';
 import { cmd_curl } from './cmd_curl';
 import { cmd_weather } from './cmd_weather';
 import { cmd_gui } from './cmd_gui';
+import { cmd_sl } from './cmd_sl';
+import { cmd_fire } from './cmd_fire';
+import { cmd_hack } from './cmd_hack';
+import { cmd_sandwich } from './cmd_sandwich';
+import { cmd_coffee } from './cmd_coffee';
+import { cmd_now } from './cmd_now';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -81,4 +87,10 @@ export function registerAllCommands() {
   registerCommand('curl', cmd_curl);
   registerCommand('weather', cmd_weather);
   registerCommand('gui', cmd_gui);
+  registerCommand('sl', cmd_sl);
+  registerCommand('fire', cmd_fire);
+  registerCommand('hack', cmd_hack);
+  registerCommand('sandwich', cmd_sandwich);
+  registerCommand('coffee', cmd_coffee);
+  registerCommand('now', cmd_now);
 }

@@ -88,6 +88,25 @@ PROJECTS
               metadata: { size: 950, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-r--r--', mimeType: 'text/plain' },
             },
             {
+              name: 'now.md',
+              type: 'file',
+              content: `# Now
+
+**BENI** — Expanding economic narrative research. BENI Global 10
+paper is out on arXiv (10 languages, 620K+ articles). Working on
+cross-language classifier transfer and expanding coverage.
+
+**Roles** — LILA Lab maintainer, Doshomik IELTS system architect,
+B2G Soft AI engineer, Research Den operations lead.
+
+**Learning** — PhD application prep, Rust async patterns, deep
+NLP for Bangla. Currently reading about narrative economics.
+
+**Building** — This retro Web OS. Every pixel, every file,
+every paper — it's all here.`,
+              metadata: { size: 520, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-r--r--', mimeType: 'text/markdown' },
+            },
+            {
               name: 'contact.md',
               type: 'file',
               content: `# Contact & Online Presence
