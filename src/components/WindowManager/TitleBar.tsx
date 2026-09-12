@@ -12,7 +12,7 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
   const focusWindow = useWindowsStore((s) => s.focusWindow);
   const minimizeWindow = useWindowsStore((s) => s.minimizeWindow);
   const maximizeWindow = useWindowsStore((s) => s.maximizeWindow);
-  const closeWindow = useWindowsStore((s) => s.closeWindow);
+  const beginClose = useWindowsStore((s) => s.beginClose);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     focusWindow(windowId);
@@ -39,7 +39,7 @@ export function TitleBar({ windowId, title }: TitleBarProps) {
         </button>
         <button
           className={styles.controlBtn}
-          onClick={(e) => { e.stopPropagation(); closeWindow(windowId); }}
+          onClick={(e) => { e.stopPropagation(); beginClose(windowId); }}
           aria-label="Close"
         >
           ✕

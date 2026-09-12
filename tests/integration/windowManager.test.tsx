@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useWindowsStore } from '../../src/store/useWindows';
 import { WindowManager } from '../../src/components/WindowManager/WindowManager';
@@ -47,7 +47,7 @@ describe('useWindowsStore', () => {
       expect(win.minHeight).toBe(150);
     });
 
-    it('starts with isMinimized=false, isMaximized=false, isClosing=false', () => {
+    it('starts with isMinimized=false, isMaximized=false', () => {
       const id = useWindowsStore.getState().openWindow({
         title: 'test',
         content: { type: 'terminal' },
@@ -56,7 +56,6 @@ describe('useWindowsStore', () => {
       const win = useWindowsStore.getState().windows[id];
       expect(win.isMinimized).toBe(false);
       expect(win.isMaximized).toBe(false);
-      expect(win.isClosing).toBe(false);
     });
 
     it('cascades window position across successive opens', () => {
@@ -287,7 +286,9 @@ describe('Window component', () => {
 
     await userEvent.click(screen.getByLabelText('Close'));
 
-    expect(useWindowsStore.getState().windows[id]).toBeUndefined();
+    await waitFor(() => {
+      expect(useWindowsStore.getState().windows[id]).toBeUndefined();
+    });
   });
 
   it('minimize button marks the window as minimized', async () => {

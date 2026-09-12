@@ -8,6 +8,7 @@ import { FileViewer } from '../FileRenderers/FileViewer';
 import { ImageViewer } from '../FileRenderers/ImageViewer';
 import { BrowserViewer } from '../WebBrowser/BrowserViewer';
 import { FileManager } from '../FileManager/FileManager';
+import { Dashboard } from '../Dashboard/Dashboard';
 import type { WindowState } from '../../types/window';
 import styles from '../../styles/components/window.module.css';
 
@@ -44,6 +45,8 @@ export function Window({ win }: WindowProps) {
         return <BrowserViewer initialUrl={win.content.url} />;
       case 'fileManager':
         return <FileManager />;
+      case 'dashboard':
+        return <Dashboard />;
       default:
         return (
           <div style={{ padding: 16, color: 'var(--phosphor)' }}>
@@ -55,7 +58,7 @@ export function Window({ win }: WindowProps) {
 
   return (
     <div
-      className={`${styles.window}${isFocused ? ` ${styles.windowFocused}` : ''}`}
+      className={`${styles.window}${isFocused ? ` ${styles.windowFocused}` : ''}${win.isClosing ? ` ${styles.windowClosing}` : ''}`}
       style={{
         left: win.x,
         top: win.y,

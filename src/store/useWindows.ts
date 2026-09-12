@@ -7,6 +7,7 @@ interface WindowsState {
   windows: Record<string, WindowState>;
   nextZIndex: number;
   focusedId: string | null;
+  _closingTimers: Record<string, ReturnType<typeof setTimeout>>;
 
   openWindow: (config: {
     title: string;
@@ -17,13 +18,14 @@ interface WindowsState {
     y?: number;
   }) => string;
   closeWindow: (id: string) => void;
+  beginClose: (id: string) => void;
   focusWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
   maximizeWindow: (id: string) => void;
   restoreWindow: (id: string) => void;
   moveWindow: (id: string, x: number, y: number) => void;
   resizeWindow: (id: string, width: number, height: number) => void;
-  setWindowClosing: (id: string, closing: boolean) => void;
+  reflowMaximized: () => void;
 }
 
 let windowCounter = 0;
@@ -41,6 +43,7 @@ export const useWindowsStore = create<WindowsState>()(
       windows: {},
       nextZIndex: 10,
       focusedId: null,
+      _closingTimers: {},
 
       openWindow: (config) => {
         const id = `win-${Date.now()}-${windowCounter++}`;
@@ -82,6 +85,31 @@ export const useWindowsStore = create<WindowsState>()(
             : s.focusedId;
           return { windows: rest, focusedId: newFocused };
         });
+      },
+
+      beginClose: (id) => {
+        const state = get();
+        const win = state.windows[id];
+        if (!win || win.isClosing) return;
+
+        set((s) => ({
+          windows: {
+            ...s.windows,
+            [id]: { ...s.windows[id], isClosing: true },
+          },
+        }));
+
+        const timer = setTimeout(() => {
+          set((s) => {
+            const { [id]: _timer, ...rest } = s._closingTimers;
+            return { _closingTimers: rest };
+          });
+          get().closeWindow(id);
+        }, 180);
+
+        set((s) => ({
+          _closingTimers: { ...s._closingTimers, [id]: timer },
+        }));
       },
 
       focusWindow: (id) => {
@@ -180,13 +208,20 @@ export const useWindowsStore = create<WindowsState>()(
         });
       },
 
-      setWindowClosing: (id, closing) => {
+      reflowMaximized: () => {
         set((s) => {
-          const win = s.windows[id];
-          if (!win) return s;
-          return {
-            windows: { ...s.windows, [id]: { ...win, isClosing: closing } },
-          };
+          let changed = false;
+          const next: Record<string, WindowState> = {};
+          for (const [id, win] of Object.entries(s.windows)) {
+            if (win.isMaximized) {
+              next[id] = { ...win, x: 0, y: 28, width: window.innerWidth, height: window.innerHeight - 28 };
+              changed = true;
+            } else {
+              next[id] = win;
+            }
+          }
+          if (!changed) return s;
+          return { windows: next };
         });
       },
     }),

@@ -14,7 +14,12 @@
 /* Focused window gets stronger glow */
 .windowFocused {
   box-shadow: var(--phosphor-glow-strong);
-  z-index: 100;
+}
+
+.windowClosing {
+  opacity: 0;
+  transform: scale(0.95) translateY(-8px);
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
 }
 
 /* Title Bar */
