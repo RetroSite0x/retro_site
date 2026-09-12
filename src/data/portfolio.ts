@@ -244,6 +244,4 @@ export const blogPosts: readonly BlogEntry[] = [
   { file: 'beni-story.md',  title: 'The Story Behind BENI' },
 ];
 
-// ── Bengali Motto ──────────────────────────────────────────────────────
 
-export const motto = '\u201c\u099a\u09bf\u09a8\u09cd\u09a4\u09be \u0995\u09b0\u09cb, \u09a4\u09be\u09b0\u09aa\u09b0 \u0995\u09cb\u09a1 \u0995\u09b0\u09cb\u0964\u201d';

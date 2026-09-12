@@ -1,5 +1,5 @@
 import type { CommandHandler } from '../../../types/terminal';
-import { identity, education, focusSummary, motto } from '../../../data/portfolio';
+import { identity, education, focusSummary } from '../../../data/portfolio';
 
 const BOX_WIDTH = 48;
 
@@ -20,8 +20,6 @@ export const cmd_about: CommandHandler = () => {
     `|  ${pad(`Focus:     ${focusSummary}`, BOX_WIDTH - 3)}|`,
     `|  ${pad(`Status:    ${identity.status}`, BOX_WIDTH - 3)}|`,
     `+${sep}+`,
-    '',
-    motto,
   ].join('\n');
 
   return { type: 'output', content };
