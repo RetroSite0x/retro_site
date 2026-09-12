@@ -60,6 +60,11 @@ import { cmd_art } from './cmd_art';
 import { cmd_ask } from './cmd_ask';
 import { cmd_chat } from './cmd_chat';
 import { cmd_guestbook } from './cmd_guestbook';
+import { cmd_head } from './cmd_head';
+import { cmd_tail } from './cmd_tail';
+import { cmd_wc } from './cmd_wc';
+import { cmd_sort } from './cmd_sort';
+import { cmd_less } from './cmd_less';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -124,4 +129,9 @@ export function registerAllCommands() {
   registerCommand('ask', cmd_ask);
   registerCommand('guestbook', cmd_guestbook);
   registerCommand('chat', cmd_chat);
+  registerCommand('head', cmd_head);
+  registerCommand('tail', cmd_tail);
+  registerCommand('wc', cmd_wc);
+  registerCommand('sort', cmd_sort);
+  registerCommand('less', cmd_less);
 }
