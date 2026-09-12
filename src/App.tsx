@@ -3,12 +3,14 @@ import { useSystemStore } from './store/useSystem';
 import { useWindowsStore } from './store/useWindows';
 import { BootScreen } from './components/BootScreen/BootScreen';
 import { Desktop } from './components/Desktop/Desktop';
+import { MobileDesktop } from './components/Mobile/MobileDesktop';
 import { CRTOverlay } from './components/Effects/CRTOverlay';
 import { SoundEngine } from './components/Effects/SoundEngine';
 import { Onboarding, hasSeenOnboarding } from './components/Onboarding/Onboarding';
 import { useTheme } from './hooks/useTheme';
 import { useKeyboard } from './hooks/useKeyboard';
 import { useTypeToTerminal } from './hooks/useTypeToTerminal';
+import { useIsMobile } from './hooks/useIsMobile';
 import { registerAllCommands } from './components/Terminal/commands';
 
 // Register all terminal commands at module scope
@@ -53,6 +55,7 @@ let pendingOpenTarget: string | null = null;
 export default function App() {
   const bootPhase = useSystemStore((s) => s.bootPhase);
   const isLoggedIn = useSystemStore((s) => s.isLoggedIn);
+  const isMobile = useIsMobile();
   useTheme();
   useKeyboard();
   useTypeToTerminal();
@@ -141,8 +144,9 @@ System halted.
       <CRTOverlay />
       <SoundEngine />
       {isBoot && <BootScreen />}
-      {isDesktop && <Desktop />}
-      {isDesktop && showOnboarding && (
+      {isDesktop && isMobile && <MobileDesktop />}
+      {isDesktop && !isMobile && <Desktop />}
+      {isDesktop && !isMobile && showOnboarding && (
         <Onboarding onDismiss={() => setShowOnboarding(false)} />
       )}
     </>

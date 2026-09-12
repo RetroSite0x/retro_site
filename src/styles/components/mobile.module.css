@@ -1,0 +1,563 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Mobile Shell — fullscreen app-stack + bottom dock
+   All styles use phosphor CSS variables for theme compatibility.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Shell ──────────────────────────────────────────────────────────── */
+
+.shell {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  height: 100vh; /* fallback */
+  background: var(--phosphor-bg);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  z-index: 9999;
+}
+
+/* ── Status Bar ─────────────────────────────────────────────────────── */
+
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-md);
+  padding-top: env(safe-area-inset-top, 0px);
+  min-height: 36px;
+  background: var(--window-title-bg);
+  border-bottom: 1px solid var(--phosphor-dim);
+  flex-shrink: 0;
+  z-index: 10;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.statusLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.hostLabel {
+  color: var(--phosphor);
+  opacity: 0.9;
+}
+
+.statusRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.clock {
+  color: var(--phosphor);
+  opacity: 0.8;
+  font-variant-numeric: tabular-nums;
+}
+
+.themeToggle {
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  touch-action: manipulation;
+  min-width: 44px;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.themeToggle:hover,
+.themeToggle:active {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+/* ── Main Area ──────────────────────────────────────────────────────── */
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+}
+
+/* ── App Header (Back button) ───────────────────────────────────────── */
+
+.appHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--window-title-bg);
+  border-bottom: 1px solid var(--phosphor-dim);
+  flex-shrink: 0;
+}
+
+.backBtn {
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 16px;
+  padding: 4px 12px;
+  cursor: pointer;
+  touch-action: manipulation;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.backBtn:hover,
+.backBtn:active {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+.appTitle {
+  font-size: 16px;
+  color: var(--phosphor);
+  opacity: 0.9;
+}
+
+/* ── App Content (fills remaining space) ────────────────────────────── */
+
+.appContent {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.appContent > * {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Bottom Dock ────────────────────────────────────────────────────── */
+
+.dock {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: var(--space-xs) var(--space-sm);
+  padding-bottom: calc(var(--space-xs) + env(safe-area-inset-bottom, 0px));
+  background: var(--window-title-bg);
+  border-top: 1px solid var(--phosphor-dim);
+  flex-shrink: 0;
+  z-index: 10;
+  min-height: 60px;
+}
+
+.dockItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: none;
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  cursor: pointer;
+  touch-action: manipulation;
+  min-width: 48px;
+  min-height: 48px;
+  padding: var(--space-xs);
+  opacity: 0.6;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.dockItem:hover,
+.dockItem:active {
+  opacity: 1;
+}
+
+.dockItemActive {
+  opacity: 1;
+  color: var(--phosphor);
+}
+
+.dockIcon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.dockLabel {
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* ── Home Screen ────────────────────────────────────────────────────── */
+
+.home {
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.homeGreeting {
+  font-size: 20px;
+  color: var(--phosphor);
+  text-align: center;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.homeGreetingSmall {
+  font-size: 13px;
+  opacity: 0.6;
+  margin-top: var(--space-xs);
+}
+
+.sectionLabel {
+  font-size: 13px;
+  color: var(--phosphor);
+  opacity: 0.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-sm);
+}
+
+/* ── App Grid ───────────────────────────────────────────────────────── */
+
+.appGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.appTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  padding: var(--space-md) var(--space-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 88px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.appTile:hover,
+.appTile:active {
+  background: var(--phosphor-dim);
+  border-color: var(--phosphor);
+}
+
+.appTileIcon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.appTileName {
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* ── Folder Shortcuts ───────────────────────────────────────────────── */
+
+.folderGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+}
+
+.folderBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 14px;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 44px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.folderBtn:hover,
+.folderBtn:active {
+  background: var(--phosphor-dim);
+  border-color: var(--phosphor);
+}
+
+.folderIcon {
+  font-size: 18px;
+}
+
+/* ── Files App ──────────────────────────────────────────────────────── */
+
+.files {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+
+.breadcrumbItem {
+  background: none;
+  border: none;
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 2px 4px;
+  touch-action: manipulation;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.breadcrumbItem:hover,
+.breadcrumbItem:active {
+  opacity: 1;
+}
+
+.breadcrumbCurrent {
+  color: var(--phosphor);
+  opacity: 1;
+}
+
+.breadcrumbSep {
+  color: var(--phosphor);
+  opacity: 0.3;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: none;
+  border: 1px solid transparent;
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 15px;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 44px;
+  transition: background 0.15s, border-color 0.15s;
+  text-align: left;
+  width: 100%;
+}
+
+.fileItem:hover,
+.fileItem:active {
+  background: var(--phosphor-dim);
+  border-color: var(--phosphor-dim);
+}
+
+.fileIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.fileName {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileMeta {
+  font-size: 11px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.fileView {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.fileViewHeader {
+  font-size: 12px;
+  opacity: 0.5;
+  word-break: break-all;
+  border-bottom: 1px solid var(--phosphor-dim);
+  padding-bottom: var(--space-sm);
+}
+
+.fileViewContent {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fileViewContent pre {
+  font-family: var(--font-terminal);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin: 0;
+  color: var(--phosphor);
+}
+
+/* ── Contact App ────────────────────────────────────────────────────── */
+
+.contact {
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.contactIdentity {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.contactName {
+  font-size: 20px;
+  color: var(--phosphor);
+}
+
+.contactRole {
+  font-size: 14px;
+  color: var(--phosphor);
+  opacity: 0.7;
+}
+
+.contactLocation {
+  font-size: 13px;
+  color: var(--phosphor);
+  opacity: 0.5;
+}
+
+.contactLinks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 14px;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  touch-action: manipulation;
+  min-height: 44px;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.contactLink:hover,
+.contactLink:active {
+  background: var(--phosphor-dim);
+  border-color: var(--phosphor);
+}
+
+.contactLinkIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.contactLinkLabel {
+  flex: 1;
+  text-align: left;
+}
+
+.contactLinkUrl {
+  font-size: 11px;
+  opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}
+
+/* ── Terminal wrapper ───────────────────────────────────────────────── */
+
+.terminalWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminalWrap > * {
+  flex: 1;
+}
+
+/* ── Browser wrapper ────────────────────────────────────────────────── */
+
+.browserWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.browserWrap > * {
+  flex: 1;
+}
+
+/* ── Dashboard wrapper ──────────────────────────────────────────────── */
+
+.dashboardWrap {
+  flex: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dashboardWrap > * {
+  flex: 1;
+}
