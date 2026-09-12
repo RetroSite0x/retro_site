@@ -5,6 +5,7 @@ import { MarkdownViewer } from './MarkdownViewer';
 import { ConfigViewer } from './ConfigViewer';
 import { TextViewer } from './TextViewer';
 import { ImageViewer } from './ImageViewer';
+import { CodeViewer } from './CodeViewer';
 import styles from '../../styles/components/menu-bar.module.css';
 
 interface FileViewerProps {
@@ -17,7 +18,7 @@ function getExtension(filePath: string): string {
   return filePath.slice(idx).toLowerCase();
 }
 
-function getRenderer(filePath: string): 'md' | 'conf' | 'txt' | 'image' | 'text' {
+function getRenderer(filePath: string): 'md' | 'conf' | 'txt' | 'image' | 'code' | 'text' {
   const ext = getExtension(filePath);
   switch (ext) {
     case '.md':
@@ -32,6 +33,29 @@ function getRenderer(filePath: string): 'md' | 'conf' | 'txt' | 'image' | 'text'
     case '.gif':
     case '.svg':
       return 'image';
+    case '.ts':
+    case '.tsx':
+    case '.js':
+    case '.jsx':
+    case '.py':
+    case '.go':
+    case '.rs':
+    case '.c':
+    case '.cpp':
+    case '.h':
+    case '.java':
+    case '.rb':
+    case '.php':
+    case '.sh':
+    case '.bash':
+    case '.zsh':
+    case '.css':
+    case '.html':
+    case '.json':
+    case '.yaml':
+    case '.yml':
+    case '.toml':
+      return 'code';
     default:
       return 'text';
   }
@@ -60,6 +84,8 @@ export function FileViewer({ filePath }: FileViewerProps) {
       return <TextViewer filePath={filePath} />;
     case 'image':
       return <ImageViewer filePath={filePath} />;
+    case 'code':
+      return <CodeViewer filePath={filePath} />;
     default:
       return <TextViewer filePath={filePath} />;
   }

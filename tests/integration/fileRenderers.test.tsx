@@ -9,6 +9,8 @@ import { MarkdownViewer } from '../../src/components/FileRenderers/MarkdownViewe
 import { ConfigViewer } from '../../src/components/FileRenderers/ConfigViewer';
 import { TextViewer } from '../../src/components/FileRenderers/TextViewer';
 import { ImageViewer } from '../../src/components/FileRenderers/ImageViewer';
+import { CodeViewer } from '../../src/components/FileRenderers/CodeViewer';
+import type { FSNode } from '../../src/types/vfs';
 
 // ---------------------------------------------------------------------------
 // FileViewer dispatcher integration tests
@@ -298,5 +300,91 @@ describe('Window content type rendering for renderers', () => {
 
     expect(screen.getByText(/File not found/)).toBeDefined();
     expect(screen.getByText(/missing\.png/)).toBeDefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// CodeViewer direct component tests
+// ---------------------------------------------------------------------------
+describe('CodeViewer', () => {
+  const FILE_META = {
+    size: 64,
+    createdAt: '2026-07-09T00:00:00.000Z',
+    updatedAt: '2026-07-09T00:00:00.000Z',
+    executable: false,
+    permissions: 'rw-r--r--',
+    mimeType: 'text/plain',
+  };
+
+  const CODE_TREE: FSNode = {
+    name: '/',
+    type: 'directory',
+    metadata: { ...FILE_META, size: 512, mimeType: 'inode/directory' },
+    children: [
+      {
+        name: 'code',
+        type: 'directory',
+        metadata: { ...FILE_META, size: 512, mimeType: 'inode/directory' },
+        children: [
+          {
+            name: 'sample.ts',
+            type: 'file',
+            content: 'const answer = 42; // the answer\n\nfunction greet() {\n  return answer;\n}',
+            metadata: FILE_META,
+          },
+        ],
+      },
+      {
+        name: 'vuln',
+        type: 'directory',
+        metadata: { ...FILE_META, size: 512, mimeType: 'inode/directory' },
+        children: [
+          {
+            name: 'xss.ts',
+            type: 'file',
+            content: 'const payload = "<img src=x onerror=alert(1)>";',
+            metadata: FILE_META,
+          },
+        ],
+      },
+    ],
+  };
+
+  beforeEach(() => {
+    useVFSStore.setState({ tree: CODE_TREE, currentPath: '/home/guest', history: [] });
+  });
+
+  it('renders one numbered row per source line', () => {
+    render(<CodeViewer filePath="/code/sample.ts" />);
+
+    const pre = document.querySelector('pre');
+    expect(pre).not.toBeNull();
+    expect(pre!.textContent).toContain('const answer = 42;');
+    expect(document.querySelectorAll('pre > div').length).toBe(5);
+  });
+
+  it('renders comments and keywords as content', () => {
+    render(<CodeViewer filePath="/code/sample.ts" />);
+
+    const pre = document.querySelector('pre');
+    expect(pre!.textContent).toContain('// the answer');
+    expect(pre!.textContent).toContain('function');
+  });
+
+  it('renders a malicious payload as inert text, never as HTML', () => {
+    render(<CodeViewer filePath="/vuln/xss.ts" />);
+
+    expect(document.querySelector('img')).toBeNull();
+    expect(document.querySelector('script')).toBeNull();
+    expect(screen.queryByRole('img')).toBeNull();
+    expect(document.querySelector('pre')!.textContent).toContain(
+      '<img src=x onerror=alert(1)>',
+    );
+  });
+
+  it('shows error for a missing file', () => {
+    render(<CodeViewer filePath="/code/nope.ts" />);
+
+    expect(screen.getByText(/File not found/)).toBeDefined();
   });
 });
