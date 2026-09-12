@@ -218,3 +218,50 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* ── Mobile on-screen key bar ── */
+.mobileKeyBar {
+  display: flex;
+  gap: 6px;
+  padding: 6px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.mobileKeyBar::-webkit-scrollbar {
+  display: none;
+}
+
+.keyBarBtn {
+  flex-shrink: 0;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 1px solid var(--phosphor-dim);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.keyBarBtn:active {
+  background: var(--phosphor-dim);
+  color: var(--phosphor-bg);
+}
+
+.keyBarBtnActive {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+  border-color: var(--phosphor);
+  text-shadow: none;
+}

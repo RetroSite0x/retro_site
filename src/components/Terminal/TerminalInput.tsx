@@ -5,6 +5,8 @@ import { useVFSStore } from '../../store/useVFS';
 import { getRegisteredCommands } from './CommandRegistry';
 import { getNode, normalizePath } from '../../lib/vfs';
 import { soundEngine } from '../../lib/sound';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { MobileKeyBar } from './MobileKeyBar';
 import styles from '../../styles/components/terminal.module.css';
 
 interface CycleState {
@@ -30,6 +32,7 @@ export function TerminalInput() {
   const currentInput = useTerminalStore((s) => s.currentInput);
   const cursorPos = useTerminalStore((s) => s.cursorPos);
   const currentPath = useVFSStore((s) => s.currentPath);
+  const isMobile = useIsMobile();
 
   const insertAtCursor = useTerminalStore((s) => s.insertAtCursor);
   const deleteBeforeCursor = useTerminalStore((s) => s.deleteBeforeCursor);
@@ -567,29 +570,37 @@ export function TerminalInput() {
     : null;
 
   return (
-    <div className={styles.inputLine} onClick={() => inputRef.current?.focus()}>
-      {searchPrefix ? (
-        <span className={styles.reverseSearchPrefix}>{searchPrefix}</span>
-      ) : (
-        <span className={styles.prompt}>{prompt}</span>
-      )}
-      <span className={styles.inputText}>
-        {currentInput.slice(0, cursorPos)}
-        <span className={styles.cursor}>&nbsp;</span>
-        {currentInput.slice(cursorPos)}
-        {ghostText && (
-          <span className={styles.ghostText}>{ghostText}</span>
+    <>
+      <div className={styles.inputLine} onClick={() => inputRef.current?.focus()}>
+        {searchPrefix ? (
+          <span className={styles.reverseSearchPrefix}>{searchPrefix}</span>
+        ) : (
+          <span className={styles.prompt}>{prompt}</span>
         )}
-      </span>
-      <input
-        ref={inputRef}
-        type="text"
-        className={styles.hiddenInput}
-        onKeyDown={handleKeyDown}
-        onInput={handleInput}
-        autoFocus
-        aria-label="Terminal input"
-      />
-    </div>
+        <span className={styles.inputText}>
+          {currentInput.slice(0, cursorPos)}
+          <span className={styles.cursor}>&nbsp;</span>
+          {currentInput.slice(cursorPos)}
+          {ghostText && (
+            <span className={styles.ghostText}>{ghostText}</span>
+          )}
+        </span>
+        <input
+          ref={inputRef}
+          type="text"
+          className={styles.hiddenInput}
+          onKeyDown={handleKeyDown}
+          onInput={handleInput}
+          autoFocus
+          aria-label="Terminal input"
+          autoCapitalize="off"
+          autoCorrect="off"
+          autoComplete="off"
+          spellCheck={false}
+          enterKeyHint="send"
+        />
+      </div>
+      {isMobile && <MobileKeyBar inputRef={inputRef} />}
+    </>
   );
 }
