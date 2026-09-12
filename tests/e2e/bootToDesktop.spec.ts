@@ -1,80 +1,74 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Retro UNIX Workstation', () => {
-  test('full boot flow: BIOS → boot → login → desktop → window open/close', async ({ page }) => {
+  test('full boot flow: typing intro → login → desktop → window open/close', async ({ page }) => {
     // ------------------------------------------------------------------
     // Navigate to the app
     // ------------------------------------------------------------------
     await page.goto('/');
 
     // ------------------------------------------------------------------
-    // Phase 1: BIOS screen — shows system name and hardware info
+    // Phase 1: Typing intro — types Ann Naser Nabil's info
     // ------------------------------------------------------------------
-    await expect(page.locator('text=Ann Naser Nabil')).toBeVisible({ timeout: 5000 });
-    await expect(page.locator('text=CPU: MOS 6502')).toBeVisible({ timeout: 5000 });
+    // The intro types immediately on load; the first command + name appear first.
+    await expect(page.getByText('whoami')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Ann Naser Nabil')).toBeVisible({ timeout: 5000 });
 
     // ------------------------------------------------------------------
-    // Phase 2: Boot sequence — kernel messages appear
+    // Phase 2: Skip the intro
     // ------------------------------------------------------------------
-    await expect(page.locator('text=Initializing filesystem')).toBeVisible({ timeout: 8000 });
+    // The full typing run takes ~16s. Skip renders the whole script instantly
+    // and advances to login. (Also covers the reduced-motion path, where the
+    // script renders immediately and no SKIP button is present.)
+    const skip = page.getByRole('button', { name: /skip/i });
+    if (await skip.isVisible().catch(() => false)) {
+      await skip.click();
+    }
 
     // ------------------------------------------------------------------
-    // Phase 3: Login prompt — the system asks for credentials
+    // Phase 3: Login auto-submits, landing on the desktop
     // ------------------------------------------------------------------
-    // Login phase shows "LOGIN:" (uppercase) with text and password inputs
-    await expect(page.locator('text=LOGIN:')).toBeVisible({ timeout: 10000 });
-
-    // Fill in the username and submit the form to proceed to desktop
-    const usernameInput = page.locator('input[type="text"]');
-    await usernameInput.fill('guest');
-    // Submit the form — the login form has no submit button, so use
-    // the standard form submit API
-    await page.evaluate(() => {
-      const form = document.querySelector('form');
-      if (form) form.requestSubmit();
-    });
+    // LoginPrompt auto-submits with default credentials after a short beat, so
+    // the deterministic end state to assert is the desktop, not the transient
+    // login screen.
+    await expect(page.getByRole('menuitem', { name: 'FILE' })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole('menuitem', { name: 'EDIT' })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'SETTINGS' })).toBeVisible();
 
     // ------------------------------------------------------------------
-    // Phase 4: Desktop — menu bar renders with FILE/EDIT/VIEW items
+    // Dismiss the first-run onboarding overlay if present
     // ------------------------------------------------------------------
-    await expect(page.locator('text=FILE')).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('text=EDIT')).toBeVisible();
-    await expect(page.locator('text=SETTINGS')).toBeVisible();
+    await page.getByRole('button', { name: /got it/i }).click({ timeout: 2500 }).catch(() => {});
 
     // ------------------------------------------------------------------
-    // Phase 5: Terminal opens automatically on desktop — prompt visible
+    // Phase 4: Terminal opens automatically on desktop — prompt visible
     // ------------------------------------------------------------------
-    // The terminal prompt shows "guest@retro:/$ " which contains "$"
-    await expect(page.locator('text=$')).toBeVisible({ timeout: 5000 });
+    // The terminal prompt shows "guest@retro:/home/guest$ " which contains "$"
+    await expect(page.locator('text=$').first()).toBeVisible({ timeout: 10000 });
 
     // ------------------------------------------------------------------
-    // Phase 6: Open a directory viewer via desktop icon double-click
+    // Phase 5: Open a directory viewer via desktop icon double-click
     // ------------------------------------------------------------------
-    // The desktop icon is a generic div with a cursor:pointer style.
-    // Find the icon by its label "projects" and dblclick its parent container.
     const projectsIcon = page.getByText('projects', { exact: true }).first();
     await projectsIcon.dblclick();
 
     // The directory viewer header shows the path, e.g. "/projects"
-    await expect(page.getByText('/projects', { exact: true })).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('/projects', { exact: true }).first()).toBeVisible({ timeout: 5000 });
 
     // ------------------------------------------------------------------
-    // Phase 7: Close the directory window using the Close button
+    // Phase 6: Close the directory window using the Close button
     // ------------------------------------------------------------------
-    const closeButtons = page.locator('[aria-label="Close"]');
-    const closeCount = await closeButtons.count();
-    if (closeCount > 0) {
-      await closeButtons.first().click();
-    }
+    await page.getByRole('dialog', { name: 'projects' }).getByLabel('Close').click();
+    await expect(page.getByRole('dialog', { name: 'projects' })).toHaveCount(0);
 
     // ------------------------------------------------------------------
-    // Phase 8: Open terminal via terminal icon double-click
+    // Phase 7: Open terminal via the FILE menu
     // ------------------------------------------------------------------
-    const terminalIcon = page.locator('text=terminal').first();
-    await terminalIcon.dblclick();
+    await page.getByRole('menuitem', { name: 'FILE' }).click();
+    await page.getByText('New Terminal').click();
 
     // Terminal prompt should still be visible (new terminal opened alongside
     // the existing auto-opened one)
-    await expect(page.locator('text=$')).toBeVisible({ timeout: 3000 });
+    await expect(page.locator('text=$').first()).toBeVisible({ timeout: 3000 });
   });
 });
