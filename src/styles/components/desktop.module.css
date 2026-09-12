@@ -120,3 +120,15 @@
     height: 24px;
   }
 }
+
+.wallpaperGrid .wallpaperLine {
+  font-size: 36px;
+  letter-spacing: 0;
+  line-height: 1.6;
+}
+
+.wallpaperCircuit .wallpaperLine {
+  font-size: 28px;
+  letter-spacing: 1px;
+  line-height: 1.3;
+}

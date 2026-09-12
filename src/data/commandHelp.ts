@@ -48,6 +48,7 @@ export const commandDescriptions: Record<string, CommandHelpEntry> = {
   ping:       { description: 'Simulated ICMP echo requests',   category: 'system' },
   curl:       { description: 'Simulated HTTP requests',        category: 'system' },
   weather:    { description: 'Display weather for Dhaka',      category: 'system' },
+  wallpaper:  { description: 'Switch desktop wallpaper',       category: 'system' },
   // ── Fun ────────────────────────────────────────────────────────
   fortune:    { description: 'Display a random fortune',       category: 'fun' },
   cowsay:     { description: 'Cow says something',             category: 'fun' },

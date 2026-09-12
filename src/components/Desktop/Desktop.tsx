@@ -1,24 +1,53 @@
 import { useEffect, useCallback } from 'react';
 import { useWindowsStore } from '../../store/useWindows';
+import { useSystemStore, type WallpaperId } from '../../store/useSystem';
 import { MenuBar } from './MenuBar';
 import { IconGrid } from './IconGrid';
 import { WindowManager } from '../WindowManager/WindowManager';
 import styles from '../../styles/components/desktop.module.css';
 
-const ANN_LINES = [
-  ' █████   ██   ██   ██   ██',
-  '██   ██  ███  ██  ███  ██',
-  '██   ██  ████ ██  ████ ██',
-  '██   ██  ██ ████  ██ ████',
-  '██   ██  ██  ███  ██  ███',
-  ' █████   ██   ██  ██   ██',
-];
+const WALLPAPER_ART: Record<WallpaperId, string[] | null> = {
+  ann: [
+    ' █████   ██   ██   ██   ██',
+    '██   ██  ███  ██  ███  ██',
+    '██   ██  ████ ██  ████ ██',
+    '██   ██  ██ ████  ██ ████',
+    '██   ██  ██  ███  ██  ███',
+    ' █████   ██   ██  ██   ██',
+  ],
+  grid: [
+    '·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·',
+    '                                                                       ',
+    '·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·',
+    '                                                                       ',
+    '·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·',
+    '                                                                       ',
+    '·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·',
+    '                                                                       ',
+    '·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·   ·',
+  ],
+  circuit: [
+    '┌───┬───┐ ┌─────┐ ┌───┬───┐ ┌─────┐',
+    '│   │   ├─┤     ├─┤   │   ├─┤     │',
+    '│   ├───┘ └──┬──┘ └───┤   │ └──┬──┘',
+    '│   │      ┌─┘        │   │    │   ',
+    '├───┘      │    ┌─────┤   ├────┘   ',
+    '│        ┌─┘    │     │   │        ',
+    '└────────┘      └─────┘   └────────',
+  ],
+  none: null,
+};
 
 function Wallpaper() {
+  const wallpaper = useSystemStore((s) => s.wallpaper);
+  const lines = WALLPAPER_ART[wallpaper];
+
+  if (!lines) return null;
+
   return (
     <div className={styles.wallpaper} aria-hidden="true">
-      <div className={styles.wallpaperInner}>
-        {ANN_LINES.map((line, i) => (
+      <div className={`${styles.wallpaperInner} ${wallpaper === 'grid' ? styles.wallpaperGrid : ''} ${wallpaper === 'circuit' ? styles.wallpaperCircuit : ''}`}>
+        {lines.map((line, i) => (
           <div key={i} className={styles.wallpaperLine}>{line}</div>
         ))}
       </div>

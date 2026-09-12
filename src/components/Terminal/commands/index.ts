@@ -45,6 +45,8 @@ import { cmd_hack } from './cmd_hack';
 import { cmd_sandwich } from './cmd_sandwich';
 import { cmd_coffee } from './cmd_coffee';
 import { cmd_now } from './cmd_now';
+import { cmd_wallpaper } from './cmd_wallpaper';
+import { cmd_vibe } from './cmd_vibe';
 
 export function registerAllCommands() {
   registerCommand('help', cmd_help);
@@ -93,4 +95,6 @@ export function registerAllCommands() {
   registerCommand('sandwich', cmd_sandwich);
   registerCommand('coffee', cmd_coffee);
   registerCommand('now', cmd_now);
+  registerCommand('wallpaper', cmd_wallpaper);
+  registerCommand('vibe', cmd_vibe);
 }
