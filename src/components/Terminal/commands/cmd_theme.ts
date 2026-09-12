@@ -1,7 +1,7 @@
 import type { CommandHandler } from '../../../types/terminal';
 import type { PhosphorTheme } from '../../../types/system';
 
-const VALID_THEMES: PhosphorTheme[] = ['green', 'amber', 'white', 'blue'];
+const VALID_THEMES: PhosphorTheme[] = ['green', 'amber', 'white', 'blue', 'dracula', 'nord', 'solarized', 'ubuntu'];
 
 export const cmd_theme: CommandHandler = (args, _flags, { system }) => {
   if (args.length === 0) {

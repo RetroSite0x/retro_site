@@ -1,0 +1,13 @@
+[data-theme="dracula"] {
+  --phosphor: #bd93f9;
+  --phosphor-dim: #a085e0;
+  --phosphor-bg: #282a36;
+  --phosphor-glow: 0 0 4px rgba(189, 147, 249, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.12);
+  --window-title-bg: #44475a;
+  --window-border: #bd93f9;
+  --menu-bar-bg: #21222c;
+  --text-cursor: #bd93f9;
+  --text-cursor-glow: 0 0 4px #bd93f9;
+  --phosphor-glow-strong: 0 0 8px rgba(189, 147, 249, 0.4), 0 0 16px rgba(189, 147, 249, 0.1);
+}

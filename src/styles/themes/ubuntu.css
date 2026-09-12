@@ -1,0 +1,13 @@
+[data-theme="ubuntu"] {
+  --phosphor: #e95420;
+  --phosphor-dim: #d47030;
+  --phosphor-bg: #300a24;
+  --phosphor-glow: 0 0 4px rgba(233, 84, 32, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.12);
+  --window-title-bg: #4a1037;
+  --window-border: #e95420;
+  --menu-bar-bg: #2b0a20;
+  --text-cursor: #e95420;
+  --text-cursor-glow: 0 0 4px #e95420;
+  --phosphor-glow-strong: 0 0 8px rgba(233, 84, 32, 0.4), 0 0 16px rgba(233, 84, 32, 0.1);
+}

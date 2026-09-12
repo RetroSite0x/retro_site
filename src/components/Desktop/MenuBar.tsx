@@ -11,6 +11,10 @@ const THEMES: { value: PhosphorTheme; label: string }[] = [
   { value: 'amber', label: 'Amber' },
   { value: 'white', label: 'White' },
   { value: 'blue', label: 'Blue' },
+  { value: 'dracula', label: 'Dracula' },
+  { value: 'nord', label: 'Nord' },
+  { value: 'solarized', label: 'Solarized' },
+  { value: 'ubuntu', label: 'Ubuntu' },
 ];
 
 const MENU_KEYS = ['FILE', 'EDIT', 'VIEW', 'PROJECTS', 'SETTINGS'] as const;

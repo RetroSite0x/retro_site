@@ -1,0 +1,13 @@
+[data-theme="solarized"] {
+  --phosphor: #4da6e0;
+  --phosphor-dim: #2aa198;
+  --phosphor-bg: #002b36;
+  --phosphor-glow: 0 0 4px rgba(77, 166, 224, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.10);
+  --window-title-bg: #073642;
+  --window-border: #4da6e0;
+  --menu-bar-bg: #00252e;
+  --text-cursor: #4da6e0;
+  --text-cursor-glow: 0 0 4px #4da6e0;
+  --phosphor-glow-strong: 0 0 8px rgba(77, 166, 224, 0.4), 0 0 16px rgba(77, 166, 224, 0.1);
+}

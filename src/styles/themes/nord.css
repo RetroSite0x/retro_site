@@ -1,0 +1,13 @@
+[data-theme="nord"] {
+  --phosphor: #88c0d0;
+  --phosphor-dim: #7ba7c2;
+  --phosphor-bg: #2e3440;
+  --phosphor-glow: 0 0 4px rgba(136, 192, 208, 0.3);
+  --phosphor-scanline: rgba(0, 0, 0, 0.12);
+  --window-title-bg: #3b4252;
+  --window-border: #88c0d0;
+  --menu-bar-bg: #2b303b;
+  --text-cursor: #88c0d0;
+  --text-cursor-glow: 0 0 4px #88c0d0;
+  --phosphor-glow-strong: 0 0 8px rgba(136, 192, 208, 0.4), 0 0 16px rgba(136, 192, 208, 0.1);
+}

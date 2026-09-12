@@ -3,6 +3,10 @@
 @import './themes/amber.css';
 @import './themes/white.css';
 @import './themes/blue.css';
+@import './themes/dracula.css';
+@import './themes/nord.css';
+@import './themes/solarized.css';
+@import './themes/ubuntu.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
