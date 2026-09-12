@@ -6,26 +6,26 @@ import { soundEngine } from '../../lib/sound';
 /**
  * React component wrapper for the SoundEngine.
  * Must be mounted once inside the app.
- * Listens for system sound-enabled state and plays boot sequence.
+ * Listens for system sound-enabled state and window open/close events.
  */
 export function SoundEngine() {
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
-  const bootPhase = useSystemStore((s) => s.bootPhase);
-  const hasPlayed = useRef(false);
+  const volume = useSystemStore((s) => s.volume);
   const windowCount = useRef(Object.keys(useWindowsStore.getState().windows).length);
 
-  // Play boot sequence when entering boot phase
   useEffect(() => {
-    if (bootPhase === 'boot' && soundEnabled && !hasPlayed.current) {
-      hasPlayed.current = true;
-      soundEngine.bootSequence();
-    }
+    soundEngine.setVolume(volume);
+  }, [volume]);
 
-    // Reset flag when returning to bios (reboot)
-    if (bootPhase === 'bios') {
-      hasPlayed.current = false;
-    }
-  }, [bootPhase, soundEnabled]);
+  useEffect(() => {
+    const unlock = () => soundEngine.unlock();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, []);
 
   // Play sounds when windows open/close
   useEffect(() => {
@@ -43,5 +43,5 @@ export function SoundEngine() {
     return unsub;
   }, [soundEnabled]);
 
-  return null; // No visual output
+  return null;
 }

@@ -1,26 +1,39 @@
 class SoundEngine {
   private ctx: AudioContext | null = null;
+  private volume = 0.5;
 
-  private ensureContext(): AudioContext {
+  private gain(base: number): number {
+    return base * this.volume;
+  }
+
+  setVolume(v: number): void {
+    this.volume = Math.max(0, Math.min(1, v));
+  }
+
+  unlock(): void {
     if (!this.ctx) {
       this.ctx = new AudioContext();
     }
-    // Resume if suspended (browser autoplay policy) — first call is user-gestured
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+  }
+
+  private ensureContext(): AudioContext | null {
+    if (!this.ctx) return null;
     return this.ctx;
   }
 
   /** Short square wave frequency sweep (800→1200Hz, 150ms) */
   bootChirp(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'square';
     osc.frequency.setValueAtTime(800, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.1), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -31,6 +44,7 @@ class SoundEngine {
   /** 1ms white noise burst at low volume */
   keyClick(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const bufferSize = ctx.sampleRate * 0.01;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -40,7 +54,7 @@ class SoundEngine {
     const source = ctx.createBufferSource();
     source.buffer = buffer;
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.03, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.03), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.01);
     source.connect(gain);
     gain.connect(ctx.destination);
@@ -50,6 +64,7 @@ class SoundEngine {
   /** Random low-passed noise, 80ms — sounds like HDD seeking */
   diskSeek(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const bufferSize = ctx.sampleRate * 0.08;
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -62,7 +77,7 @@ class SoundEngine {
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(2000, ctx.currentTime);
     const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.08), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
     source.connect(filter);
     filter.connect(gain);
@@ -73,12 +88,13 @@ class SoundEngine {
   /** Rising sine ping (400→600Hz, 80ms) */
   windowOpen(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(400, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.08), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -89,12 +105,13 @@ class SoundEngine {
   /** Falling sine ping (600→300Hz, 80ms) */
   windowClose(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'sine';
     osc.frequency.setValueAtTime(600, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.08), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -105,11 +122,12 @@ class SoundEngine {
   /** 200Hz square wave, 100ms */
   errorBuzz(): void {
     const ctx = this.ensureContext();
+    if (!ctx) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.type = 'square';
     osc.frequency.setValueAtTime(200, ctx.currentTime);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.setValueAtTime(this.gain(0.1), ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
     osc.connect(gain);
     gain.connect(ctx.destination);
