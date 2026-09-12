@@ -23,8 +23,12 @@
   --desktop-icon-size: 72px;
   --border-width: 1px;
 
+  /* Chromatic aberration — tunable per theme */
+  --chromatic-aberration: 0 0.5px 0 rgba(255, 0, 0, 0.06),
+    0 -0.5px 0 rgba(0, 0, 255, 0.06);
+
   /* Timing */
-  --crt-flicker-speed: 0.15s;
+  --crt-flicker-speed: 0.4s;
 
   /* Spacing scale */
   --space-xs: 4px;

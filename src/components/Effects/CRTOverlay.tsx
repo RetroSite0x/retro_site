@@ -77,6 +77,22 @@ export function CRTOverlay() {
           opacity: 0.02,
         }}
       />
+      {/* RGB phosphor stripe mask — vertical sub-pixel emulation */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: `repeating-linear-gradient(
+            90deg,
+            rgba(255,0,0,0.03) 0px,
+            rgba(0,255,0,0.03) 1px,
+            rgba(0,0,255,0.03) 2px,
+            transparent 3px
+          )`,
+          opacity: 0.4,
+          mixBlendMode: 'screen',
+        }}
+      />
       {/* Phosphor flicker (optional) — more subtle range */}
       {crtFlicker && !reducedMotion && (
         <div
@@ -85,21 +101,15 @@ export function CRTOverlay() {
             inset: 0,
             willChange: 'opacity',
             background: 'var(--phosphor)',
-            animation: 'flicker var(--crt-flicker-speed, 0.15s) infinite',
+            animation: 'flicker var(--crt-flicker-speed, 0.4s) infinite',
           }}
         />
       )}
       {/* Keyframe animations injected via style tag */}
       <style>{`
         @keyframes flicker {
-          0%   { opacity: 0.02; }
-          15%  { opacity: 0.00; }
-          30%  { opacity: 0.01; }
-          45%  { opacity: 0.02; }
-          60%  { opacity: 0.00; }
-          75%  { opacity: 0.015; }
-          90%  { opacity: 0.01; }
-          100% { opacity: 0.02; }
+          0%, 100% { opacity: 0.02; }
+          50%      { opacity: 0.00; }
         }
         @keyframes refresh {
           0%   { opacity: 0; }

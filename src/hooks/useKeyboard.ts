@@ -44,6 +44,12 @@ export function useKeyboard() {
 
       // Escape: close focused window
       if (e.key === 'Escape' && !e.ctrlKey && !e.metaKey) {
+        const target = e.target as HTMLElement | null;
+        const isEditable =
+          !!target &&
+          (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+        const menuOpen = document.querySelector('[role="menubar"] [aria-expanded="true"]');
+        if (isEditable || menuOpen) return;
         const store = useWindowsStore.getState();
         if (store.focusedId) {
           store.closeWindow(store.focusedId);
