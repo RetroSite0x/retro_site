@@ -73,7 +73,7 @@ export function Terminal() {
     >
       <div ref={scrollRef} className={styles.terminalScroll}>
         <CommandOutput history={history} />
-        <TerminalInput />
+        {activeGame === null && <TerminalInput />}
       </div>
       {activeGame === 'snake' && (
         <div className={styles.gameOverlay}>

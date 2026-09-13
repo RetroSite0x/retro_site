@@ -416,6 +416,9 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
     const raf = requestAnimationFrame(compute);
     window.addEventListener('resize', compute);
 
+    const vv = window.visualViewport;
+    vv?.addEventListener('resize', compute);
+
     let ro: ResizeObserver | undefined;
     if (typeof ResizeObserver !== 'undefined') {
       ro = new ResizeObserver(compute);
@@ -425,6 +428,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', compute);
+      vv?.removeEventListener('resize', compute);
       ro?.disconnect();
     };
   }, []);
@@ -513,6 +517,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
 
       {/* Controls: D-pad + action buttons */}
       <div className={styles.snakeControls}>
+        <div className={styles.snakeMoveLabel}>MOVE</div>
         <div className={styles.snakeDpad}>
           <div />
           <button
