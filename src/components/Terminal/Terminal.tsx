@@ -21,6 +21,7 @@ export function Terminal() {
   const history = useTerminalStore((s) => s.history);
   const activeGame = useTerminalStore((s) => s.activeGame);
   const terminalRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleGameExit = useCallback((score: number) => {
     const store = useTerminalStore.getState();
@@ -51,8 +52,8 @@ export function Terminal() {
 
   // Auto-scroll to bottom on new output
   useEffect(() => {
-    if (terminalRef.current) {
-      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [history]);
 
@@ -70,8 +71,10 @@ export function Terminal() {
       aria-live="polite"
       aria-atomic="false"
     >
-      <CommandOutput history={history} />
-      <TerminalInput />
+      <div ref={scrollRef} className={styles.terminalScroll}>
+        <CommandOutput history={history} />
+        <TerminalInput />
+      </div>
       {activeGame === 'snake' && (
         <div className={styles.gameOverlay}>
           <SnakeGame onExit={handleGameExit} />

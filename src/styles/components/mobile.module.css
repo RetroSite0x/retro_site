@@ -9,8 +9,8 @@
   position: fixed;
   inset: 0;
   width: 100%;
-  height: 100dvh;
   height: 100vh; /* fallback */
+  height: 100dvh;
   background: var(--phosphor-bg);
   color: var(--phosphor);
   font-family: var(--font-terminal);
@@ -90,6 +90,9 @@
 
 .main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
@@ -552,6 +555,7 @@
 
 .terminalWrap {
   flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -559,6 +563,7 @@
 
 .terminalWrap > * {
   flex: 1;
+  min-height: 0;
 }
 
 /* ── Browser wrapper ────────────────────────────────────────────────── */
