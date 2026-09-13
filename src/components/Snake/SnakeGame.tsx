@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import styles from '../../styles/components/snake.module.css';
 
 /* ── Constants ────────────────────────────────────────────────────────── */
@@ -376,6 +376,31 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
     [queueDirection],
   );
 
+  /* ── Board sizing (fit the available area, keep square cells) ───────── */
+  const areaRef = useRef<HTMLDivElement>(null);
+  const [boardSize, setBoardSize] = useState<{ w: number; h: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const el = areaRef.current;
+    if (!el) return;
+
+    const compute = () => {
+      const aw = el.clientWidth;
+      const ah = el.clientHeight;
+      if (aw <= 0 || ah <= 0) return;
+      const h = Math.min(ah, (aw * ROWS) / COLS);
+      const w = (h * COLS) / ROWS;
+      setBoardSize({ w: Math.floor(w), h: Math.floor(h) });
+    };
+
+    compute();
+
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(compute);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   /* ── Render (read from ref, guaranteed fresh after bump) ────────────── */
   const g = gameRef.current;
   const { snake, food, score, highScore, status } = g;
@@ -392,29 +417,32 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
       </div>
 
       {/* Board */}
-      <div
-        className={styles.snakeBoard}
-        onPointerDown={onBoardPointerDown}
-        onPointerUp={onBoardPointerUp}
-      >
-        {Array.from({ length: ROWS }, (_, row) =>
-          Array.from({ length: COLS }, (_, col) => {
-            const isHead =
-              snake[0].x === col && snake[0].y === row;
-            const isBody =
-              !isHead &&
-              snake.some((s) => s.x === col && s.y === row);
-            const isFood = food.x === col && food.y === row;
-            const cls = isHead
-              ? styles.snakeHead
-              : isBody
-                ? styles.snakeBody
-                : isFood
-                  ? styles.snakeFood
-                  : styles.snakeCell;
-            return <div key={`${col}-${row}`} className={cls} />;
-          }),
-        )}
+      <div className={styles.snakeBoardArea} ref={areaRef}>
+        <div
+          className={styles.snakeBoard}
+          style={boardSize ? { width: boardSize.w, height: boardSize.h } : undefined}
+          onPointerDown={onBoardPointerDown}
+          onPointerUp={onBoardPointerUp}
+        >
+          {Array.from({ length: ROWS }, (_, row) =>
+            Array.from({ length: COLS }, (_, col) => {
+              const isHead =
+                snake[0].x === col && snake[0].y === row;
+              const isBody =
+                !isHead &&
+                snake.some((s) => s.x === col && s.y === row);
+              const isFood = food.x === col && food.y === row;
+              const cls = isHead
+                ? styles.snakeHead
+                : isBody
+                  ? styles.snakeBody
+                  : isFood
+                    ? styles.snakeFood
+                    : styles.snakeCell;
+              return <div key={`${col}-${row}`} className={cls} />;
+            }),
+          )}
+        </div>
       </div>
 
       {/* Game Over overlay */}
