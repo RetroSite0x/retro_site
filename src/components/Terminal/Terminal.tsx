@@ -1,8 +1,9 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { useTerminalStore } from '../../store/useTerminal';
 import { CommandOutput } from './CommandOutput';
 import { TerminalInput } from './TerminalInput';
 import { TerminalCRT } from '../Effects/TerminalCRT';
+import { SnakeGame } from '../Snake/SnakeGame';
 import styles from '../../styles/components/terminal.module.css';
 
 const MOTD = `
@@ -18,7 +19,18 @@ let motdShown = false;
 
 export function Terminal() {
   const history = useTerminalStore((s) => s.history);
+  const activeGame = useTerminalStore((s) => s.activeGame);
   const terminalRef = useRef<HTMLDivElement>(null);
+
+  const handleGameExit = useCallback((score: number) => {
+    const store = useTerminalStore.getState();
+    store.endGame();
+    store.appendHistory({
+      type: 'system',
+      content: `snake: game ended, final score ${score}.`,
+      timestamp: Date.now(),
+    });
+  }, []);
 
   // Show MOTD once on first mount
   useEffect(() => {
@@ -60,6 +72,11 @@ export function Terminal() {
     >
       <CommandOutput history={history} />
       <TerminalInput />
+      {activeGame === 'snake' && (
+        <div className={styles.gameOverlay}>
+          <SnakeGame onExit={handleGameExit} />
+        </div>
+      )}
       <TerminalCRT />
     </div>
   );

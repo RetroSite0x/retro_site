@@ -61,6 +61,9 @@ export interface TerminalStore {
   cursorPos: number;
   commandHistory: string[];
   historyIndex: number;
+  activeGame: 'snake' | null;
+  startGame: (game: 'snake') => void;
+  endGame: () => void;
   executeCommand: (input: string) => void;
   setInput: (input: string) => void;
   clear: () => void;

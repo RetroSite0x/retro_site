@@ -39,7 +39,10 @@ interface TerminalState {
   commandHistory: string[];
   historyIndex: number;
   aliases: Record<string, string>;
+  activeGame: 'snake' | null;
 
+  startGame: (game: 'snake') => void;
+  endGame: () => void;
   appendHistory: (entry: HistoryEntry) => void;
   executeCommand: (input: string) => void;
   setInput: (input: string) => void;
@@ -63,6 +66,10 @@ export const useTerminalStore = create<TerminalState>((set, get) => ({
   commandHistory: loadHistory(),
   historyIndex: -1,
   aliases: { ...DEFAULT_ALIASES },
+  activeGame: null,
+
+  startGame: (game) => set({ activeGame: game }),
+  endGame: () => set({ activeGame: null }),
 
   appendHistory: (entry) => {
     set((s) => ({

@@ -18,6 +18,16 @@
   padding-bottom: var(--space-xs, 4px);
 }
 
+.gameOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  padding: var(--space-sm, 8px);
+  background: var(--phosphor-bg);
+  box-sizing: border-box;
+}
+
 .inputLine {
   display: flex;
   align-items: center;

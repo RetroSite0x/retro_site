@@ -54,6 +54,7 @@ export const commandDescriptions: Record<string, CommandHelpEntry> = {
   fortune:    { description: 'Display a random fortune',       category: 'fun' },
   cowsay:     { description: 'Cow says something',             category: 'fun' },
   matrix:     { description: 'Matrix digital rain effect',     category: 'fun' },
+  snake:      { description: 'Play snake (keyboard + touch)',  category: 'fun' },
   // ── Registry easter eggs (not registered, handled inline) ─────
   whoami:     { description: 'Display current user',           category: 'system' },
   uname:      { description: 'Print system info',              category: 'system' },
