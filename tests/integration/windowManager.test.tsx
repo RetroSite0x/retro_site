@@ -252,7 +252,7 @@ describe('Window component', () => {
     });
 
     render(<Window win={useWindowsStore.getState().windows[id]} />);
-    expect(screen.getByText('projects')).toBeDefined();
+    expect(screen.getAllByText('projects').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders close button in title bar', () => {
@@ -408,7 +408,7 @@ describe('Window content type rendering', () => {
     });
 
     render(<Window win={useWindowsStore.getState().windows[id]} />);
-    expect(screen.getByText('/projects')).toBeDefined();
+    expect(screen.getAllByText('projects').length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders file viewer for fileViewer windows', () => {

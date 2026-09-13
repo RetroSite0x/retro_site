@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { useVFSStore } from '../../store/useVFS';
 import { readFileContent } from '../../lib/vfs';
-import styles from '../../styles/components/menu-bar.module.css';
+import { coolsize } from '../../lib/fileUtils';
+import fm from '../../styles/components/file-manager.module.css';
 
 interface CodeViewerProps {
   filePath: string;
@@ -19,6 +20,13 @@ const EXT_LANGUAGE: Record<string, string> = {
   yaml: 'yaml', yml: 'yaml', toml: 'toml',
 };
 
+const LANG_LABEL: Record<string, string> = {
+  typescript: 'TypeScript', javascript: 'JavaScript', python: 'Python',
+  go: 'Go', rust: 'Rust', c: 'C', cpp: 'C++', java: 'Java',
+  ruby: 'Ruby', php: 'PHP', shell: 'Shell', css: 'CSS', html: 'HTML',
+  json: 'JSON', yaml: 'YAML', toml: 'TOML',
+};
+
 const COMMENT_STYLE: Record<string, CommentStyle> = {
   typescript: 'slash', javascript: 'slash', go: 'slash', rust: 'slash',
   c: 'slash', cpp: 'slash', java: 'slash', php: 'slash',
@@ -30,8 +38,7 @@ function setOf(words: string): Set<string> {
   return new Set(words.split(' '));
 }
 
-const JS_WORDS =
-  'const let var function return if else for while do switch case break continue new typeof instanceof in of class extends implements interface type enum import export from default as async await try catch finally throw void null undefined true false this super static get set readonly public private protected';
+const JS_WORDS = 'const let var function return if else for while do switch case break continue new typeof instanceof in of class extends implements interface type enum import export from default as async await try catch finally throw void null undefined true false this super static get set readonly public private protected';
 
 const KEYWORDS: Record<string, Set<string>> = {
   typescript: setOf(JS_WORDS),
@@ -61,8 +68,6 @@ function getLanguage(filePath: string): string {
   return EXT_LANGUAGE[ext] ?? 'typescript';
 }
 
-// Token priority is comment → string → number → word, resolved in a single
-// regex pass so no later rule can rewrite markup produced by an earlier one.
 function tokenizeLine(line: string, language: string): ReactNode[] {
   const commentStyle = COMMENT_STYLE[language] ?? 'slash';
   const keywords = KEYWORDS[language];
@@ -74,13 +79,11 @@ function tokenizeLine(line: string, language: string): ReactNode[] {
   else if (commentStyle === 'block') commentGroup = sources.push('\\/\\*[\\s\\S]*?\\*\\/') - 1;
   else if (commentStyle === 'html') commentGroup = sources.push('<!--[\\s\\S]*?-->') - 1;
 
-  const stringGroup =
-    sources.push('"(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|`(?:\\\\.|[^`\\\\])*`') - 1;
+  const stringGroup = sources.push('"(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\'|`(?:\\\\.|[^`\\\\])*`') - 1;
   const numberGroup = sources.push('\\b\\d+(?:\\.\\d+)?\\b') - 1;
   sources.push('[A-Za-z_$][A-Za-z0-9_$]*');
 
   const pattern = new RegExp(sources.map((s) => `(${s})`).join('|'), 'g');
-
   const nodes: ReactNode[] = [];
   let cursor = 0;
   let key = 0;
@@ -88,10 +91,7 @@ function tokenizeLine(line: string, language: string): ReactNode[] {
 
   while ((match = pattern.exec(line)) !== null) {
     const text = match[0];
-    if (text.length === 0) {
-      pattern.lastIndex += 1;
-      continue;
-    }
+    if (text.length === 0) { pattern.lastIndex += 1; continue; }
     if (match.index > cursor) nodes.push(line.slice(cursor, match.index));
 
     let kind: TokenKind | null = null;
@@ -101,66 +101,87 @@ function tokenizeLine(line: string, language: string): ReactNode[] {
     else if (keywords?.has(text)) kind = 'keyword';
 
     if (kind) {
-      nodes.push(
-        <span key={key++} style={TOKEN_STYLES[kind]}>
-          {text}
-        </span>,
-      );
+      nodes.push(<span key={key++} style={TOKEN_STYLES[kind]}>{text}</span>);
     } else {
       nodes.push(text);
     }
-
     cursor = match.index + text.length;
   }
-
   if (cursor < line.length) nodes.push(line.slice(cursor));
   return nodes;
-}
-
-function lineNum(n: number, total: number): string {
-  return String(n).padStart(String(total).length, ' ');
 }
 
 export function CodeViewer({ filePath }: CodeViewerProps) {
   const tree = useVFSStore((s) => s.tree);
   const content = useMemo(() => readFileContent(tree, filePath), [tree, filePath]);
   const language = getLanguage(filePath);
+  const langLabel = LANG_LABEL[language] || language;
+
+  const fileName = filePath.split('/').pop() || filePath;
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const iconMap: Record<string, string> = {
+    ts: '\u{1F4DD}', tsx: '\u{1F4DD}', js: '\u{1F4DD}', jsx: '\u{1F4DD}',
+    py: '\u{1F40D}', go: '\u{1F4E6}', rs: '\u{1F980}', java: '\u{2615}',
+    sh: '\u{1F4E1}', css: '\u{1F3A8}', html: '\u{1F310}', json: '{ }',
+  };
+  const icon = iconMap[ext] || '\u{1F4DD}';
 
   if (content === null) {
     return (
-      <div className={styles.fileViewer}>
-        <div className={styles.fileError}>File not found: {filePath}</div>
+      <div className={fm.fileViewer}>
+        <div className={fm.fileError}>File not found: {filePath}</div>
       </div>
     );
   }
 
   const lines = content.split('\n');
+  const totalLines = lines.length;
 
   return (
-    <div className={styles.fileViewer}>
-      <div className={styles.fileHeader}>
-        <span className={styles.filePath}>{filePath}</span>
+    <div className={fm.fileViewer}>
+      {/* Tab bar */}
+      <div className={fm.editorTabs}>
+        <div className={`${fm.editorTab} ${fm.editorTabActive}`}>
+          <span className={fm.editorTabIcon}>{icon}</span>
+          <span>{fileName}</span>
+        </div>
       </div>
-      <div className={styles.fileContent}>
-        <pre className={styles.filePre}>
-          {lines.map((line, i) => (
-            <div key={i} style={{ display: 'flex' }}>
-              <span
-                style={{
-                  color: 'var(--phosphor-dim)',
-                  minWidth: '3em',
-                  textAlign: 'right',
-                  paddingRight: '1em',
-                  userSelect: 'none',
-                  flexShrink: 0,
-                }}
-              >
-                {lineNum(i + 1, lines.length)}
-              </span>
-              <span>{tokenizeLine(line, language)}</span>
-            </div>
+
+      {/* Editor toolbar */}
+      <div className={fm.editorToolbar}>
+        <span style={{ color: 'var(--phosphor-dim)' }}>{filePath}</span>
+      </div>
+
+      {/* Content with line numbers */}
+      <div className={fm.fileContent}>
+        <div className={fm.lineNumbers}>
+          {lines.map((_, i) => (
+            <div key={i} className={fm.lineNum}>{i + 1}</div>
           ))}
-        </pre>
+        </div>
+        <div className={fm.codeContent}>
+          <pre className={fm.filePre}>
+            {lines.map((line, i) => (
+              <div key={i} className={fm.codeLine}>
+                <span className={fm.codeLineNum}>{i + 1}</span>
+                <span>{tokenizeLine(line, language)}</span>
+              </div>
+            ))}
+          </pre>
+        </div>
+      </div>
+
+      {/* Status bar */}
+      <div className={fm.editorStatusBar}>
+        <div className={fm.editorStatusLeft}>
+          <span>Ln {totalLines}, Col 1</span>
+          <span>{totalLines} lines</span>
+        </div>
+        <div className={fm.editorStatusRight}>
+          <span>{langLabel}</span>
+          <span>UTF-8</span>
+          <span>{content.length > 0 ? coolsize(new TextEncoder().encode(content).length) : '0B'}</span>
+        </div>
       </div>
     </div>
   );

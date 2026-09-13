@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useVFSStore } from '../../store/useVFS';
 import { readFileContent } from '../../lib/vfs';
-import styles from '../../styles/components/menu-bar.module.css';
+import { coolsize } from '../../lib/fileUtils';
+import fm from '../../styles/components/file-manager.module.css';
 
 interface MarkdownViewerProps {
   filePath: string;
@@ -21,80 +22,81 @@ function parseMarkdown(content: string): LineEntry[] {
   for (const line of lines) {
     if (line.startsWith('```')) {
       if (inCodeBlock) {
-        // End code block
         codeLines.push(line);
         entries.push({ type: 'code', text: codeLines.join('\n') });
         codeLines = [];
         inCodeBlock = false;
       } else {
-        // Start code block
         inCodeBlock = true;
         codeLines = [line];
       }
       continue;
     }
-
-    if (inCodeBlock) {
-      codeLines.push(line);
-      continue;
-    }
-
-    if (line.startsWith('### ')) {
-      entries.push({ type: 'h3', text: line.slice(4) });
-    } else if (line.startsWith('## ')) {
-      entries.push({ type: 'h2', text: line.slice(3) });
-    } else if (line.startsWith('# ')) {
-      entries.push({ type: 'h1', text: line.slice(2) });
-    } else {
-      entries.push({ type: 'text', text: line });
-    }
+    if (inCodeBlock) { codeLines.push(line); continue; }
+    if (line.startsWith('### ')) entries.push({ type: 'h3', text: line.slice(4) });
+    else if (line.startsWith('## ')) entries.push({ type: 'h2', text: line.slice(3) });
+    else if (line.startsWith('# ')) entries.push({ type: 'h1', text: line.slice(2) });
+    else entries.push({ type: 'text', text: line });
   }
-
-  // If code block was never closed, flush accumulated lines
-  if (inCodeBlock && codeLines.length > 0) {
-    entries.push({ type: 'code', text: codeLines.join('\n') });
-  }
-
+  if (inCodeBlock && codeLines.length > 0) entries.push({ type: 'code', text: codeLines.join('\n') });
   return entries;
 }
 
 export function MarkdownViewer({ filePath }: MarkdownViewerProps) {
   const tree = useVFSStore((s) => s.tree);
   const content = useMemo(() => readFileContent(tree, filePath), [tree, filePath]);
-
-  const entries = useMemo(() => {
-    if (content === null) return [];
-    return parseMarkdown(content);
-  }, [content]);
+  const entries = useMemo(() => (content === null ? [] : parseMarkdown(content)), [content]);
+  const fileName = filePath.split('/').pop() || filePath;
 
   if (content === null) {
     return (
-      <div className={styles.fileViewer}>
-        <div className={styles.fileError}>File not found: {filePath}</div>
+      <div className={fm.fileViewer}>
+        <div className={fm.fileError}>File not found: {filePath}</div>
       </div>
     );
   }
 
+  const totalLines = content.split('\n').length;
+
   return (
-    <div className={styles.fileViewer}>
-      <div className={styles.fileHeader}>
-        <span className={styles.filePath}>{filePath}</span>
+    <div className={fm.fileViewer}>
+      {/* Tab bar */}
+      <div className={fm.editorTabs}>
+        <div className={`${fm.editorTab} ${fm.editorTabActive}`}>
+          <span className={fm.editorTabIcon}>{'\u{1F4DD}'}</span>
+          <span>{fileName}</span>
+        </div>
       </div>
-      <div className={styles.fileContent}>
+
+      {/* Editor toolbar */}
+      <div className={fm.editorToolbar}>
+        <span style={{ color: 'var(--phosphor-dim)' }}>{filePath}</span>
+      </div>
+
+      {/* Markdown rendered content */}
+      <div className={fm.mdContent}>
         {entries.map((entry, i) => {
           switch (entry.type) {
-            case 'h1':
-              return <div key={i} className={styles.mdH1}>{entry.text}</div>;
-            case 'h2':
-              return <div key={i} className={styles.mdH2}>{entry.text}</div>;
-            case 'h3':
-              return <div key={i} className={styles.mdH3}>{entry.text}</div>;
-            case 'code':
-              return <pre key={i} className={styles.mdCode}>{entry.text}</pre>;
-            default:
-              return <pre key={i} className={styles.filePre}>{entry.text}</pre>;
+            case 'h1': return <div key={i} className={fm.mdH1}>{entry.text}</div>;
+            case 'h2': return <div key={i} className={fm.mdH2}>{entry.text}</div>;
+            case 'h3': return <div key={i} className={fm.mdH3}>{entry.text}</div>;
+            case 'code': return <pre key={i} className={fm.mdCode}>{entry.text}</pre>;
+            default: return <div key={i} className={fm.mdText}><pre className={fm.filePre}>{entry.text}</pre></div>;
           }
         })}
+      </div>
+
+      {/* Status bar */}
+      <div className={fm.editorStatusBar}>
+        <div className={fm.editorStatusLeft}>
+          <span>Ln {totalLines}, Col 1</span>
+          <span>{totalLines} lines</span>
+        </div>
+        <div className={fm.editorStatusRight}>
+          <span>Markdown</span>
+          <span>UTF-8</span>
+          <span>{content.length > 0 ? coolsize(new TextEncoder().encode(content).length) : '0B'}</span>
+        </div>
       </div>
     </div>
   );
