@@ -79,15 +79,19 @@ export function Window({ win }: WindowProps) {
       <div ref={contentRef} className={styles.content}>
         {renderContent()}
       </div>
-      {/* Resize handles on all edges and corners */}
-      <ResizeHandle windowId={win.id} direction="n" />
-      <ResizeHandle windowId={win.id} direction="s" />
-      <ResizeHandle windowId={win.id} direction="e" />
-      <ResizeHandle windowId={win.id} direction="w" />
-      <ResizeHandle windowId={win.id} direction="ne" />
-      <ResizeHandle windowId={win.id} direction="nw" />
-      <ResizeHandle windowId={win.id} direction="se" />
-      <ResizeHandle windowId={win.id} direction="sw" />
+      {/* Resize handles on all edges and corners — hidden when maximized */}
+      {!win.isMaximized && (
+        <>
+          <ResizeHandle windowId={win.id} direction="n" />
+          <ResizeHandle windowId={win.id} direction="s" />
+          <ResizeHandle windowId={win.id} direction="e" />
+          <ResizeHandle windowId={win.id} direction="w" />
+          <ResizeHandle windowId={win.id} direction="ne" />
+          <ResizeHandle windowId={win.id} direction="nw" />
+          <ResizeHandle windowId={win.id} direction="se" />
+          <ResizeHandle windowId={win.id} direction="sw" />
+        </>
+      )}
     </div>
   );
 }

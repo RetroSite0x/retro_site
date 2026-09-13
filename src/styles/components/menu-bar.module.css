@@ -210,6 +210,56 @@
   color: var(--phosphor-bg);
 }
 
+.volumeSliderRow {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: default;
+}
+
+.volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 90px;
+  height: 2px;
+  background: var(--phosphor-dim);
+  outline: none;
+  cursor: pointer;
+}
+
+.volumeSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 14px;
+  background: var(--phosphor);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--phosphor);
+}
+
+.volumeSlider::-moz-range-thumb {
+  width: 10px;
+  height: 14px;
+  background: var(--phosphor);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 0 4px var(--phosphor);
+}
+
+.volumeSlider::-moz-range-track {
+  background: var(--phosphor-dim);
+  height: 2px;
+  border: none;
+}
+
+.volumeSlider:focus-visible {
+  outline: 1px solid var(--phosphor);
+  outline-offset: 2px;
+}
+
 /* Icon Grid */
 .iconGrid {
   position: relative;

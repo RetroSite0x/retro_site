@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { useWindowsStore } from '../store/useWindows';
+import { MENU_BAR_HEIGHT, windowLayerHeight } from '../lib/layout';
 
 const SNAP_THRESHOLD = 20;
 
@@ -25,23 +26,23 @@ function updatePreviewEl(
     return;
   }
   const vw = window.innerWidth;
-  const vh = window.innerHeight - 28;
+  const vh = windowLayerHeight();
   if (zone === 'top') {
     el.style.display = 'block';
     el.style.left = '0px';
-    el.style.top = '28px';
+    el.style.top = MENU_BAR_HEIGHT + 'px';
     el.style.width = vw + 'px';
     el.style.height = vh + 'px';
   } else if (zone === 'left') {
     el.style.display = 'block';
     el.style.left = '0px';
-    el.style.top = '28px';
+    el.style.top = MENU_BAR_HEIGHT + 'px';
     el.style.width = (vw / 2) + 'px';
     el.style.height = vh + 'px';
   } else {
     el.style.display = 'block';
     el.style.left = (vw / 2) + 'px';
-    el.style.top = '28px';
+    el.style.top = MENU_BAR_HEIGHT + 'px';
     el.style.width = (vw / 2) + 'px';
     el.style.height = vh + 'px';
   }
@@ -59,7 +60,7 @@ export function useDrag({ windowId }: UseDragOptions) {
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     const win = useWindowsStore.getState().windows[windowId];
-    if (!win) return;
+    if (!win || win.isMaximized) return;
 
     offsetRef.current = { x: e.clientX - win.x, y: e.clientY - win.y };
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
@@ -78,7 +79,7 @@ export function useDrag({ windowId }: UseDragOptions) {
       store.moveWindow(
         windowId,
         Math.min(newX, window.innerWidth - w.minWidth),
-        Math.min(newY, window.innerHeight - 24)
+        Math.min(newY, windowLayerHeight() - 24)
       );
 
       const zone = detectSnapZone(e.clientX, e.clientY);
@@ -101,13 +102,13 @@ export function useDrag({ windowId }: UseDragOptions) {
       if (activeZone) {
         const store = useWindowsStore.getState();
         const vw = window.innerWidth;
-        const vh = window.innerHeight - 28;
+        const vh = windowLayerHeight();
 
         if (activeZone === 'top') {
           store.maximizeWindow(windowId);
         } else {
           const halfW = Math.floor(vw / 2);
-          store.moveWindow(windowId, activeZone === 'left' ? 0 : halfW, 28);
+          store.moveWindow(windowId, activeZone === 'left' ? 0 : halfW, 0);
           store.resizeWindow(windowId, halfW, vh);
         }
       }

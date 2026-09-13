@@ -4,7 +4,7 @@ import { useSystemStore } from '../../store/useSystem';
 import { useVFSStore } from '../../store/useVFS';
 import { useWindowsStore } from '../../store/useWindows';
 import type { PhosphorTheme } from '../../types/system';
-import type { MotionMode } from '../../store/useSystem';
+import type { MotionMode, WallpaperId } from '../../store/useSystem';
 
 const THEMES: { value: PhosphorTheme; label: string }[] = [
   { value: 'green', label: 'Green' },
@@ -15,6 +15,13 @@ const THEMES: { value: PhosphorTheme; label: string }[] = [
   { value: 'nord', label: 'Nord' },
   { value: 'solarized', label: 'Solarized' },
   { value: 'ubuntu', label: 'Ubuntu' },
+];
+
+const WALLPAPERS: { value: WallpaperId; label: string }[] = [
+  { value: 'ann', label: 'ANN' },
+  { value: 'grid', label: 'Grid' },
+  { value: 'circuit', label: 'Circuit' },
+  { value: 'none', label: 'None' },
 ];
 
 const MENU_KEYS = ['FILE', 'EDIT', 'VIEW', 'PROJECTS', 'SETTINGS'] as const;
@@ -32,6 +39,7 @@ interface MenuItem {
   separator?: boolean;
   sub?: SubItem[];
   toggle?: string;
+  volume?: true;
 }
 
 interface MenuGroup {
@@ -54,10 +62,14 @@ export function MenuBar() {
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
   const crtFlicker = useSystemStore((s) => s.crtFlicker);
   const motion = useSystemStore((s) => s.motion);
+  const wallpaper = useSystemStore((s) => s.wallpaper);
+  const volume = useSystemStore((s) => s.volume);
   const setTheme = useSystemStore((s) => s.setTheme);
   const toggleSound = useSystemStore((s) => s.toggleSound);
   const toggleFlicker = useSystemStore((s) => s.toggleFlicker);
   const setMotion = useSystemStore((s) => s.setMotion);
+  const setWallpaper = useSystemStore((s) => s.setWallpaper);
+  const setVolume = useSystemStore((s) => s.setVolume);
   const logout = useSystemStore((s) => s.logout);
 
   const tree = useVFSStore((s) => s.tree);
@@ -66,17 +78,22 @@ export function MenuBar() {
   /* ── Clock ── */
   useEffect(() => {
     const update = () => {
-      setClock(
-        new Date().toLocaleDateString('en-US', {
-          weekday: 'short',
-          day: '2-digit',
-          month: 'short',
-          year: '2-digit',
-        })
-      );
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'short',
+        year: '2-digit',
+      });
+      const timeStr = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      });
+      setClock(`${dateStr}  ${timeStr}`);
     };
     update();
-    const timer = setInterval(update, 60000);
+    const timer = setInterval(update, 1000);
     return () => clearInterval(timer);
   }, []);
 
@@ -261,6 +278,18 @@ export function MenuBar() {
             })),
           },
           {
+            label: 'Wallpaper',
+            sub: WALLPAPERS.map((w) => ({
+              label: w.label,
+              active: wallpaper === w.value,
+              action: () => setWallpaper(w.value),
+            })),
+          },
+          {
+            label: 'Volume',
+            volume: true,
+          },
+          {
             label: 'Sound',
             toggle: soundEnabled ? 'ON' : 'OFF',
             action: toggleSound,
@@ -284,10 +313,14 @@ export function MenuBar() {
       getProjectList,
       openDirWindow,
       theme,
+      wallpaper,
+      volume,
       soundEnabled,
       crtFlicker,
       motion,
       setTheme,
+      setWallpaper,
+      setVolume,
       toggleSound,
       toggleFlicker,
       cycleMotion,
@@ -731,6 +764,33 @@ export function MenuBar() {
                       );
                     }
 
+                    /* ── Volume slider ── */
+                    if (item.volume) {
+                      return (
+                        <div
+                          key={j}
+                          className={styles.volumeSliderRow}
+                          role="none"
+                          onMouseDown={(e) => e.stopPropagation()}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <span className={styles.settingsLabel}>
+                            {item.label}
+                          </span>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={Math.round(volume * 100)}
+                            aria-label="Volume"
+                            className={styles.volumeSlider}
+                            onChange={(e) => setVolume(Number(e.target.value) / 100)}
+                          />
+                        </div>
+                      );
+                    }
+
                     /* ── Toggle item ── */
                     if (item.toggle !== undefined) {
                       return (
@@ -795,7 +855,7 @@ export function MenuBar() {
         >
           📄 Resume
         </span>
-        <span className={styles.clock} aria-label="Current date">
+        <span className={styles.clock} aria-label="Current date and time">
           {clock}
         </span>
       </div>

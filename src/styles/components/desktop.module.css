@@ -94,6 +94,33 @@
   border-style: dashed;
 }
 
+.showDesktopBtn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--phosphor-dim);
+  color: var(--phosphor);
+  font-family: var(--font-ui);
+  font-size: 10px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transition: background 0.15s, color 0.15s;
+}
+
+.showDesktopBtn:hover {
+  background: var(--phosphor);
+  color: var(--phosphor-bg);
+}
+
+.showDesktopBtn:focus-visible {
+  outline: 1px solid var(--phosphor);
+  outline-offset: -1px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .wallpaperLine {

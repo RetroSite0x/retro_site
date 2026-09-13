@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { WindowState, WindowContent } from '../types/window';
 import { safeStorage } from '../lib/storage';
+import { windowLayerHeight } from '../lib/layout';
 
 const WINDOW_SIZE_CONSTRAINTS: Record<WindowContent['type'], { defaultWidth: number; defaultHeight: number; minWidth: number; minHeight: number; maxWidth: number; maxHeight: number }> = {
   terminal: { defaultWidth: 640, defaultHeight: 360, minWidth: 400, minHeight: 200, maxWidth: 1200, maxHeight: 800 },
@@ -36,6 +37,7 @@ interface WindowsState {
   restoreWindow: (id: string) => void;
   moveWindow: (id: string, x: number, y: number) => void;
   resizeWindow: (id: string, width: number, height: number) => void;
+  minimizeAll: () => void;
   reflowMaximized: () => void;
 }
 
@@ -179,9 +181,9 @@ export const useWindowsStore = create<WindowsState>()(
                 ...win,
                 preMaximizeRect: { x: win.x, y: win.y, width: win.width, height: win.height },
                 x: 0,
-                y: 28,
+                y: 0,
                 width: window.innerWidth,
-                height: window.innerHeight - 28,
+                height: windowLayerHeight(),
                 isMaximized: true,
               },
             },
@@ -228,13 +230,30 @@ export const useWindowsStore = create<WindowsState>()(
         });
       },
 
+      minimizeAll: () => {
+        set((s) => {
+          let changed = false;
+          const next: Record<string, WindowState> = {};
+          for (const [id, win] of Object.entries(s.windows)) {
+            if (!win.isMinimized) {
+              next[id] = { ...win, isMinimized: true };
+              changed = true;
+            } else {
+              next[id] = win;
+            }
+          }
+          if (!changed) return s;
+          return { windows: next, focusedId: null };
+        });
+      },
+
       reflowMaximized: () => {
         set((s) => {
           let changed = false;
           const next: Record<string, WindowState> = {};
           for (const [id, win] of Object.entries(s.windows)) {
             if (win.isMaximized) {
-              next[id] = { ...win, x: 0, y: 28, width: window.innerWidth, height: window.innerHeight - 28 };
+              next[id] = { ...win, x: 0, y: 0, width: window.innerWidth, height: windowLayerHeight() };
               changed = true;
             } else {
               next[id] = win;

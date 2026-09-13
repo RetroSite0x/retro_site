@@ -1,5 +1,8 @@
 import { useCallback, useRef } from 'react';
 import { RetroIcon, type RetroIconName } from '../icons/RetroIcon';
+import { useWindowsStore } from '../../store/useWindows';
+import { useIconPositionsStore } from '../../store/useIconPositions';
+import { useContextMenuStore } from '../../store/useContextMenu';
 import styles from '../../styles/components/menu-bar.module.css';
 
 interface DesktopIconProps {
@@ -85,12 +88,54 @@ export function DesktopIcon({
     [onOpen]
   );
 
+  const handleContextMenu = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const openWindow = useWindowsStore.getState().openWindow;
+      const setPosition = useIconPositionsStore.getState().setPosition;
+      const contextOpenMenu = useContextMenuStore.getState().openMenu;
+
+      contextOpenMenu(e, [
+        { label: 'Open', onSelect: onOpen },
+        {
+          label: 'Open in Terminal',
+          onSelect: () =>
+            openWindow({ title: 'terminal', content: { type: 'terminal' } }),
+        },
+        {
+          separatorBefore: true,
+          label: 'Reset Desktop Icons',
+          onSelect: () => {
+            const ICON_LABELS = [
+              'projects', 'logs', 'lab', 'papers', 'music',
+              'art', 'blog', 'secret', 'trash',
+              'terminal', 'web', 'files', 'memoire',
+            ];
+            const GRID_COLS = 2;
+            const ICON_WIDTH = 120;
+            const ICON_HEIGHT = 100;
+            const PAD_X = 24;
+            const PAD_Y = 20;
+            ICON_LABELS.forEach((lbl, i) => {
+              const col = i % GRID_COLS;
+              const row = Math.floor(i / GRID_COLS);
+              setPosition(lbl, PAD_X + col * ICON_WIDTH, PAD_Y + row * ICON_HEIGHT);
+            });
+          },
+        },
+      ]);
+    },
+    [onOpen]
+  );
+
   return (
     <div
       className={`${styles.desktopIcon} ${isDragged ? styles.desktopIconDragging : ''}`}
       style={{ left: x, top: y, position: 'absolute' }}
       onPointerDown={handlePointerDown}
       onKeyDown={handleKeyDown}
+      onContextMenu={handleContextMenu}
       tabIndex={tabIndex}
       role={role}
       aria-label={ariaLabel}

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useWindowsStore } from '../store/useWindows';
+import { useContextMenuStore } from '../store/useContextMenu';
 import { soundEngine } from '../lib/sound';
 
 const KONAMI_CODE = [
@@ -49,7 +50,8 @@ export function useKeyboard() {
           !!target &&
           (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
         const menuOpen = document.querySelector('[role="menubar"] [aria-expanded="true"]');
-        if (isEditable || menuOpen) return;
+        const contextMenuOpen = useContextMenuStore.getState().open;
+        if (isEditable || menuOpen || contextMenuOpen) return;
         const store = useWindowsStore.getState();
         if (store.focusedId) {
           store.closeWindow(store.focusedId);
