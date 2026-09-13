@@ -157,6 +157,25 @@ function createGameData(highScore: number): GameData {
   };
 }
 
+type ArrowDir = 'up' | 'down' | 'left' | 'right';
+
+const ARROW_ROTATION: Record<ArrowDir, number> = { up: 0, right: 90, down: 180, left: 270 };
+
+function ArrowIcon({ dir }: { dir: ArrowDir }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      fill="currentColor"
+      aria-hidden="true"
+      style={{ transform: `rotate(${ARROW_ROTATION[dir]}deg)`, display: 'block' }}
+    >
+      <path d="M12 3 L21 21 L12 16.5 L3 21 Z" />
+    </svg>
+  );
+}
+
 /* ── Component ────────────────────────────────────────────────────────── */
 export interface SnakeGameProps {
   onExit: (score: number) => void;
@@ -502,7 +521,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
             aria-label="Move up"
             onPointerDown={makeDpadHandler(DIR_UP)}
           >
-            ▲
+            <ArrowIcon dir="up" />
           </button>
           <div />
           <button
@@ -511,7 +530,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
             aria-label="Move left"
             onPointerDown={makeDpadHandler(DIR_LEFT)}
           >
-            ◀
+            <ArrowIcon dir="left" />
           </button>
           <div className={styles.snakeDpadCenter} />
           <button
@@ -520,7 +539,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
             aria-label="Move right"
             onPointerDown={makeDpadHandler(DIR_RIGHT)}
           >
-            ▶
+            <ArrowIcon dir="right" />
           </button>
           <div />
           <button
@@ -529,7 +548,7 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
             aria-label="Move down"
             onPointerDown={makeDpadHandler(DIR_DOWN)}
           >
-            ▼
+            <ArrowIcon dir="down" />
           </button>
           <div />
         </div>

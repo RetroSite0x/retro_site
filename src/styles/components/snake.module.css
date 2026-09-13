@@ -43,7 +43,7 @@
   flex: 1 1 auto;
   min-height: 0;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   overflow: hidden;
 }
@@ -120,6 +120,7 @@
   gap: var(--space-sm, 8px);
   flex-shrink: 0;
   padding-top: var(--space-sm, 8px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* ── D-Pad (cross layout) ───────────────────────────────────────────── */
@@ -134,9 +135,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: 1px solid var(--phosphor-dim);
-  color: var(--phosphor);
+  background: var(--phosphor);
+  border: 1px solid var(--phosphor);
+  color: var(--phosphor-bg);
   font-family: var(--font-terminal);
   font-size: 18px;
   cursor: pointer;
@@ -146,7 +147,8 @@
 }
 
 .snakeDpadBtn:active {
-  background: var(--phosphor);
+  background: var(--phosphor-dim);
+  border-color: var(--phosphor-dim);
   color: var(--phosphor-bg);
   text-shadow: none;
 }

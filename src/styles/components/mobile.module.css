@@ -10,6 +10,7 @@
   inset: 0;
   width: 100%;
   height: 100vh; /* fallback */
+  height: -webkit-fill-available;
   height: 100dvh;
   background: var(--phosphor-bg);
   color: var(--phosphor);
