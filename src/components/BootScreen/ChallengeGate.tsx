@@ -28,6 +28,25 @@ function randomFood(snake: Cell[]): Cell {
   return free[Math.floor(Math.random() * free.length)];
 }
 
+type ArrowDir = 'up' | 'down' | 'left' | 'right';
+
+const ARROW_ROTATION: Record<ArrowDir, number> = { up: 0, right: 90, down: 180, left: 270 };
+
+function ArrowIcon({ dir }: { dir: ArrowDir }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="22"
+      height="22"
+      fill="currentColor"
+      aria-hidden="true"
+      style={{ transform: `rotate(${ARROW_ROTATION[dir]}deg)`, display: 'block' }}
+    >
+      <path d="M12 3 L21 21 L12 16.5 L3 21 Z" />
+    </svg>
+  );
+}
+
 export function ChallengeGate() {
   const login = useSystemStore((s) => s.login);
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
@@ -120,14 +139,30 @@ export function ChallengeGate() {
     };
   }, [started, tick]);
 
+  /* ── Shared direction handler (keyboard + D-pad) ──────────────────── */
+  const handleDirection = useCallback(
+    (next: Dir) => {
+      if (deadRef.current || wonRef.current) return;
+      setStarted(true);
+
+      const cur = dirRef.current;
+      if (
+        (next === 'UP' && cur === 'DOWN') ||
+        (next === 'DOWN' && cur === 'UP') ||
+        (next === 'LEFT' && cur === 'RIGHT') ||
+        (next === 'RIGHT' && cur === 'LEFT')
+      )
+        return;
+
+      dirRef.current = next;
+    },
+    [],
+  );
+
+  /* ── Keyboard handler ─────────────────────────────────────────────── */
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (deadRef.current || wonRef.current) return;
-
-      const startKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'];
-      if (!started && startKeys.includes(e.key)) {
-        setStarted(true);
-      }
 
       const map: Record<string, Dir> = {
         ArrowUp: 'UP', ArrowDown: 'DOWN', ArrowLeft: 'LEFT', ArrowRight: 'RIGHT',
@@ -137,17 +172,21 @@ export function ChallengeGate() {
       const next = map[e.key];
       if (!next) return;
       e.preventDefault();
-
-      const cur = dirRef.current;
-      if ((next === 'UP' && cur === 'DOWN') || (next === 'DOWN' && cur === 'UP') ||
-          (next === 'LEFT' && cur === 'RIGHT') || (next === 'RIGHT' && cur === 'LEFT')) return;
-
-      dirRef.current = next;
+      handleDirection(next);
     };
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [started]);
+  }, [handleDirection]);
+
+  /* ── D-pad pointer handler ────────────────────────────────────────── */
+  const makeDpadHandler = useCallback(
+    (dir: Dir) => (e: React.PointerEvent) => {
+      e.preventDefault();
+      handleDirection(dir);
+    },
+    [handleDirection],
+  );
 
   const cellSet = new Set(snake.map((c) => `${c.x},${c.y}`));
   const snakeHead = snake[0];
@@ -189,9 +228,56 @@ export function ChallengeGate() {
           ))}
         </div>
 
+        {/* D-pad on-screen controls */}
+        <div className={styles.snakeControls}>
+          <div className={styles.snakeDpad}>
+            <div />
+            <button
+              type="button"
+              className={styles.snakeDpadBtn}
+              aria-label="Move up"
+              onPointerDown={makeDpadHandler('UP')}
+              onClick={() => handleDirection('UP')}
+            >
+              <ArrowIcon dir="up" />
+            </button>
+            <div />
+            <button
+              type="button"
+              className={styles.snakeDpadBtn}
+              aria-label="Move left"
+              onPointerDown={makeDpadHandler('LEFT')}
+              onClick={() => handleDirection('LEFT')}
+            >
+              <ArrowIcon dir="left" />
+            </button>
+            <div className={styles.snakeDpadCenter} />
+            <button
+              type="button"
+              className={styles.snakeDpadBtn}
+              aria-label="Move right"
+              onPointerDown={makeDpadHandler('RIGHT')}
+              onClick={() => handleDirection('RIGHT')}
+            >
+              <ArrowIcon dir="right" />
+            </button>
+            <div />
+            <button
+              type="button"
+              className={styles.snakeDpadBtn}
+              aria-label="Move down"
+              onPointerDown={makeDpadHandler('DOWN')}
+              onClick={() => handleDirection('DOWN')}
+            >
+              <ArrowIcon dir="down" />
+            </button>
+            <div />
+          </div>
+        </div>
+
         {!started && (
           <div className={styles.snakeHint}>
-            grab a few snacks to enter — arrow keys or WASD
+            tap the arrows — or use arrow keys / WASD
           </div>
         )}
         {(dead || won) && (
