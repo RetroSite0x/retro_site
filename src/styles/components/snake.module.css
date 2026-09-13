@@ -258,6 +258,17 @@
   .snakeControls {
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     gap: var(--space-lg, 24px);
+  }
+
+  .snakeDpad {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .snakeDpad > div {
+    display: none;
   }
 }
