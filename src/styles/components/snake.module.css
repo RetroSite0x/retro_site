@@ -121,6 +121,10 @@
   gap: var(--space-sm, 8px);
   flex-shrink: 0;
   padding-top: var(--space-sm, 8px);
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  background: var(--phosphor-bg);
 }
 
 /* ── D-Pad (cross layout) ───────────────────────────────────────────── */
@@ -208,6 +212,47 @@
 
   .snakeGameOverTitle {
     font-size: 18px;
+  }
+}
+
+@media (max-width: 767px) {
+  .snakeRoot {
+    padding-bottom: 196px;
+  }
+
+  .snakeControls {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    padding: var(--space-sm, 8px);
+    border-top: 1px solid var(--phosphor-dim);
+  }
+}
+
+@media (max-height: 620px) {
+  .snakeRoot {
+    padding: var(--space-xs, 4px);
+    padding-bottom: 168px;
+    gap: var(--space-xs, 4px);
+  }
+
+  .snakeHeader {
+    font-size: 12px;
+  }
+
+  .snakeDpad {
+    grid-template-columns: repeat(3, 38px);
+    grid-template-rows: repeat(3, 38px);
+  }
+
+  .snakeDpadBtn {
+    font-size: 15px;
+  }
+
+  .snakeControls {
+    padding-top: var(--space-xs, 4px);
   }
 }
 

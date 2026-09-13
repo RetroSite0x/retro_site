@@ -394,11 +394,26 @@ export function SnakeGame({ onExit }: SnakeGameProps): JSX.Element {
     };
 
     compute();
+    const raf = requestAnimationFrame(compute);
+    window.addEventListener('resize', compute);
 
-    if (typeof ResizeObserver === 'undefined') return;
-    const ro = new ResizeObserver(compute);
-    ro.observe(el);
-    return () => ro.disconnect();
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(compute);
+      ro.observe(el);
+    }
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', compute);
+      ro?.disconnect();
+    };
+  }, []);
+
+  // Dismiss the on-screen keyboard so it does not shrink the play area
+  useEffect(() => {
+    const active = document.activeElement;
+    if (active instanceof HTMLElement) active.blur();
   }, []);
 
   /* ── Render (read from ref, guaranteed fresh after bump) ────────────── */
