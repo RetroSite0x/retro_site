@@ -28,7 +28,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   const reducedMotion = useReducedMotion();
   const login = useSystemStore((s) => s.login);
 
-  const { state, skip, prompt } = useBootSequence(BOOT_BEATS, onComplete);
+  const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete);
 
   // Play boot audio once on mount: CRT power-on hum, then chime after a beat
   useEffect(() => {
