@@ -357,6 +357,7 @@ export function useBootSequence(
               }));
               schedule(() => {
                 addLine(WHOAMI_NAME, 'output');
+                if (soundEnabled()) soundEngine.navBlip();
                 schedule(() => advanceBeat(), 200);
               }, 150);
             }, 100);
@@ -371,10 +372,12 @@ export function useBootSequence(
         let li = 0;
         const showNext = () => {
           if (li >= IDENTITY_CARD.length) {
+            if (soundEnabled()) soundEngine.successChime();
             schedule(() => advanceBeat(), 200);
             return;
           }
           addLine(IDENTITY_CARD[li], 'ascii');
+          if (soundEnabled()) soundEngine.dataTick();
           li++;
           schedule(showNext, 120);
         };
@@ -385,6 +388,7 @@ export function useBootSequence(
 
       case 'work': {
         addLine(WORK_HEADING, 'output');
+        if (soundEnabled()) soundEngine.navBlip();
         let ri = 0;
         const showNextRole = () => {
           if (ri >= WORK_ROLES.length) {
@@ -392,6 +396,7 @@ export function useBootSequence(
             return;
           }
           addLine(WORK_ROLES[ri], 'output');
+          if (soundEnabled()) soundEngine.dataTick();
           ri++;
           schedule(showNextRole, 130);
         };
@@ -424,7 +429,6 @@ export function useBootSequence(
                 typingVisibleChars: 0,
               }));
 
-              // Spinner
               const spinChars = ['|', '/', '-', '\\'];
               let si = 0;
               setState((prev) => ({ ...prev, spinnerChar: spinChars[0] }));
@@ -440,6 +444,7 @@ export function useBootSequence(
                 for (const area of RESEARCH_AREAS) {
                   addLine(area, 'output');
                 }
+                if (soundEnabled()) soundEngine.navBlip();
                 schedule(() => advanceBeat(), 200);
               }, 800);
             }, 100);
@@ -468,6 +473,7 @@ export function useBootSequence(
               ? `BENI corpus loaded: ${BENI_DISPLAY} Bangla news articles`
               : `BENI corpus: ${current.toLocaleString()}`;
           setState((prev) => ({ ...prev, countupDisplay: display }));
+          if (soundEnabled() && step % 3 === 0) soundEngine.dataTick();
 
           if (step >= steps) {
             window.clearInterval(cInterval);
@@ -477,6 +483,7 @@ export function useBootSequence(
                 'output',
               );
               setState((prev) => ({ ...prev, countupDisplay: null }));
+              if (soundEnabled()) soundEngine.successChime();
               schedule(() => {
                 addLine(BANGALA_CORPUS, 'output');
                 schedule(() => advanceBeat(), 200);
@@ -505,7 +512,6 @@ export function useBootSequence(
           if (ci >= wrong.length) {
             window.clearInterval(tInterval);
 
-            // Pause, then backspace
             schedule(() => {
               let backIdx = wrong.length;
               const bInterval = scheduleInterval(() => {
@@ -515,7 +521,6 @@ export function useBootSequence(
                 if (backIdx <= wrong.length - 3) {
                   window.clearInterval(bInterval);
 
-                  // Switch to corrected text and retype
                   const correct = WHOAMI_NAME;
                   setState((prev) => ({
                     ...prev,
@@ -538,6 +543,7 @@ export function useBootSequence(
                           typingText: null,
                           typingVisibleChars: 0,
                         }));
+                        if (soundEnabled()) soundEngine.navBlip();
                         schedule(() => advanceBeat(), 200);
                       }, 200);
                     }
@@ -618,6 +624,7 @@ export function useBootSequence(
 
       case 'signOff': {
         addLine(LINKS_LINE, 'output');
+        if (soundEnabled()) soundEngine.navBlip();
 
         schedule(() => {
           schedule(() => {
@@ -644,6 +651,7 @@ export function useBootSequence(
                   }));
                   schedule(() => {
                     addLine(WELCOME_MSG, 'output');
+                    if (soundEnabled()) soundEngine.successChime();
                     schedule(() => markComplete(), 600);
                   }, 200);
                 }, 100);

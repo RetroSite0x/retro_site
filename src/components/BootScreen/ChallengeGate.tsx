@@ -70,10 +70,10 @@ export function ChallengeGate() {
       if (tickRef.current) window.clearInterval(tickRef.current);
       if (win) {
         setWon(true);
-        if (soundEnabled) soundEngine.bootChirp();
+        if (soundEnabled) soundEngine.successChime();
       } else {
         setDead(true);
-        if (soundEnabled) soundEngine.errorBuzz();
+        if (soundEnabled) soundEngine.failTone();
       }
       setTimeout(() => login('nabil'), 1200);
     },
@@ -120,7 +120,7 @@ export function ChallengeGate() {
       const newFruits = fruitsRef.current + 1;
       fruitsRef.current = newFruits;
       setFruits(newFruits);
-      if (soundEnabled) soundEngine.keyClick();
+      if (soundEnabled) soundEngine.navBlip();
       if (newFruits >= FRUITS_TO_WIN) {
         wonRef.current = true;
         endGame(true);
@@ -144,6 +144,9 @@ export function ChallengeGate() {
   const handleDirection = useCallback(
     (next: Dir) => {
       if (deadRef.current || wonRef.current) return;
+      if (!started) {
+        if (soundEnabled) soundEngine.navBlip();
+      }
       setStarted(true);
 
       const cur = dirRef.current;
@@ -157,7 +160,7 @@ export function ChallengeGate() {
 
       dirRef.current = next;
     },
-    [],
+    [started, soundEnabled],
   );
 
   /* ── Keyboard handler ─────────────────────────────────────────────── */

@@ -310,6 +310,80 @@ class SoundEngine {
     setTimeout(() => this.diskSeek(), 200);
     setTimeout(() => this.bootChirp(), 500);
   }
+
+  successChime(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const notes: [number, number][] = [
+      [523, 0],
+      [659, 0.08],
+      [784, 0.16],
+      [1047, 0.24],
+    ];
+    for (const [freq, delay] of notes) {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, t + delay);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.001, t + delay);
+      g.gain.linearRampToValueAtTime(this.gain(0.08), t + delay + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.001, t + delay + 0.12);
+      osc.connect(g);
+      g.connect(ctx.destination);
+      osc.start(t + delay);
+      osc.stop(t + delay + 0.12);
+    }
+  }
+
+  failTone(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(440, t);
+    osc.frequency.exponentialRampToValueAtTime(220, t + 0.2);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.gain(0.08), t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.25);
+  }
+
+  navBlip(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1800, t);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.gain(0.04), t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.03);
+  }
+
+  dataTick(): void {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const t = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(600, t);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(this.gain(0.05), t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.02);
+    osc.connect(g);
+    g.connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.02);
+  }
 }
 
 export const soundEngine = new SoundEngine();
