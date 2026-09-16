@@ -28,39 +28,32 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   const reducedMotion = useReducedMotion();
   const login = useSystemStore((s) => s.login);
   const audioUnlocked = useRef(false);
+  const [bootStarted, setBootStarted] = useState(false);
 
-  const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete);
+  const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete, bootStarted);
 
-  const unlockAudio = useCallback(() => {
-    if (!audioUnlocked.current) {
-      soundEngine.unlock();
-      audioUnlocked.current = true;
-      if (soundEnabled) {
-        soundEngine.crtPowerOn();
-        setTimeout(() => soundEngine.bootChime(), 600);
-      }
-    }
+  const startBoot = useCallback(() => {
+    if (audioUnlocked.current) return;
+    soundEngine.unlock();
+    audioUnlocked.current = true;
+    if (soundEnabled) soundEngine.crtPowerOn();
+    setBootStarted(true);
   }, [soundEnabled]);
 
-  useEffect(() => {
-    const handler = () => {
-      unlockAudio();
-    };
-    window.addEventListener('keydown', handler, { once: true });
-    window.addEventListener('pointerdown', handler, { once: true });
-    return () => {
-      window.removeEventListener('keydown', handler);
-      window.removeEventListener('pointerdown', handler);
-    };
-  }, [unlockAudio]);
+  const skipBoot = useCallback(() => {
+    soundEngine.stopAll();
+    login('nabil');
+  }, [login]);
 
-  // Skip on any keypress
   const handleKeyDown = useCallback(() => {
-    unlockAudio();
-    if (!state.isDone) {
-      login('nabil');
+    if (!bootStarted) {
+      startBoot();
+      return;
     }
-  }, [state.isDone, login, unlockAudio]);
+    if (!state.isDone) {
+      skipBoot();
+    }
+  }, [bootStarted, startBoot, state.isDone, skipBoot]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -98,10 +91,13 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   return (
     <div
       className={containerClass}
-      onClick={!isDone ? () => {
-        unlockAudio();
-        login('nabil');
-      } : undefined}
+      onClick={() => {
+        if (!bootStarted) {
+          startBoot();
+          return;
+        }
+        if (!isDone) skipBoot();
+      }}
       role="presentation"
     >
       {/* Power-on phosphor flash overlay */}
@@ -228,14 +224,21 @@ export function BootIntro({ onComplete }: BootIntroProps) {
         )}
       </div>
 
-      {!isDone && (
+      {!bootStarted && (
+        <div className={styles.bootGate}>
+          <div className={styles.bootGateTitle}>PRESS ANY KEY TO BOOT</div>
+          <div className={styles.bootGateHint}>click or press any key — audio starts with the boot</div>
+        </div>
+      )}
+
+      {bootStarted && !isDone && (
         <>
           <div className={styles.hint}>Press any key or click to skip...</div>
           <button
             className={styles.skipButton}
             onClick={(e) => {
               e.stopPropagation();
-              login('nabil');
+              skipBoot();
             }}
             autoFocus
           >

@@ -194,6 +194,7 @@ export interface UseBootSequenceResult {
 export function useBootSequence(
   beats: readonly BootBeat[],
   onComplete: () => void,
+  enabled = true,
 ): UseBootSequenceResult {
   const [state, setState] = useState<BootRenderState>(INITIAL_STATE);
   const [generation, setGeneration] = useState(0);
@@ -284,6 +285,7 @@ export function useBootSequence(
   // increments generation when done — triggering exactly one re-run.
 
   useEffect(() => {
+    if (!enabled) return;
     if (completed.current || skipRequested.current) return;
 
     // Clear timers from the previous beat
@@ -665,11 +667,12 @@ export function useBootSequence(
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [generation]);
+  }, [generation, enabled]);
 
   // ── Watchdog: never trap the user ─────────────────────────────────────
 
   useEffect(() => {
+    if (!enabled) return;
     const timer = window.setTimeout(() => {
       if (!completed.current && !skipRequested.current) {
         skip();
@@ -677,7 +680,7 @@ export function useBootSequence(
     }, MAX_DURATION_MS);
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [enabled]);
 
   return { state, skip, prompt: PROMPT };
 }

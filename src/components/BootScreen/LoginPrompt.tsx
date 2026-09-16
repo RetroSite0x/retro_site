@@ -143,6 +143,7 @@ export function LoginPrompt() {
       return;
     }
     autoCancelledRef.current = true;
+    soundEngine.stopAll();
     advanceBoot();
   };
 

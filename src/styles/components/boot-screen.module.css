@@ -9,6 +9,7 @@
   color: var(--phosphor);
   font-family: var(--font-terminal);
   cursor: pointer;
+  position: relative;
 }
 
 .content {
@@ -76,6 +77,35 @@
   background: var(--phosphor);
   color: var(--phosphor-bg);
   border-color: var(--phosphor);
+}
+
+.bootGate {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-md, 16px);
+  padding: 24px;
+  text-align: center;
+  background: var(--phosphor-bg);
+}
+
+.bootGateTitle {
+  color: var(--phosphor);
+  font-family: var(--font-terminal);
+  font-size: 28px;
+  letter-spacing: 3px;
+  text-shadow: var(--phosphor-glow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.bootGateHint {
+  color: var(--phosphor-dim);
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 
 .loginInput {
