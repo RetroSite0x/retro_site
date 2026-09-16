@@ -310,7 +310,7 @@ export function useBootSequence(
           let moduleIndex = 0;
           let progress = 0;
           const pInterval = scheduleInterval(() => {
-            progress += 4;
+            progress += 8;
             const idx = Math.min(
               Math.floor((progress / 100) * PROGRESS_MODULES.length),
               PROGRESS_MODULES.length - 1,
@@ -328,7 +328,7 @@ export function useBootSequence(
               window.clearInterval(pInterval);
               schedule(() => advanceBeat(), 150);
             }
-          }, 70);
+          }, 60);
         }, 100);
 
         break;
