@@ -32,7 +32,7 @@ interface SystemState {
   getCustomThemes: () => Record<string, CustomThemeColors>;
 }
 
-const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'desktop'];
+const PHASE_ORDER: BootPhase[] = ['bios', 'desktop'];
 
 const CUSTOM_THEMES_KEY = 'nabilos-custom-themes';
 
@@ -70,7 +70,12 @@ export const useSystemStore = create<SystemState>()(
         const current = get().bootPhase;
         const idx = PHASE_ORDER.indexOf(current);
         if (idx < PHASE_ORDER.length - 1) {
-          set({ bootPhase: PHASE_ORDER[idx + 1] });
+          const next = PHASE_ORDER[idx + 1];
+          if (next === 'desktop') {
+            set({ bootPhase: 'desktop', isLoggedIn: true, username: 'nabil' });
+          } else {
+            set({ bootPhase: next });
+          }
         }
       },
 
@@ -86,7 +91,7 @@ export const useSystemStore = create<SystemState>()(
       setMotion: (motion: MotionMode) => set({ motion }),
 
       logout: () => {
-        set({ isLoggedIn: false, bootPhase: 'login' });
+        set({ isLoggedIn: false, bootPhase: 'bios' });
       },
 
       addCustomTheme: (name: string, colors: CustomThemeColors) => {

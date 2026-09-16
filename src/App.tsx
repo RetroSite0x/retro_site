@@ -64,7 +64,7 @@ export default function App() {
 
   const [showOnboarding, setShowOnboarding] = useState(false);
 
-  const VALID_PHASES = ['bios', 'login', 'desktop'] as const;
+  const VALID_PHASES = ['bios', 'desktop'] as const;
   const isValidPhase = VALID_PHASES.includes(bootPhase);
 
   // ── DIS-01: deep-link query-param entry (runs once) ────────────────
@@ -138,7 +138,7 @@ System halted.
     );
   }
 
-  const isBoot = bootPhase === 'bios' || bootPhase === 'login';
+  const isBoot = bootPhase === 'bios';
   const isDesktop = bootPhase === 'desktop' && isLoggedIn;
 
   return (

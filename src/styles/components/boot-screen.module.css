@@ -108,53 +108,6 @@
   letter-spacing: 1px;
 }
 
-.loginInput {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--phosphor);
-  color: var(--phosphor);
-  font-family: var(--font-terminal);
-  font-size: 20px;
-  padding: 2px 4px;
-  outline: none;
-  width: 220px;
-  caret-color: var(--text-cursor);
-}
-
-.loginInput:focus {
-  border-bottom: 1px solid var(--phosphor);
-  box-shadow: 0 1px 4px var(--phosphor-glow);
-}
-
-.loginLabel {
-  color: var(--phosphor-dim);
-  user-select: none;
-}
-
-.loginError {
-  color: #ff4444;
-  text-shadow: 0 0 4px rgba(255, 68, 68, 0.3);
-  margin-bottom: var(--space-sm, 8px);
-}
-
-.loginLog {
-  color: var(--phosphor-dim);
-  text-shadow: 0 0 2px var(--phosphor-dim);
-  animation: lineFadeUp 0.2s ease-out forwards;
-}
-
-.loginBanner {
-  white-space: pre;
-  color: var(--phosphor-dim);
-}
-
-.loginGranted {
-  color: var(--phosphor);
-  text-shadow: var(--phosphor-glow-strong);
-  letter-spacing: 1px;
-  animation: lineScanIn 0.35s ease-out forwards;
-}
-
 /* ── Boot intro: ASCII card ─────────────────────────────────────────── */
 
 .ascii {
@@ -309,7 +262,7 @@
 }
 
 .glitchJitter .glitchRoll {
-  animation: crtVerticalRoll 2.6s linear infinite;
+  animation: crtVerticalRoll 1.15s linear infinite;
 }
 
 .glitchLine {
@@ -323,7 +276,7 @@
 }
 
 .glitchJitter .glitchLine {
-  animation: crtBlink 1.1s steps(1) infinite;
+  animation: crtBlink 0.75s steps(1) infinite;
 }
 
 .glitchJitter::after {
@@ -331,7 +284,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 26%;
+  height: 34%;
   pointer-events: none;
   background: linear-gradient(
     to bottom,
@@ -341,7 +294,7 @@
     rgba(0, 255, 0, 0.10) 60%,
     rgba(0, 255, 0, 0) 100%
   );
-  animation: crtSyncBand 1.5s linear infinite;
+  animation: crtSyncBand 0.85s linear infinite;
 }
 
 .glitchSnow {
@@ -365,14 +318,18 @@
 }
 
 @keyframes crtVerticalRoll {
-  0%   { transform: translate(0, 14%) scaleY(1); }
-  40%  { transform: translate(-5px, -3%) scaleY(1.02); }
-  44%  { transform: translate(4px, -3%) scaleY(1.02); }
-  48%  { transform: translate(0, -3%) scaleY(1.02); }
-  70%  { transform: translate(0, -3%) scaleY(1.02); }
-  72%  { transform: translate(0, -3%) scaleY(1.14); }
-  78%  { transform: translate(0, -2%) scaleY(1.02); }
-  100% { transform: translate(0, 14%) scaleY(1); }
+  0%   { transform: translate(0, 28%) scaleY(1); }
+  10%  { transform: translate(-18px, 14%) scaleY(1.08); }
+  18%  { transform: translate(16px, 2%) scaleY(0.92); }
+  26%  { transform: translate(-12px, -16%) scaleY(1.2); }
+  34%  { transform: translate(6px, -26%) scaleY(1.55); }
+  42%  { transform: translate(-16px, -10%) scaleY(0.88); }
+  50%  { transform: translate(14px, 4%) scaleY(1.12); }
+  58%  { transform: translate(-10px, 20%) scaleY(0.9); }
+  68%  { transform: translate(12px, 32%) scaleY(1.28); }
+  78%  { transform: translate(-8px, 38%) scaleY(1.4); }
+  88%  { transform: translate(10px, 30%) scaleY(1.05); }
+  100% { transform: translate(0, 28%) scaleY(1); }
 }
 
 @keyframes crtSyncBand {
@@ -381,9 +338,11 @@
 }
 
 @keyframes crtBlink {
-  0%, 60%   { opacity: 1; }
-  61%, 72%  { opacity: 0.15; }
-  73%, 100% { opacity: 1; }
+  0%, 42%   { opacity: 1; }
+  43%, 47%  { opacity: 0.1; }
+  48%, 54%  { opacity: 1; }
+  55%, 60%  { opacity: 0.2; }
+  61%, 100% { opacity: 1; }
 }
 
 @keyframes crtSnow {
@@ -602,10 +561,6 @@
     padding: var(--space-lg, 24px);
     font-size: 18px;
   }
-  .loginInput {
-    width: 160px;
-    font-size: 18px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -613,9 +568,5 @@
     padding: var(--space-md, 16px);
     font-size: 15px;
     border-width: 1px;
-  }
-  .loginInput {
-    width: 120px;
-    font-size: 15px;
   }
 }
