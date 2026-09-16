@@ -23,6 +23,7 @@ const DEFAULT_PROFILE: ThemeSoundProfile = { waveform: 'sine', freqMul: 1.0 };
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private volume = 0.5;
+  private unlocked = false;
 
   private gain(base: number): number {
     return base * this.volume;
@@ -32,6 +33,10 @@ class SoundEngine {
     this.volume = Math.max(0, Math.min(1, v));
   }
 
+  isUnlocked(): boolean {
+    return this.unlocked;
+  }
+
   unlock(): void {
     if (!this.ctx) {
       this.ctx = new AudioContext();
@@ -39,6 +44,7 @@ class SoundEngine {
     if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+    this.unlocked = true;
   }
 
   private ensureContext(): AudioContext | null {
