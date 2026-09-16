@@ -27,7 +27,7 @@ class SoundEngine {
   private master: GainNode | null = null;
 
   private gain(base: number): number {
-    return base * this.volume;
+    return base * this.volume * 5;
   }
 
   setVolume(v: number): void {
@@ -38,9 +38,18 @@ class SoundEngine {
     return this.unlocked;
   }
 
+  private log(msg: string): void {
+    if (typeof window === 'undefined') return;
+    if (!window.location.search.includes('audio-debug')) return;
+    console.log('[audio]', msg);
+  }
+
   unlock(): void {
     if (!this.ctx) {
-      this.ctx = new AudioContext();
+      const w = window as Window & { webkitAudioContext?: typeof AudioContext };
+      const Ctor = w.AudioContext ?? w.webkitAudioContext;
+      if (!Ctor) return;
+      this.ctx = new Ctor();
     }
     if (this.ctx.state === 'suspended') {
       this.ctx.resume().catch((err) => {
@@ -48,6 +57,7 @@ class SoundEngine {
       });
     }
     this.unlocked = true;
+    this.log(`unlock ctx=${this.ctx.state} volume=${this.volume}`);
   }
 
   private getMaster(ctx: AudioContext): GainNode {
@@ -61,6 +71,7 @@ class SoundEngine {
 
   stopAll(): void {
     if (!this.master) return;
+    this.log('stopAll');
     this.master.disconnect();
     this.master = null;
   }
@@ -88,7 +99,11 @@ class SoundEngine {
 
   bootChirp(): void {
     const ctx = this.ensureContext();
-    if (!ctx) return;
+    if (!ctx) {
+      this.log('bootChirp: no context');
+      return;
+    }
+    this.log('bootChirp');
     const timeOfDay = this.getTimeOfDay();
     const multipliers: Record<string, { freq: number; vol: number }> = {
       morning: { freq: 1.2, vol: 1.0 },

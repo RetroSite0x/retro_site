@@ -28,6 +28,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   const reducedMotion = useReducedMotion();
   const login = useSystemStore((s) => s.login);
   const audioUnlocked = useRef(false);
+  const bootStartedAt = useRef(0);
   const [bootStarted, setBootStarted] = useState(false);
 
   const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete, bootStarted);
@@ -36,6 +37,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     if (audioUnlocked.current) return;
     soundEngine.unlock();
     audioUnlocked.current = true;
+    bootStartedAt.current = Date.now();
     if (soundEnabled) soundEngine.crtPowerOn();
     setBootStarted(true);
   }, [soundEnabled]);
@@ -50,6 +52,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
       startBoot();
       return;
     }
+    if (Date.now() - bootStartedAt.current < 900) return;
     if (!state.isDone) {
       skipBoot();
     }
@@ -96,6 +99,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
           startBoot();
           return;
         }
+        if (Date.now() - bootStartedAt.current < 900) return;
         if (!isDone) skipBoot();
       }}
       role="presentation"
@@ -238,6 +242,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
             className={styles.skipButton}
             onClick={(e) => {
               e.stopPropagation();
+              if (Date.now() - bootStartedAt.current < 900) return;
               skipBoot();
             }}
             autoFocus
