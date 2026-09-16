@@ -32,7 +32,7 @@ interface SystemState {
   getCustomThemes: () => Record<string, CustomThemeColors>;
 }
 
-const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'challenge', 'desktop'];
+const PHASE_ORDER: BootPhase[] = ['bios', 'login', 'desktop'];
 
 const CUSTOM_THEMES_KEY = 'nabilos-custom-themes';
 

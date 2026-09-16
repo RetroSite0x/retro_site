@@ -32,7 +32,7 @@ export function LoginPrompt() {
   const formRef = useRef<HTMLFormElement>(null);
   const autoCancelledRef = useRef(false);
   const userEditedRef = useRef(false);
-  const advanceBoot = useSystemStore((s) => s.advanceBoot);
+  const login = useSystemStore((s) => s.login);
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
   const reducedMotion = useReducedMotion();
 
@@ -120,7 +120,7 @@ export function LoginPrompt() {
       setError('Login incorrect');
       return;
     }
-    advanceBoot();
+    login('nabil');
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -144,7 +144,7 @@ export function LoginPrompt() {
     }
     autoCancelledRef.current = true;
     soundEngine.stopAll();
-    advanceBoot();
+    login('nabil');
   };
 
   const filled = Math.floor((verifyProgress / 100) * 20);
