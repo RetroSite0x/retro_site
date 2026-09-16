@@ -426,7 +426,6 @@ export function useBootSequence(
         startScramble();
 
         schedule(() => {
-          const lockStep = Math.max(1, Math.floor(TARGET.length / (PHASE_2_MS / 60)));
           const lockTimer = scheduleInterval(() => {
             lockNext();
             if (lockIndex >= TARGET.length) {
