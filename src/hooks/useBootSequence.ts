@@ -570,8 +570,8 @@ export function useBootSequence(
         schedule(() => {
           setState((prev) => ({ ...prev, glitchActive: false }));
           if (soundEnabled()) soundEngine.bootChirp();
-          schedule(() => advanceBeat(), 200);
-        }, 400);
+          schedule(() => advanceBeat(), 300);
+        }, 900);
 
         break;
       }

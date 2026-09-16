@@ -126,7 +126,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
           aria-hidden="true"
         >
           {GLITCH_LINES.map((line, i) => (
-            <div key={i} className={styles.glitchLine}>
+            <div key={i} className={styles.glitchLine} data-text={line}>
               {line}
             </div>
           ))}
