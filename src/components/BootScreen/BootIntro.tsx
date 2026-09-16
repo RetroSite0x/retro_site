@@ -63,6 +63,16 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleKeyDown]);
 
+  const [debugInfo, setDebugInfo] = useState('');
+
+  useEffect(() => {
+    if (!window.location.search.includes('audio-debug')) return;
+    const id = window.setInterval(() => {
+      setDebugInfo(`sound=${soundEnabled ? 'on' : 'off'} ${soundEngine.getDebugInfo()}`);
+    }, 400);
+    return () => window.clearInterval(id);
+  }, [soundEnabled]);
+
   const {
     lines,
     typingText,
@@ -250,6 +260,25 @@ export function BootIntro({ onComplete }: BootIntroProps) {
             SKIP &gt;&gt;
           </button>
         </>
+      )}
+
+      {debugInfo && (
+        <div
+          style={{
+            position: 'fixed',
+            left: 8,
+            bottom: 8,
+            zIndex: 50,
+            fontFamily: 'monospace',
+            fontSize: 12,
+            color: '#0ff',
+            background: 'rgba(0,0,0,0.75)',
+            padding: '4px 8px',
+            whiteSpace: 'pre',
+          }}
+        >
+          {`[audio] ${debugInfo}`}
+        </div>
       )}
     </div>
   );

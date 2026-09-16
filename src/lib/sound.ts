@@ -31,11 +31,17 @@ class SoundEngine {
   }
 
   setVolume(v: number): void {
+    if (!Number.isFinite(v)) return;
     this.volume = Math.max(0, Math.min(1, v));
   }
 
   isUnlocked(): boolean {
     return this.unlocked;
+  }
+
+  getDebugInfo(): string {
+    const state = this.ctx ? this.ctx.state : 'none';
+    return `ctx=${state} vol=${this.volume.toFixed(2)} unlocked=${this.unlocked}`;
   }
 
   private log(msg: string): void {
