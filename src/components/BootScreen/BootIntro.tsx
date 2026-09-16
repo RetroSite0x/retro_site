@@ -12,7 +12,7 @@
  *   signOff     → links, Bengali quote, welcome, cursor
  */
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { BOOT_BEATS, GLITCH_LINES } from '../../lib/bootSequence';
 import { soundEngine } from '../../lib/sound';
 import { useSystemStore } from '../../store/useSystem';
@@ -27,24 +27,40 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
   const reducedMotion = useReducedMotion();
   const login = useSystemStore((s) => s.login);
+  const audioUnlocked = useRef(false);
 
   const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete);
 
-  // Play boot audio once on mount: CRT power-on hum, then chime after a beat
-  useEffect(() => {
-    if (soundEnabled) {
-      soundEngine.crtPowerOn();
-      const timer = setTimeout(() => soundEngine.bootChime(), 600);
-      return () => clearTimeout(timer);
+  const unlockAudio = useCallback(() => {
+    if (!audioUnlocked.current) {
+      soundEngine.unlock();
+      audioUnlocked.current = true;
+      if (soundEnabled) {
+        soundEngine.crtPowerOn();
+        setTimeout(() => soundEngine.bootChime(), 600);
+      }
     }
   }, [soundEnabled]);
 
+  useEffect(() => {
+    const handler = () => {
+      unlockAudio();
+    };
+    window.addEventListener('keydown', handler, { once: true });
+    window.addEventListener('pointerdown', handler, { once: true });
+    return () => {
+      window.removeEventListener('keydown', handler);
+      window.removeEventListener('pointerdown', handler);
+    };
+  }, [unlockAudio]);
+
   // Skip on any keypress
   const handleKeyDown = useCallback(() => {
+    unlockAudio();
     if (!state.isDone) {
       login('nabil');
     }
-  }, [state.isDone, login]);
+  }, [state.isDone, login, unlockAudio]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -82,7 +98,10 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   return (
     <div
       className={containerClass}
-      onClick={!isDone ? () => login('nabil') : undefined}
+      onClick={!isDone ? () => {
+        unlockAudio();
+        login('nabil');
+      } : undefined}
       role="presentation"
     >
       {/* Power-on phosphor flash overlay */}
