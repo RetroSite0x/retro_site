@@ -645,7 +645,187 @@ Run before marking any non-trivial item DONE:
 
 ---
 
-## 12. Open Questions / Decisions Needed
+## 12. Adding New Blog Posts
+
+Blog posts live in two places:
+1. **VFS** (`src/store/vfs-tree.ts`) — for in-terminal viewing via `cat /blog/<filename>`
+2. **Static HTML** (`public/blog/<slug>/index.html`) — for social sharing and SEO
+
+### Quick Guide
+
+#### Step 1: Add content to VFS
+
+In `src/store/vfs-tree.ts`, find the `blog` directory and add a new entry:
+
+```typescript
+{
+  name: 'my-new-post.md',
+  type: 'file',
+  content: `# My New Post Title
+
+Your markdown content here.
+
+## Section 1
+
+More content...
+
+## Section 2
+
+Even more content...`,
+  metadata: { size: 500, createdAt: NOW, updatedAt: NOW, executable: false, permissions: 'rw-r--r--', mimeType: 'text/markdown' },
+},
+```
+
+#### Step 2: Create static HTML for social sharing
+
+Create `public/blog/<slug>/index.html`:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Post Title — Ann Naser Nabil</title>
+    <meta name="description" content="2-4 sentence description for search results." />
+    <meta name="author" content="Ann Naser Nabil" />
+    <link rel="canonical" href="https://ann.iam.bd/blog/<slug>/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Post Title — Ann Naser Nabil" />
+    <meta property="og:description" content="Same description as above." />
+    <meta property="og:image" content="https://ann.iam.bd/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ann Naser Nabil - NLP Researcher & AI Engineer" />
+    <meta property="og:url" content="https://ann.iam.bd/blog/<slug>/" />
+    <meta property="og:site_name" content="Ann Naser Nabil" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="article:published_time" content="YYYY-MM-DDTHH:MM:SSZ" />
+    <meta property="article:author" content="https://ann.iam.bd/" />
+    <meta property="article:section" content="Category" />
+    <meta property="article:tag" content="Tag1" />
+    <meta property="article:tag" content="Tag2" />
+
+    <!-- Twitter/X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ann_naser" />
+    <meta name="twitter:creator" content="@ann_naser" />
+    <meta name="twitter:title" content="Post Title — Ann Naser Nabil" />
+    <meta name="twitter:description" content="Same description as above." />
+    <meta name="twitter:image" content="https://ann.iam.bd/og-image.png" />
+    <meta name="twitter:image:alt" content="Ann Naser Nabil - NLP Researcher & AI Engineer" />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Post Title",
+      "description": "Same description.",
+      "author": {
+        "@type": "Person",
+        "name": "Ann Naser Nabil",
+        "url": "https://ann.iam.bd/"
+      },
+      "datePublished": "YYYY-MM-DD",
+      "url": "https://ann.iam.bd/blog/<slug>/",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ann.iam.bd/blog/<slug>/"
+      }
+    }
+    </script>
+
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: 'IBM Plex Mono', 'Courier New', monospace;
+        background: #0a0a0a;
+        color: #00ff00;
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+      .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+      .back-link { color: #00ffff; text-decoration: none; font-size: 14px; display: inline-block; margin-bottom: 32px; }
+      .back-link:hover { text-decoration: underline; }
+      h1 { font-size: 2em; margin-bottom: 8px; color: #00ff00; }
+      .meta { color: #666; font-size: 14px; margin-bottom: 32px; border-bottom: 1px solid #333; padding-bottom: 16px; }
+      h2 { font-size: 1.4em; margin-top: 32px; margin-bottom: 12px; color: #00ff00; }
+      p { margin-bottom: 16px; color: #ccc; }
+      strong { color: #00ff00; }
+      em { color: #00ffff; font-style: italic; }
+      ul, ol { margin-bottom: 16px; padding-left: 24px; color: #ccc; }
+      li { margin-bottom: 8px; }
+      a { color: #00ffff; }
+      a:hover { text-decoration: underline; }
+      .footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid #333; color: #666; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="https://ann.iam.bd/" class="back-link">← Back to portfolio</a>
+      
+      <article>
+        <h1>Post Title</h1>
+        <div class="meta">Ann Naser Nabil · Month Year</div>
+        
+        <p>Your content here...</p>
+      </article>
+
+      <div class="footer">
+        <p>© 2026 Ann Naser Nabil · <a href="https://ann.iam.bd/">ann.iam.bd</a></p>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
+#### Step 3: Update sitemap
+
+Add to `public/sitemap.xml`:
+
+```xml
+<url>
+  <loc>https://ann.iam.bd/blog/<slug>/</loc>
+  <lastmod>YYYY-MM-DD</lastmod>
+  <changefreq>monthly</changefreq>
+  <priority>0.8</priority>
+</url>
+```
+
+### Checklist
+
+- [ ] VFS entry added in `vfs-tree.ts`
+- [ ] Static HTML created in `public/blog/<slug>/index.html`
+- [ ] OG tags: `og:title`, `og:description`, `og:image`, `og:url`
+- [ ] Twitter tags: `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+- [ ] JSON-LD `BlogPosting` schema
+- [ ] Canonical URL set
+- [ ] Sitemap updated
+- [ ] `article:published_time` set correctly
+
+### Testing
+
+After deploying:
+
+```bash
+# Test as Twitter crawler
+curl -A "Twitterbot/1.0" https://ann.iam.bd/blog/<slug>/ | grep -i "og:\|twitter:"
+
+# Test as Facebook crawler
+curl -A "facebookexternalhit/1.1" https://ann.iam.bd/blog/<slug>/ | grep -i "og:"
+```
+
+Or use online tools:
+- https://developers.facebook.com/tools/debug/
+- https://www.linkedin.com/post-inspector/
+- Paste URL in a draft tweet
+
+---
+
+## 13. Open Questions / Decisions Needed
 
 1. ~~**Mobile**: commit to paradigm A (separate app-stack) or C (terminal-only)?~~ **Decided:** app-stack + dock (MOB-01 shipped).
 2. **Content source direction**: `portfolio.ts` → generate VFS, or VFS → generate commands? (Recommend: typed TS module is canonical; VFS built from it.)
@@ -657,7 +837,7 @@ Run before marking any non-trivial item DONE:
 
 ---
 
-## 13. References
+## 14. References
 
 ### Benchmarks
 daedalOS (github.com/DustinBrett/daedalOS) · Windows 98 Web (azayrahmad.github.io/win98-web) · rahul.io · PortfolioXP (awwwards.com/sites/portfoliopxp) · macOS-Web-Simulator · windows93.net · poolsuite.net · neal.fun · satnaing terminal-portfolio · CRT Terminal Portfolio (github.com/atmozki) · Retro TUI Portfolio (astro.build) · clearPath terminal-portfolio · 98.css · React95 · oldweb.today
