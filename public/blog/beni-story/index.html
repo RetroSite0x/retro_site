@@ -73,13 +73,17 @@
         padding: 40px 20px;
       }
       .back-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 32px;
+      }
+      .back-link a {
         color: #00ffff;
         text-decoration: none;
         font-size: 14px;
-        display: inline-block;
-        margin-bottom: 32px;
       }
-      .back-link:hover { text-decoration: underline; }
+      .back-link a:hover { text-decoration: underline; }
       h1 {
         font-size: 2em;
         margin-bottom: 8px;
@@ -130,7 +134,10 @@
   </head>
   <body>
     <div class="container">
-      <a href="https://ann.iam.bd/" class="back-link">← Back to portfolio</a>
+      <nav class="back-link">
+        <a href="https://ann.iam.bd/blog/">← Back to blog</a>
+        <a href="https://ann.iam.bd/?skip-boot=1">Open full site →</a>
+      </nav>
       
       <article>
         <h1>The Story Behind BENI</h1>
