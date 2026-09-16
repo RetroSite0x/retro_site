@@ -36,11 +36,6 @@ test.describe('Retro UNIX Workstation', () => {
     await expect(page.getByRole('menuitem', { name: 'SETTINGS' })).toBeVisible();
 
     // ------------------------------------------------------------------
-    // Dismiss the first-run onboarding overlay if present
-    // ------------------------------------------------------------------
-    await page.getByRole('button', { name: /got it/i }).click({ timeout: 2500 }).catch(() => {});
-
-    // ------------------------------------------------------------------
     // Phase 4: Terminal opens automatically on desktop — prompt visible
     // ------------------------------------------------------------------
     // The terminal prompt shows "guest@retro:/home/guest$ " which contains "$"
