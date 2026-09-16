@@ -26,6 +26,7 @@ interface BootIntroProps {
 export function BootIntro({ onComplete }: BootIntroProps) {
   const soundEnabled = useSystemStore((s) => s.soundEnabled);
   const reducedMotion = useReducedMotion();
+  const login = useSystemStore((s) => s.login);
 
   const { state, skip, prompt } = useBootSequence(BOOT_BEATS, onComplete);
 
@@ -41,9 +42,9 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   // Skip on any keypress
   const handleKeyDown = useCallback(() => {
     if (!state.isDone) {
-      skip();
+      login('nabil');
     }
-  }, [state.isDone, skip]);
+  }, [state.isDone, login]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -81,7 +82,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   return (
     <div
       className={containerClass}
-      onClick={!isDone ? skip : undefined}
+      onClick={!isDone ? () => login('nabil') : undefined}
       role="presentation"
     >
       {/* Power-on phosphor flash overlay */}
@@ -215,7 +216,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
             className={styles.skipButton}
             onClick={(e) => {
               e.stopPropagation();
-              skip();
+              login('nabil');
             }}
             autoFocus
           >
