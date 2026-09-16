@@ -125,11 +125,14 @@ export function BootIntro({ onComplete }: BootIntroProps) {
           className={`${styles.glitchOverlay} ${!reducedMotion ? styles.glitchJitter : ''}`}
           aria-hidden="true"
         >
-          {GLITCH_LINES.map((line, i) => (
-            <div key={i} className={styles.glitchLine} data-text={line}>
-              {line}
-            </div>
-          ))}
+          {!reducedMotion && <div className={styles.glitchSnow} />}
+          <div className={styles.glitchRoll}>
+            {GLITCH_LINES.map((line, i) => (
+              <div key={i} className={styles.glitchLine}>
+                {line}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
