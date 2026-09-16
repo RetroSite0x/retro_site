@@ -10,6 +10,7 @@
 
 export type BootBeatKind =
   | 'powerOn'
+  | 'nameAssemble'
   | 'whoami'
   | 'identityCard'
   | 'work'
@@ -39,6 +40,8 @@ export const PROGRESS_MODULES: readonly string[] = [
 ];
 
 export const WHOAMI_NAME = 'Ann Naser Nabil';
+
+export const NAME_ASSEMBLE_TEXT = 'Ann Naser Nabil';
 
 export const IDENTITY_CARD: readonly string[] = [
   '+-----------------------------------+',
@@ -94,7 +97,7 @@ export const WELCOME_MSG = 'System ready. Welcome, Ann.';
 // ── Ordered beat sequence ───────────────────────────────────────────────────
 
 function maybeInsertGlitch(): readonly BootBeat[] {
-  const beats: BootBeat[] = [{ kind: 'powerOn' }, { kind: 'whoami' }];
+  const beats: BootBeat[] = [{ kind: 'nameAssemble' }, { kind: 'powerOn' }, { kind: 'whoami' }];
   beats.push(
     { kind: 'identityCard' },
     { kind: 'work' },

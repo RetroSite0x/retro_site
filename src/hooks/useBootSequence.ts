@@ -15,6 +15,7 @@ import {
   POST_LINE,
   PROGRESS_MODULES,
   WHOAMI_NAME,
+  NAME_ASSEMBLE_TEXT,
   IDENTITY_CARD,
   RESEARCH_AREAS,
   BENI_COUNTUP_TARGET,
@@ -31,6 +32,14 @@ import { soundEngine } from '../lib/sound';
 import { useSystemStore } from '../store/useSystem';
 
 // ── Render state ────────────────────────────────────────────────────────────
+
+export interface ScrambleChar {
+  readonly id: number;
+  readonly target: string;
+  current: string;
+  locked: boolean;
+  error: boolean;
+}
 
 export interface CompletedLine {
   readonly text: string;
@@ -54,6 +63,11 @@ export interface BootRenderState {
   rgbSplitActive: boolean;
   scanlineIntensity: number;
   themeCycleActive: boolean;
+  nameAssembleActive: boolean;
+  scrambleChars: ScrambleChar[];
+  nameRevealed: boolean;
+  rgbSplitBurst: boolean;
+  scanlineSweep: boolean;
 }
 
 const INITIAL_STATE: BootRenderState = {
@@ -73,6 +87,11 @@ const INITIAL_STATE: BootRenderState = {
   rgbSplitActive: false,
   scanlineIntensity: 0,
   themeCycleActive: false,
+  nameAssembleActive: false,
+  scrambleChars: [],
+  nameRevealed: false,
+  rgbSplitBurst: false,
+  scanlineSweep: false,
 };
 
 // ── Constants ───────────────────────────────────────────────────────────────
@@ -125,6 +144,8 @@ function flattenBeats(beats: readonly BootBeat[]): CompletedLine[] {
       case 'powerOn':
         lines.push({ text: POST_LINE, kind: 'post' });
         lines.push({ text: '', kind: 'blank' });
+        break;
+      case 'nameAssemble':
         break;
       case 'whoami':
         lines.push({ text: 'whoami', kind: 'command' });
@@ -233,6 +254,11 @@ export function useBootSequence(
       rgbSplitActive: false,
       scanlineIntensity: 0,
       themeCycleActive: false,
+      nameAssembleActive: false,
+      scrambleChars: [],
+      nameRevealed: false,
+      rgbSplitBurst: false,
+      scanlineSweep: false,
     }));
     setGeneration((g) => g + 1);
   }, []);
@@ -248,6 +274,8 @@ export function useBootSequence(
       typingVisibleChars: 0,
       glitchActive: false,
       powerOnFlash: false,
+      nameAssembleActive: false,
+      particles: [],
     }));
     schedule(() => onCompleteRef.current(), 600);
   }, [clearAll, schedule]);
@@ -274,6 +302,8 @@ export function useBootSequence(
       countupDisplay: null,
       glitchActive: false,
       powerOnFlash: false,
+      nameAssembleActive: false,
+      particles: [],
       isDone: true,
     }));
 
@@ -330,6 +360,108 @@ export function useBootSequence(
             }
           }, 60);
         }, 100);
+
+        break;
+      }
+
+      // ─── BEAT 1b: Scramble-decode name animation ──────────────────
+      case 'nameAssemble': {
+        const TARGET = NAME_ASSEMBLE_TEXT;
+        const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*?';
+        const PHASE_1_MS = 400;
+        const PHASE_2_MS = 800;
+        const PHASE_3_MS = 400;
+
+        const scrambleChars: ScrambleChar[] = TARGET.split('').map((ch, i) => ({
+          id: i,
+          target: ch,
+          current: SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)],
+          locked: false,
+          error: false,
+        }));
+
+        setState((prev) => ({
+          ...prev,
+          nameAssembleActive: true,
+          scrambleChars,
+          nameRevealed: false,
+          rgbSplitBurst: false,
+          scanlineSweep: false,
+        }));
+
+        if (soundEnabled()) soundEngine.diskSeek();
+
+        let scrambleInterval: number;
+        let lockIndex = 0;
+
+        const startScramble = () => {
+          scrambleInterval = window.setInterval(() => {
+            setState((prev) => ({
+              ...prev,
+              scrambleChars: prev.scrambleChars.map((sc) =>
+                sc.locked
+                  ? sc
+                  : {
+                      ...sc,
+                      current: SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)],
+                    },
+              ),
+            }));
+          }, 50);
+        };
+
+        const lockNext = () => {
+          if (lockIndex >= TARGET.length) return;
+          const idx = lockIndex;
+          setState((prev) => ({
+            ...prev,
+            scrambleChars: prev.scrambleChars.map((sc, i) =>
+              i === idx ? { ...sc, locked: true, current: sc.target, error: false } : sc,
+            ),
+          }));
+          if (soundEnabled()) soundEngine.keyClick();
+          lockIndex++;
+        };
+
+        startScramble();
+
+        schedule(() => {
+          const lockStep = Math.max(1, Math.floor(TARGET.length / (PHASE_2_MS / 60)));
+          const lockTimer = scheduleInterval(() => {
+            lockNext();
+            if (lockIndex >= TARGET.length) {
+              window.clearInterval(lockTimer);
+            }
+          }, 60);
+        }, PHASE_1_MS);
+
+        schedule(() => {
+          window.clearInterval(scrambleInterval);
+          setState((prev) => ({
+            ...prev,
+            scrambleChars: TARGET.split('').map((ch, i) => ({
+              id: i,
+              target: ch,
+              current: ch,
+              locked: true,
+              error: false,
+            })),
+            nameRevealed: true,
+            rgbSplitBurst: true,
+            scanlineSweep: true,
+          }));
+          if (soundEnabled()) soundEngine.successChime();
+        }, PHASE_1_MS + PHASE_2_MS);
+
+        schedule(() => {
+          setState((prev) => ({
+            ...prev,
+            rgbSplitBurst: false,
+            scanlineSweep: false,
+          }));
+        }, PHASE_1_MS + PHASE_2_MS + PHASE_3_MS);
+
+        schedule(() => advanceBeat(), PHASE_1_MS + PHASE_2_MS + PHASE_3_MS + 200);
 
         break;
       }
@@ -571,7 +703,7 @@ export function useBootSequence(
           setState((prev) => ({ ...prev, glitchActive: false }));
           if (soundEnabled()) soundEngine.bootChirp();
           schedule(() => advanceBeat(), 300);
-        }, 900);
+        }, 1800);
 
         break;
       }

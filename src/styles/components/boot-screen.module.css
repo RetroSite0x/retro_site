@@ -22,6 +22,10 @@
   text-shadow: var(--phosphor-glow);
 }
 
+.contentHidden {
+  border-color: transparent;
+}
+
 .line {
   white-space: pre-wrap;
   min-height: 1.3em;
@@ -553,6 +557,199 @@
 @keyframes pulse {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
+}
+
+/* ── Pixel-assemble name animation ──────────────────────────────── */
+
+.nameAssemble {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.nameAssembleStage {
+  position: relative;
+  width: 80%;
+  max-width: 700px;
+  height: 25vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Scramble grid — random chars that decode into the name */
+.nameScrambleGrid {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-terminal);
+  font-size: clamp(18px, 4vw, 36px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--phosphor-dim);
+  opacity: 0;
+  animation: scrambleFadeIn 0.15s ease-out forwards;
+}
+
+.nameScrambleChar {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+  transition: color 0.1s, text-shadow 0.1s;
+  will-change: transform, opacity;
+}
+
+.nameScrambleChar.locked {
+  color: var(--phosphor);
+  text-shadow: 0 0 8px var(--phosphor), 0 0 20px var(--phosphor-dim);
+}
+
+.nameScrambleChar.error {
+  color: #ff4444;
+  text-shadow: 0 0 6px rgba(255, 68, 68, 0.5);
+}
+
+/* Final name text — appears after decode */
+.nameRevealText {
+  font-family: var(--font-terminal);
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--phosphor);
+  text-shadow:
+    0 0 10px var(--phosphor),
+    0 0 30px var(--phosphor-dim),
+    0 0 60px var(--phosphor-dim);
+  opacity: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.nameRevealText.active {
+  animation: nameDramaticReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* RGB split layers for chromatic aberration */
+.nameRgbSplit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.nameRgbSplit.active {
+  animation: rgbSplitPulse 0.6s ease-out forwards;
+}
+
+.nameRgbSplitRed,
+.nameRgbSplitBlue {
+  position: absolute;
+  font-family: var(--font-terminal);
+  font-size: clamp(24px, 5vw, 48px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  white-space: nowrap;
+}
+
+.nameRgbSplitRed {
+  color: rgba(255, 0, 0, 0.6);
+  mix-blend-mode: screen;
+}
+
+.nameRgbSplitBlue {
+  color: rgba(0, 100, 255, 0.6);
+  mix-blend-mode: screen;
+}
+
+/* Scanline sweep overlay */
+.nameScanlineSweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.nameScanlineSweep.active {
+  opacity: 1;
+}
+
+.nameScanlineSweep::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--phosphor),
+    transparent
+  );
+  box-shadow: 0 0 20px var(--phosphor), 0 0 40px var(--phosphor-dim);
+  animation: scanlineSweepDown 0.8s ease-in-out forwards;
+}
+
+/* Floating particles */
+.nameParticle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: var(--phosphor);
+  box-shadow: 0 0 4px var(--phosphor), 0 0 8px var(--phosphor-dim);
+  border-radius: 1px;
+  will-change: transform, opacity;
+}
+
+@keyframes scrambleFadeIn {
+  0% { opacity: 0; filter: blur(2px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+@keyframes nameDramaticReveal {
+  0% {
+    opacity: 0;
+    filter: blur(8px) brightness(3);
+    transform: scale(1.1);
+    text-shadow: 0 0 40px var(--phosphor), 0 0 80px var(--phosphor);
+  }
+  30% {
+    opacity: 1;
+    filter: blur(2px) brightness(1.8);
+    transform: scale(1.02);
+  }
+  60% {
+    filter: blur(0) brightness(1.2);
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1);
+    text-shadow: 0 0 10px var(--phosphor), 0 0 30px var(--phosphor-dim), 0 0 60px var(--phosphor-dim);
+  }
+}
+
+@keyframes rgbSplitPulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+@keyframes scanlineSweepDown {
+  0% { top: -5%; }
+  100% { top: 105%; }
 }
 
 /* Responsive adjustments */

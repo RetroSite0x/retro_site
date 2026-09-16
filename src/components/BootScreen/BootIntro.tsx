@@ -90,6 +90,11 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     rgbSplitActive,
     scanlineIntensity,
     themeCycleActive,
+    nameAssembleActive,
+    scrambleChars,
+    nameRevealed,
+    rgbSplitBurst,
+    scanlineSweep,
   } = state;
 
   const containerClass = [
@@ -117,6 +122,39 @@ export function BootIntro({ onComplete }: BootIntroProps) {
       {/* Power-on phosphor flash overlay */}
       {powerOnFlash && !reducedMotion && (
         <div className={styles.flashOverlay} aria-hidden="true" />
+      )}
+
+      {/* Pixel-assemble name animation */}
+      {nameAssembleActive && (
+        <div className={styles.nameAssemble} aria-hidden="true">
+          <div className={styles.nameAssembleStage}>
+            {!nameRevealed && (
+              <div className={styles.nameScrambleGrid}>
+                {scrambleChars.map((sc) => (
+                  <span
+                    key={sc.id}
+                    className={`${styles.nameScrambleChar} ${sc.locked ? styles.locked : ''} ${sc.error ? styles.error : ''}`}
+                  >
+                    {sc.current}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {nameRevealed && (
+              <div className={`${styles.nameRevealText} ${styles.active}`}>
+                Ann Naser Nabil
+              </div>
+            )}
+
+            <div className={`${styles.nameRgbSplit} ${rgbSplitBurst ? styles.active : ''}`}>
+              <span className={styles.nameRgbSplitRed}>Ann Naser Nabil</span>
+              <span className={styles.nameRgbSplitBlue}>Ann Naser Nabil</span>
+            </div>
+
+            <div className={`${styles.nameScanlineSweep} ${scanlineSweep ? styles.active : ''}`} />
+          </div>
+        </div>
       )}
 
       {/* Glitch overlay */}
@@ -155,7 +193,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
       )}
 
       <div
-        className={`${styles.content} ${glitchActive && !reducedMotion ? styles.glitchContent : ''} ${technoGlitchActive && !reducedMotion ? styles.technoGlitchContent : ''} ${themeCycleActive && !reducedMotion ? styles.themeCycleContent : ''}`}
+        className={`${styles.content} ${nameAssembleActive ? styles.contentHidden : ''} ${glitchActive && !reducedMotion ? styles.glitchContent : ''} ${technoGlitchActive && !reducedMotion ? styles.technoGlitchContent : ''} ${themeCycleActive && !reducedMotion ? styles.themeCycleContent : ''}`}
         aria-label="Boot sequence typing intro"
       >
         {lines.map((line, i) => {
@@ -248,7 +286,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
         </div>
       )}
 
-      {bootStarted && !isDone && (
+      {bootStarted && !isDone && !nameAssembleActive && (
         <>
           <div className={styles.hint}>Press any key or click to skip...</div>
           <button
