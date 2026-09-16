@@ -113,7 +113,7 @@ function useTimerList() {
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
 function soundEnabled(): boolean {
-  return useSystemStore.getState().soundEnabled && soundEngine.isUnlocked();
+  return useSystemStore.getState().soundEnabled;
 }
 
 // ── Skip helper: flatten all beats to completed lines ───────────────────────

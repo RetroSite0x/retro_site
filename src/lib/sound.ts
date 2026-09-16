@@ -48,7 +48,12 @@ class SoundEngine {
   }
 
   private ensureContext(): AudioContext | null {
-    if (!this.ctx) return null;
+    if (!this.ctx) {
+      this.ctx = new AudioContext();
+    }
+    if (this.ctx.state === 'suspended') {
+      this.ctx.resume();
+    }
     return this.ctx;
   }
 
