@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSystemStore } from './store/useSystem';
 import { useWindowsStore } from './store/useWindows';
 import { BootScreen } from './components/BootScreen/BootScreen';
@@ -6,7 +6,6 @@ import { Desktop } from './components/Desktop/Desktop';
 import { MobileDesktop } from './components/Mobile/MobileDesktop';
 import { CRTOverlay } from './components/Effects/CRTOverlay';
 import { SoundEngine } from './components/Effects/SoundEngine';
-import { Onboarding, hasSeenOnboarding } from './components/Onboarding/Onboarding';
 import { useTheme } from './hooks/useTheme';
 import { useMotion } from './hooks/useMotion';
 import { useKeyboard } from './hooks/useKeyboard';
@@ -62,8 +61,6 @@ export default function App() {
   useKeyboard();
   useTypeToTerminal();
 
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
   const VALID_PHASES = ['bios', 'desktop'] as const;
   const isValidPhase = VALID_PHASES.includes(bootPhase);
 
@@ -101,13 +98,6 @@ export default function App() {
       if (resolved) {
         useWindowsStore.getState().openWindow(resolved);
       }
-    }
-  }, [bootPhase, isLoggedIn]);
-
-  // ── DIS-02: onboarding — show once on first desktop visit ───────────
-  useEffect(() => {
-    if (bootPhase === 'desktop' && isLoggedIn && !hasSeenOnboarding()) {
-      setShowOnboarding(true);
     }
   }, [bootPhase, isLoggedIn]);
 
@@ -153,9 +143,6 @@ System halted.
       )}
       {isDesktop && isMobile && <MobileDesktop />}
       {isDesktop && !isMobile && <Desktop />}
-      {isDesktop && !isMobile && showOnboarding && (
-        <Onboarding onDismiss={() => setShowOnboarding(false)} />
-      )}
     </>
   );
 }
