@@ -21,3 +21,6 @@ initial_setup.md
 main_idea.txt
 .directory
 tsconfig.tsbuildinfo
+
+# Local screen recordings (not for VCS)
+recordings/
