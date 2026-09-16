@@ -27,7 +27,7 @@ class SoundEngine {
   private master: GainNode | null = null;
 
   private gain(base: number): number {
-    return base * this.volume * 5;
+    return Math.min(base * this.volume * 12, 0.9);
   }
 
   setVolume(v: number): void {
