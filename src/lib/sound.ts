@@ -34,7 +34,7 @@ class SoundEngine {
   }
 
   isUnlocked(): boolean {
-    return this.unlocked;
+    return this.unlocked && this.ctx?.state === 'running';
   }
 
   unlock(): void {
@@ -42,17 +42,17 @@ class SoundEngine {
       this.ctx = new AudioContext();
     }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch((err) => {
+        console.warn('AudioContext resume failed:', err);
+      });
     }
     this.unlocked = true;
   }
 
   private ensureContext(): AudioContext | null {
-    if (!this.ctx) {
-      this.ctx = new AudioContext();
-    }
+    if (!this.ctx) return null;
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
     return this.ctx;
   }
