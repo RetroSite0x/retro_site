@@ -35,7 +35,8 @@ const FRAG = `
     float brightness = scanline * vignette + glow;
     brightness = clamp(brightness, 0.0, 1.0);
 
-    gl_FragColor = vec4(brightness, brightness, brightness, 1.0);
+    // Output black with subtle alpha — this creates scanlines/vignette on top of DOM
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0 - brightness);
   }
 `;
 
@@ -107,10 +108,10 @@ export function TerminalCRT() {
     if (!canvas) return;
 
     const gl = canvas.getContext('webgl', {
-      alpha: false,
-      premultipliedAlpha: true,
+      alpha: true,
+      premultipliedAlpha: false,
       antialias: false,
-      preserveDrawingBuffer: false,
+      preserveDrawingBuffer: true,
     });
     if (!gl) return;
 
