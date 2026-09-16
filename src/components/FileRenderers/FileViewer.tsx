@@ -12,6 +12,13 @@ interface FileViewerProps {
   filePath: string;
 }
 
+function getBlogSlug(filePath: string): string | null {
+  if (!filePath.startsWith('/blog/')) return null;
+  const filename = filePath.split('/').pop();
+  if (!filename?.endsWith('.md')) return null;
+  return filename.replace('.md', '');
+}
+
 function getExtension(filePath: string): string {
   const idx = filePath.lastIndexOf('.');
   if (idx === -1) return '';
@@ -64,6 +71,48 @@ function getRenderer(filePath: string): 'md' | 'conf' | 'txt' | 'image' | 'code'
 export function FileViewer({ filePath }: FileViewerProps) {
   const tree = useVFSStore((s) => s.tree);
   const content = useMemo(() => readFileContent(tree, filePath), [tree, filePath]);
+
+  const blogSlug = getBlogSlug(filePath);
+  if (blogSlug) {
+    const blogUrl = `https://ann.iam.bd/blog/${blogSlug}/`;
+    return (
+      <div className={styles.fileViewer}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          gap: 16,
+          padding: 20,
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 48 }}>📝</div>
+          <div style={{ fontSize: 14, color: 'var(--phosphor)' }}>
+            Blog posts are now on a dedicated page
+          </div>
+          <a
+            href={blogUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              color: 'var(--phosphor)',
+              textDecoration: 'underline',
+              fontSize: 14,
+              padding: '8px 16px',
+              border: '1px solid var(--phosphor)',
+              cursor: 'pointer',
+            }}
+          >
+            Open in browser →
+          </a>
+          <div style={{ fontSize: 11, color: 'var(--phosphor-dim)', marginTop: 8 }}>
+            {blogUrl}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (content === null) {
     return (
