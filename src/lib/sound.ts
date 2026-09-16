@@ -46,18 +46,20 @@ class SoundEngine {
 
   unlock(): void {
     if (!this.ctx) {
-      const w = window as Window & { webkitAudioContext?: typeof AudioContext };
-      const Ctor = w.AudioContext ?? w.webkitAudioContext;
+      const g = globalThis as typeof globalThis & { webkitAudioContext?: typeof AudioContext };
+      const Ctor = g.AudioContext ?? g.webkitAudioContext;
       if (!Ctor) return;
       this.ctx = new Ctor();
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume().catch((err) => {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch((err) => {
         console.warn('AudioContext resume failed:', err);
       });
     }
     this.unlocked = true;
-    this.log(`unlock ctx=${this.ctx.state} volume=${this.volume}`);
+    this.log(`unlock ctx=${ctx.state} volume=${this.volume}`);
   }
 
   private getMaster(ctx: AudioContext): GainNode {
