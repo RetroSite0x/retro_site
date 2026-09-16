@@ -231,7 +231,7 @@ export function BootIntro({ onComplete }: BootIntroProps) {
       {!bootStarted && (
         <div className={styles.bootGate}>
           <div className={styles.bootGateTitle}>PRESS ANY KEY TO BOOT</div>
-          <div className={styles.bootGateHint}>click or press any key — audio starts with the boot</div>
+          <div className={styles.bootGateHint}>click or press any key</div>
         </div>
       )}
 
