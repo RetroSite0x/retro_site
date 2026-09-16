@@ -7,6 +7,7 @@ const COLS = 20;
 const ROWS = 12;
 const FRUITS_TO_WIN = 3;
 const TICK_MS = 140;
+const AUTO_CRASH_DELAY_MS = 2000;
 
 type Dir = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 type Cell = { x: number; y: number };
@@ -188,6 +189,23 @@ export function ChallengeGate() {
     [handleDirection],
   );
 
+  useEffect(() => {
+    if (started || dead || won) return;
+
+    const timer = setTimeout(() => {
+      if (!started && !dead && !won) {
+        setStarted(true);
+        dirRef.current = 'RIGHT';
+        const crashTimer = setTimeout(() => {
+          dirRef.current = 'UP';
+        }, 300);
+        return () => clearTimeout(crashTimer);
+      }
+    }, AUTO_CRASH_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [started, dead, won]);
+
   const cellSet = new Set(snake.map((c) => `${c.x},${c.y}`));
   const snakeHead = snake[0];
 
@@ -277,7 +295,7 @@ export function ChallengeGate() {
 
         {!started && (
           <div className={styles.snakeHint}>
-            tap the arrows — or use arrow keys / WASD
+            tap the arrows — or use arrow keys / WASD (auto-starts in 2s)
           </div>
         )}
         {(dead || won) && (
