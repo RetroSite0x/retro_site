@@ -648,12 +648,47 @@
     0 0 30px var(--phosphor-dim),
     0 0 60px var(--phosphor-dim);
   opacity: 0;
-  position: absolute;
+  position: relative;
   white-space: nowrap;
 }
 
 .nameRevealText.active {
   animation: nameDramaticReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.nameRevealContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.nameRevealNameWrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.nameRevealSubtitle {
+  font-family: var(--font-terminal);
+  font-size: clamp(14px, 2.5vw, 20px);
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--phosphor-dim);
+  text-shadow: 0 0 6px var(--phosphor-dim);
+  opacity: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.nameRevealSubtitle.active {
+  animation: subtitleFadeIn 0.5s ease-out forwards;
+}
+
+@keyframes subtitleFadeIn {
+  0% { opacity: 0; transform: translateY(6px); filter: blur(2px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
 /* RGB split layers for chromatic aberration */
@@ -767,8 +802,10 @@
 }
 
 @keyframes scanlineSweepDown {
-  0% { top: -5%; }
-  100% { top: 105%; }
+  0%   { top: -5%; opacity: 0; }
+  12%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { top: 105%; opacity: 0; }
 }
 
 /* Responsive adjustments */

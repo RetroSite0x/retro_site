@@ -392,7 +392,7 @@ export function useBootSequence(
         const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*?';
         const PHASE_1_MS = 400;
         const PHASE_2_MS = 800;
-        const PHASE_3_MS = 400;
+        const PHASE_3_MS = 800;
 
         const scrambleChars: ScrambleChar[] = TARGET.split('').map((ch, i) => ({
           id: i,

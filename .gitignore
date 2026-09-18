@@ -21,6 +21,7 @@ initial_setup.md
 main_idea.txt
 .directory
 tsconfig.tsbuildinfo
+supabase/.temp/
 
 # Local screen recordings (not for VCS)
 recordings/

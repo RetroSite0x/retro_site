@@ -149,15 +149,21 @@ export function BootIntro({ onComplete }: BootIntroProps) {
             )}
 
             {nameRevealed && (
-              <div className={`${styles.nameRevealText} ${styles.active}`}>
-                Ann Naser Nabil
+              <div className={styles.nameRevealContainer}>
+                <div className={styles.nameRevealNameWrap}>
+                  <div className={`${styles.nameRevealText} ${styles.active}`}>
+                    Ann Naser Nabil
+                  </div>
+                  <div className={`${styles.nameRgbSplit} ${rgbSplitBurst ? styles.active : ''}`}>
+                    <span className={styles.nameRgbSplitRed}>Ann Naser Nabil</span>
+                    <span className={styles.nameRgbSplitBlue}>Ann Naser Nabil</span>
+                  </div>
+                </div>
+                <div className={`${styles.nameRevealSubtitle} ${styles.active}`}>
+                  NLP Researcher | AI Engineer
+                </div>
               </div>
             )}
-
-            <div className={`${styles.nameRgbSplit} ${rgbSplitBurst ? styles.active : ''}`}>
-              <span className={styles.nameRgbSplitRed}>Ann Naser Nabil</span>
-              <span className={styles.nameRgbSplitBlue}>Ann Naser Nabil</span>
-            </div>
 
             <div className={`${styles.nameScanlineSweep} ${scanlineSweep ? styles.active : ''}`} />
           </div>
