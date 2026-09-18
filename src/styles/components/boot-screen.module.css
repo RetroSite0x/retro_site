@@ -210,6 +210,25 @@
   letter-spacing: 0.5px;
 }
 
+/* ── Boot intro: visitor scramble ──────────────────────────────────── */
+
+.visitorScramble {
+  white-space: pre;
+}
+
+.visitorScrambleChar {
+  display: inline-block;
+  width: 1ch;
+  text-align: center;
+  transition: color 0.1s, text-shadow 0.1s;
+  color: var(--phosphor-dim);
+}
+
+.visitorScrambleChar.locked {
+  color: var(--phosphor);
+  text-shadow: 0 0 6px var(--phosphor), 0 0 12px var(--phosphor-dim);
+}
+
 /* ── Boot intro: phosphor flash + degauss ──────────────────────────── */
 
 .flashOverlay {

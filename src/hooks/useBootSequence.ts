@@ -27,6 +27,7 @@ import {
   WORK_ROLES,
   WELCOME_MSG,
   TECHNO_GLITCH_LINES,
+  VISITOR_SCRAMBLE_TEXT,
 } from '../lib/bootSequence';
 import { soundEngine } from '../lib/sound';
 import { useSystemStore } from '../store/useSystem';
@@ -39,6 +40,13 @@ export interface ScrambleChar {
   current: string;
   locked: boolean;
   error: boolean;
+}
+
+export interface VisitorScrambleChar {
+  readonly id: number;
+  readonly target: string;
+  current: string;
+  locked: boolean;
 }
 
 export interface CompletedLine {
@@ -68,6 +76,9 @@ export interface BootRenderState {
   nameRevealed: boolean;
   rgbSplitBurst: boolean;
   scanlineSweep: boolean;
+  visitorScrambleActive: boolean;
+  visitorScrambleChars: VisitorScrambleChar[];
+  visitorScrambleRevealed: boolean;
 }
 
 const INITIAL_STATE: BootRenderState = {
@@ -92,6 +103,9 @@ const INITIAL_STATE: BootRenderState = {
   nameRevealed: false,
   rgbSplitBurst: false,
   scanlineSweep: false,
+  visitorScrambleActive: false,
+  visitorScrambleChars: [],
+  visitorScrambleRevealed: false,
 };
 
 // ── Constants ───────────────────────────────────────────────────────────────
@@ -196,6 +210,8 @@ function flattenBeats(beats: readonly BootBeat[]): CompletedLine[] {
       case 'signOff':
         lines.push({ text: LINKS_LINE, kind: 'output' });
         lines.push({ text: '', kind: 'blank' });
+        lines.push({ text: VISITOR_SCRAMBLE_TEXT, kind: 'output' });
+        lines.push({ text: '', kind: 'blank' });
         lines.push({ text: './welcome.sh', kind: 'command' });
         lines.push({ text: WELCOME_MSG, kind: 'output' });
         break;
@@ -216,6 +232,7 @@ export function useBootSequence(
   beats: readonly BootBeat[],
   onComplete: () => void,
   enabled = true,
+  visitorCount = 0,
 ): UseBootSequenceResult {
   const [state, setState] = useState<BootRenderState>(INITIAL_STATE);
   const [generation, setGeneration] = useState(0);
@@ -259,6 +276,9 @@ export function useBootSequence(
       nameRevealed: false,
       rgbSplitBurst: false,
       scanlineSweep: false,
+      visitorScrambleActive: false,
+      visitorScrambleChars: [],
+      visitorScrambleRevealed: false,
     }));
     setGeneration((g) => g + 1);
   }, []);
@@ -275,6 +295,7 @@ export function useBootSequence(
       glitchActive: false,
       powerOnFlash: false,
       nameAssembleActive: false,
+      visitorScrambleActive: false,
       particles: [],
     }));
     schedule(() => onCompleteRef.current(), 600);
@@ -303,6 +324,7 @@ export function useBootSequence(
       glitchActive: false,
       powerOnFlash: false,
       nameAssembleActive: false,
+      visitorScrambleActive: false,
       particles: [],
       isDone: true,
     }));
@@ -760,37 +782,123 @@ export function useBootSequence(
         if (soundEnabled()) soundEngine.navBlip();
 
         schedule(() => {
-          schedule(() => {
-            const cmd = './welcome.sh';
+          const vCount = visitorCount || 42819;
+          const TARGET = `Visitors: ${vCount.toLocaleString()}`;
+          const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*?,.:;';
+
+            const scrambleChars: VisitorScrambleChar[] = TARGET.split('').map((ch, i) => ({
+              id: i,
+              target: ch,
+              current: SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)],
+              locked: false,
+            }));
+
             setState((prev) => ({
               ...prev,
-              typingText: cmd,
-              typingVisibleChars: 0,
-              typingIsCommand: true,
+              visitorScrambleActive: true,
+              visitorScrambleChars: scrambleChars,
+              visitorScrambleRevealed: false,
             }));
-            let ci = 0;
-            const tInterval = scheduleInterval(() => {
-              ci++;
+
+            let scrambleInterval: number;
+            let lockIndex = 0;
+
+            const startScramble = () => {
+              scrambleInterval = window.setInterval(() => {
+                setState((prev) => ({
+                  ...prev,
+                  visitorScrambleChars: prev.visitorScrambleChars.map((sc) =>
+                    sc.locked
+                      ? sc
+                      : {
+                          ...sc,
+                          current: SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)],
+                        },
+                  ),
+                }));
+              }, 50);
+            };
+
+            const lockNext = () => {
+              if (lockIndex >= TARGET.length) return;
+              const idx = lockIndex;
+              setState((prev) => ({
+                ...prev,
+                visitorScrambleChars: prev.visitorScrambleChars.map((sc, i) =>
+                  i === idx ? { ...sc, locked: true, current: sc.target } : sc,
+                ),
+              }));
               if (soundEnabled()) soundEngine.keyClick();
-              setState((prev) => ({ ...prev, typingVisibleChars: ci }));
-              if (ci >= cmd.length) {
-                window.clearInterval(tInterval);
+              lockIndex++;
+            };
+
+            startScramble();
+
+            schedule(() => {
+              const lockTimer = scheduleInterval(() => {
+                lockNext();
+                if (lockIndex >= TARGET.length) {
+                  window.clearInterval(lockTimer);
+                }
+              }, 60);
+            }, 500);
+
+            schedule(() => {
+              window.clearInterval(scrambleInterval);
+              setState((prev) => ({
+                ...prev,
+                visitorScrambleChars: TARGET.split('').map((ch, i) => ({
+                  id: i,
+                  target: ch,
+                  current: ch,
+                  locked: true,
+                })),
+                visitorScrambleRevealed: true,
+              }));
+              if (soundEnabled()) soundEngine.successChime();
+
+              schedule(() => {
+                setState((prev) => ({
+                  ...prev,
+                  visitorScrambleActive: false,
+                  visitorScrambleChars: [],
+                  visitorScrambleRevealed: false,
+                }));
+                addLine(TARGET, 'output');
+
                 schedule(() => {
-                  addLine(cmd, 'command');
+                  const cmd = './welcome.sh';
                   setState((prev) => ({
                     ...prev,
-                    typingText: null,
+                    typingText: cmd,
                     typingVisibleChars: 0,
+                    typingIsCommand: true,
                   }));
-                  schedule(() => {
-                    addLine(WELCOME_MSG, 'output');
-                    if (soundEnabled()) soundEngine.successChime();
-                    schedule(() => markComplete(), 600);
-                  }, 200);
-                }, 100);
-              }
-            }, 30);
-          }, 200);
+                  let ci = 0;
+                  const tInterval = scheduleInterval(() => {
+                    ci++;
+                    if (soundEnabled()) soundEngine.keyClick();
+                    setState((prev) => ({ ...prev, typingVisibleChars: ci }));
+                    if (ci >= cmd.length) {
+                      window.clearInterval(tInterval);
+                      schedule(() => {
+                        addLine(cmd, 'command');
+                        setState((prev) => ({
+                          ...prev,
+                          typingText: null,
+                          typingVisibleChars: 0,
+                        }));
+                        schedule(() => {
+                          addLine(WELCOME_MSG, 'output');
+                          if (soundEnabled()) soundEngine.successChime();
+                          schedule(() => markComplete(), 600);
+                        }, 200);
+                      }, 100);
+                    }
+                  }, 30);
+                }, 200);
+              }, 500);
+            }, 500 + TARGET.length * 60 + 200);
         }, 200);
 
         break;

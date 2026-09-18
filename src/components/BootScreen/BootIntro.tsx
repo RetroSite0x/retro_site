@@ -17,6 +17,7 @@ import { BOOT_BEATS, GLITCH_LINES } from '../../lib/bootSequence';
 import { soundEngine } from '../../lib/sound';
 import { useSystemStore } from '../../store/useSystem';
 import { useBootSequence } from '../../hooks/useBootSequence';
+import { getVisitorCount } from '../../lib/visitorCounter';
 import styles from '../../styles/components/boot-screen.module.css';
 
 interface BootIntroProps {
@@ -29,9 +30,10 @@ export function BootIntro({ onComplete }: BootIntroProps) {
   const login = useSystemStore((s) => s.login);
   const audioUnlocked = useRef(false);
   const bootStartedAt = useRef(0);
+  const visitorCountRef = useRef<number>(0);
   const [bootStarted, setBootStarted] = useState(false);
 
-  const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete, bootStarted);
+  const { state, prompt } = useBootSequence(BOOT_BEATS, onComplete, bootStarted, visitorCountRef.current);
 
   const startBoot = useCallback(() => {
     if (audioUnlocked.current) return;
@@ -39,7 +41,10 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     audioUnlocked.current = true;
     bootStartedAt.current = Date.now();
     if (soundEnabled) soundEngine.crtPowerOn();
-    setBootStarted(true);
+    getVisitorCount().then((count) => {
+      visitorCountRef.current = count;
+      setBootStarted(true);
+    });
   }, [soundEnabled]);
 
   const skipBoot = useCallback(() => {
@@ -95,6 +100,8 @@ export function BootIntro({ onComplete }: BootIntroProps) {
     nameRevealed,
     rgbSplitBurst,
     scanlineSweep,
+    visitorScrambleActive,
+    visitorScrambleChars,
   } = state;
 
   const containerClass = [
@@ -251,6 +258,22 @@ export function BootIntro({ onComplete }: BootIntroProps) {
         {countupDisplay && (
           <div className={styles.line}>
             <span className={styles.countup}>{countupDisplay}</span>
+          </div>
+        )}
+
+        {/* Visitor scramble display (signOff beat) */}
+        {visitorScrambleActive && (
+          <div className={styles.line}>
+            <span className={styles.visitorScramble}>
+              {visitorScrambleChars.map((sc) => (
+                <span
+                  key={sc.id}
+                  className={`${styles.visitorScrambleChar} ${sc.locked ? styles.locked : ''}`}
+                >
+                  {sc.current}
+                </span>
+              ))}
+            </span>
           </div>
         )}
 

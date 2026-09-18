@@ -80,6 +80,10 @@ export const TECHNO_GLITCH_LINES: readonly string[] = [
   '▓▒░ NEURAL LINK REESTABLISHING    ░▒▓',
 ];
 
+export const VISITOR_COUNT_TARGET = 42_819;
+export const VISITOR_COUNT_DISPLAY = '42,819';
+export const VISITOR_SCRAMBLE_TEXT = 'Visitors: 42,819';
+
 export const LINKS_LINE =
   'github.com/nabil0x \u00b7 nabil.iam.bd \u00b7 ORCID 0009-0006-3561-045X';
 
